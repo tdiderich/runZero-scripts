@@ -45,5 +45,5 @@ pipenv shell
 ```
 - Run scripts
 ```
-python3 generic/starter.py
+python3 starter/run.py
 ```
