@@ -8,9 +8,9 @@ import json
 RUMBLE_ORG_TOKEN = os.environ['RUMBLE_ORG_TOKEN'] or 'ADD ME'
 
 # ADD ME
-SUBNET_FILE = '/Users/tyler/git/rumble-scripts/scan-coverage-verification/sample-json.json'
-DEFAULT_SITE = '3391ac0d-6279-4e20-ac5b-c8bdc9240a1d'
-DEFAULT_TASK = 'ebf4c68c-24cc-4142-9709-353d70ed873f'
+SUBNET_FILE = 'ADD ME'
+DEFAULT_SITE = 'ADD ME'
+DEFAULT_TASK = 'ADD ME'
 
 # DO NOT TOUCH
 HEADERS = {
