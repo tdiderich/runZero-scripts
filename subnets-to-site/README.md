@@ -4,13 +4,10 @@
 
 This script is meant to take a list of given subnets and either update an existing site or create a new site with the subnets.
 
-1. Gets all sites
-2. Gets all recurring scan tasks
-3. Gets the json of subnets
-4. Checks that all subnets are in a site
-5. Checks that all subnets are in a recurring scan task
-6. Adds new subnets to a given site 
-7. Adds new subnets to a given recurring subtask 
+1. Checks if it should update an existing site or create a new site
+2. Gets existing site or creates template for new site based on site name
+3. Updates the site payload to include all subnets from the JSON
+4. Updates/creates the site
 
 ## Configuration
 
