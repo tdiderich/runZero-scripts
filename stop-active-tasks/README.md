@@ -10,6 +10,7 @@ $ python3 stop-active-tasks/run.py
 Stopped: 885ed75c-4cc8-4f58-9a8d-f541b2e8144e
 
 No tasks running 
+
 $ python3 stop-active-tasks/run.py
 No tasks running.
 ```
