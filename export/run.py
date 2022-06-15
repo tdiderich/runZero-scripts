@@ -22,7 +22,6 @@ def main():
     for search in searches:
         url = BASE_URL + "/export/org/assets.json"
         assets = requests.get(url, headers=HEADERS, params={"search": search})
-        print(assets.status_code)
         print(assets.json())
 
 
