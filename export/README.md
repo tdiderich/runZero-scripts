@@ -1,6 +1,6 @@
 # Export API
 
-This is a basic script that runs a few searches + prints the results in JSON format. You can update the endpont to print in a different format and/or update the list of searches.
+This is a basic script that runs a few searches + prints the results in JSON format. You can update the endpoint to print in a different format and/or update the list of searches.
 
 ```
 $ python3 export/run.py
