@@ -11,7 +11,7 @@ This script is meant to take a list of given subnets and either update an existi
 
 ## Configuration
 
-1. RUMBLE_ORG_TOKEN - Rumble API token in .env or added to the script
+1. RUNZERO_ORG_TOKEN - runZero API token in .env or added to the script
 2. SUBNET_FILE - path to json
 3. SITE_ID - optional - add if you are updating an existing site
 4. SITE_NAME - optional - add if you are creating a new site

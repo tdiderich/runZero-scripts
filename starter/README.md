@@ -1,6 +1,6 @@
 # Starter script
 
-This is a basic script that prints a few data points for your Rumble org. The output will look something like this...
+This is a basic script that prints a few data points for your runZero org. The output will look something like this...
 
 ```
 $ python3 starter/run.py

@@ -2,9 +2,9 @@ import requests
 import os
 import urllib.parse
 
-RUMBLE_EXPORT_TOKEN = os.environ["RUMBLE_EXPORT_TOKEN"]
-HEADERS = {"Authorization": f"Bearer {RUMBLE_EXPORT_TOKEN}"}
-BASE_URL = "https://console.rumble.run/api/v1.0"
+RUNZERO_EXPORT_TOKEN = os.environ["RUNZERO_EXPORT_TOKEN"]
+HEADERS = {"Authorization": f"Bearer {RUNZERO_EXPORT_TOKEN}"}
+BASE_URL = "https://console.runZero.com/api/v1.0"
 
 
 def main():
