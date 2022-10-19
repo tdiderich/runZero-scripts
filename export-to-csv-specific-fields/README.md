@@ -1,6 +1,6 @@
-# Export API
+# Export API to CSV with specific fields
 
-This is a basic script that runs a few searches + prints the results in JSON format. You can update the endpoint to print in a different format and/or update the list of searches.
+This is a basic script that runs a search + converts specific fields from asset services to a CSV.
 
 ```
 $ cd export-to-csv-specific-fields
