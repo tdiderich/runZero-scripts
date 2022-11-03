@@ -19,7 +19,6 @@ This script gives you some basic stats around your scanning. For each recurring 
 ## Sample output 
 
 ```json
-(runZero-scripts) tyler:scan-stats/ (main✗) $ python3 run.py   
 {
     "dea25c14-9de6-4307-83ea-7f63ddb6b789": {
         "names": [
