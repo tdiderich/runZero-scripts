@@ -6,10 +6,11 @@ This script gives you some basic stats around your scanning. For each recurring 
 
 1. new_assets_all_time - sum of the `change.newAssets` value in the scan stats 
 2. offline_assets_all_time - sum of the `change.offlineAssets` value in the scan stats 
-3. scan_count - total number of scans run by the task 
-4. average_assets_seen - average number of assets found in the scan (new or existing)
-5. max_assets_seen - most assets found in a single scan with this task 
-6. min_assets_seen - leas assets found in a single scan with this task 
+3. total_assets - keeps count of `change.totalAssets` in order to calculate `average_assets_seen` (not a relevant stat but leaving in the output to see how the average is generated)
+4. scan_count - total number of scans run by the task (also used to calculate `average_assets_seen`)
+5. average_assets_seen - average number of assets found in the scan (new or existing)
+6. max_assets_seen - most assets found in a single scan with this task 
+7. min_assets_seen - leas assets found in a single scan with this task 
 
 ## Configuration
 
