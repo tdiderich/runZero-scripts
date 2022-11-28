@@ -110,7 +110,8 @@ def write_subnet_utilization_to_csv(unique_ips: dict):
     for k in output.keys():
         site = requests.get(BASE_URL + f'/org/sites/{k}', headers=ORG_HEADERS)
         site_name = site.json().get('name', 'N/A')
-        for r in output[k]:
+
+        for r in sorted(output[k]):
             if MASK == 24:
                 utilization = output[k][r]['count'] / 256
             elif MASK == 16:
@@ -125,12 +126,17 @@ def write_subnet_utilization_to_csv(unique_ips: dict):
                 'ip_count': output[k][r]['count'],
                 'utilization': utilization
             }
-            csv_out.append(temp),
-        write_to_csv(output=csv_out, filename='utilization_report.csv', fieldnames=['site_id',
-                                                                                    'site_name',
-                                                                                    'range',
-                                                                                    'ip_count',
-                                                                                    'utilization'])
+            csv_out.append(temp)
+
+        write_to_csv(
+            output=csv_out,
+            filename='utilization_report.csv',
+            fieldnames=['site_id',
+                        'site_name',
+                        'range',
+                        'ip_count',
+                        'utilization']
+        )
 
 
 def get_unique_ips(assets: list):
