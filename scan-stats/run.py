@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import csv
 
 # DO NOT TOUCH
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
@@ -65,8 +66,41 @@ def get_tasks():
     return task_stats
 
 def main():
+    # generate stats 
     task_stats = get_tasks()
-    print(json.dumps(task_stats, indent=4))
+    
+    # write to JSON
+    scan_stats_json = open('./data.json', 'w')
+    scan_stats_json.write(json.dumps(task_stats, indent=4))
+    scan_stats_json.close()
+
+    # generate CSV friendly JSON
+    csv_output = []
+    for id in task_stats.keys():
+        temp = task_stats[id]
+        temp['id'] = id
+        csv_output.append(temp)
+    
+    # write to CSV
+    scan_stats_csv = open('./data.csv', 'w')
+    writer = csv.DictWriter(
+        scan_stats_csv,
+        fieldnames=[
+            'id',
+            'names',
+            'site_ids',
+            'site_names',
+            'new_assets_all_time',
+            'offline_assets_all_time',
+            'total_assets_seen',
+            'scan_count',
+            'average_assets_seen',
+            'max_assets_seen',
+            'min_assets_seen'
+        ])
+    writer.writeheader()
+    writer.writerows(csv_output)
+    scan_stats_csv.close()
 
 if __name__ == "__main__":
     main()

@@ -16,7 +16,7 @@ This script gives you some basic stats around your scanning. For each recurring 
 
 1. RUNZERO_ORG_TOKEN - runZero org API token
 
-## Sample output 
+## Sample output JSON
 
 ```json
 {
@@ -58,4 +58,12 @@ This script gives you some basic stats around your scanning. For each recurring 
         "min_assets_seen": 27
     }
 }
+```
+
+## Sample Output CSV
+
+```plaintext
+id,names,site_ids,site_names,new_assets_all_time,offline_assets_all_time,total_assets_seen,scan_count,average_assets_seen,max_assets_seen,min_assets_seen
+69a7a0b8-fdf4-4409-a97a-85c51098c8e6,['Primary - daily full scan'],['a7b2287e-51fa-47fc-bd00-6a68eed0786b'],['Primary'],2,33,446,13,34,39,26
+9ce51c7b-e691-4e1c-8585-3c1d81f2819c,"['Primary site - continuous inventory scan', 'Primary site - continuous house scan', 'Continuous house scan']",['a7b2287e-51fa-47fc-bd00-6a68eed0786b'],['Primary'],47,1057,25265,846,30,46,22
 ```

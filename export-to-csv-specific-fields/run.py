@@ -59,13 +59,18 @@ def main():
             'tls.supportedVersions',
             'tls.version',
             'tls.versionName',
-            'dtls.alert'
+            'dtls.alert',
+            'tls.fp.caSha1', 
+            'tls.hostTime', 
+            'tls.rzfp0', 
+            'tls.hostTimeTS', 
+            'tls.requiresClientCertificate'
         ])
     writer.writeheader()
     writer.writerows(output)
     tls_csv.close()
 
-    print('Successfully printed this object to tls_fields.csv:')
+    print('Successfully loaded the data to tls_fields.csv')
     print(json.dumps(output, indent=4))
 
 

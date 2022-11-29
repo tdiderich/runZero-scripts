@@ -1,0 +1,40 @@
+{
+    "69a7a0b8-fdf4-4409-a97a-85c51098c8e6": {
+        "names": [
+            "Primary - daily full scan"
+        ],
+        "site_ids": [
+            "a7b2287e-51fa-47fc-bd00-6a68eed0786b"
+        ],
+        "site_names": [
+            "Primary"
+        ],
+        "new_assets_all_time": 2,
+        "offline_assets_all_time": 33,
+        "total_assets_seen": 446,
+        "scan_count": 13,
+        "average_assets_seen": 34,
+        "max_assets_seen": 39,
+        "min_assets_seen": 26
+    },
+    "9ce51c7b-e691-4e1c-8585-3c1d81f2819c": {
+        "names": [
+            "Primary site - continuous inventory scan",
+            "Primary site - continuous house scan",
+            "Continuous house scan"
+        ],
+        "site_ids": [
+            "a7b2287e-51fa-47fc-bd00-6a68eed0786b"
+        ],
+        "site_names": [
+            "Primary"
+        ],
+        "new_assets_all_time": 47,
+        "offline_assets_all_time": 1057,
+        "total_assets_seen": 25265,
+        "scan_count": 846,
+        "average_assets_seen": 30,
+        "max_assets_seen": 46,
+        "min_assets_seen": 22
+    }
+}
