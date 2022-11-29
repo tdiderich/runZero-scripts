@@ -119,12 +119,14 @@ def write_subnet_utilization_to_csv(unique_ips: dict):
             else:
                 utilization = output[k][r]['count'] / 16777216
 
+            utilization = round(utilization * 100, 2)
+
             temp = {
                 'site_id': k,
                 'site_name': site_name,
                 'range': r,
                 'ip_count': output[k][r]['count'],
-                'utilization': utilization
+                'utilization': str(utilization) + '%'
             }
             csv_out.append(temp)
 
