@@ -4,7 +4,7 @@ import os
 import csv
 import ipaddress
 
-# DO NOT TOUCH
+# DO NOT TOUCH UNLESS HARD CODING CREDENTIALS 
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
 ORG_HEADERS = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
 RUNZERO_EXPORT_TOKEN = os.environ["RUNZERO_EXPORT_TOKEN"]
@@ -35,9 +35,15 @@ def write_unique_ip_to_csv(unique_ips: dict):
     # generate CSV friendly JSON
     csv_output = []
     csv_output_min = []
+    csv_output_public = []
+    csv_output_public_min = []
+    csv_output_private = []
+    csv_output_private_min = []
     for k in unique_ips.keys():
         site = requests.get(BASE_URL + f'/org/sites/{k}', headers=ORG_HEADERS)
         site_name = site.json().get('name', 'N/A')
+
+        # full count with list 
         temp = {
             'site_id': k,
             'site_name': site_name,
@@ -46,12 +52,63 @@ def write_unique_ip_to_csv(unique_ips: dict):
         }
         csv_output.append(temp)
 
+        # full count without list 
         temp_min = {
             'site_id': k,
             'site_name': site_name,
             'unique_ip_count': len(unique_ips[k])
         }
         csv_output_min.append(temp_min)
+
+        temp_public_list = []
+        for ip in unique_ips[k]:
+            if not ipaddress.ip_address(ip).is_private:
+                temp_public_list.append(ip)
+        
+        # full public count with list 
+        temp_public = {
+            'site_id': k,
+            'site_name': site_name,
+            'unique_ip_count': len(temp_public_list),
+            'unique_ip_list': temp_public_list
+
+        }
+        csv_output_public.append(temp_public)
+
+        # full public count without list 
+        temp_public_min = {
+            'site_id': k,
+            'site_name': site_name,
+            'unique_ip_count': len(temp_public_list)
+
+        }
+        csv_output_public_min.append(temp_public_min)
+
+        temp_private_list = []
+        for ip in unique_ips[k]:
+            if ipaddress.ip_address(ip).is_private:
+                temp_private_list.append(ip)
+        
+        # full private count with list 
+        temp_private = {
+            'site_id': k,
+            'site_name': site_name,
+            'unique_ip_count': len(temp_private_list),
+            'unique_ip_list': temp_private_list
+
+        }
+        csv_output_private.append(temp_private)
+
+        # full private count without list 
+        temp_private_min = {
+            'site_id': k,
+            'site_name': site_name,
+            'unique_ip_count': len(temp_private_list)
+
+        }
+        csv_output_private_min.append(temp_private_min)
+
+
 
     # write to CSVs
     write_to_csv(
@@ -67,6 +124,44 @@ def write_unique_ip_to_csv(unique_ips: dict):
     write_to_csv(
         output=csv_output_min,
         filename='unique_ips_min.csv',
+        fieldnames=[
+            'site_id',
+            'site_name',
+            'unique_ip_count',
+        ])
+    
+    write_to_csv(
+        output=csv_output_public,
+        filename='unique_public_ips_full.csv',
+        fieldnames=[
+            'site_id',
+            'site_name',
+            'unique_ip_count',
+            'unique_ip_list',
+        ])
+
+    write_to_csv(
+        output=csv_output_public_min,
+        filename='unique_public_ips_min.csv',
+        fieldnames=[
+            'site_id',
+            'site_name',
+            'unique_ip_count',
+        ])
+    
+    write_to_csv(
+        output=csv_output_private,
+        filename='unique_private_ips_full.csv',
+        fieldnames=[
+            'site_id',
+            'site_name',
+            'unique_ip_count',
+            'unique_ip_list',
+        ])
+
+    write_to_csv(
+        output=csv_output_private_min,
+        filename='unique_private_ips_min.csv',
         fieldnames=[
             'site_id',
             'site_name',
