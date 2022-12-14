@@ -1,0 +1,116 @@
+name,description,type,category,severity,query,auto
+SMB Signing Not Required,SMB signing should be both enabled and required when exposed to the network.,services,policy,low,_asset.protocol:smb AND has:smb.signing AND NOT smb.signing:required,false
+Remote Desktop Exposed to the Internet,Remote Desktop services on assets with with external IP addresses.,assets,policy,medium,haspublic:true AND protocols:rdp,false
+Authenticated Web Services,Locates web services with form-based or header-based authentication.,services,security,info,"_asset.protocol:http AND ( html.inputs:""password:"" OR last.html.inputs:""password:"" OR has:http.head.wwwAuthenticate OR has:last.http.head.wwwAuthenticate )",false
+Public & Private Network Connections,Assets that connect to both public and private networks can serve as entry points for internet attacks.,assets,security,medium,haspublic:true AND hasprivate:true,false
+WEP Wireless Networks,Identifies wireless access points using WEP encryption.,wireless,security,high,enc:wep,false
+Remote Desktop Gateways,Identify Remote Desktop Gateways exposed over dTLS and HTTP.,services,policy,info,(_asset.protocol:dtls OR _asset.protocol:http) AND ( (protocol:dtls OR protocol:http) AND has:rdg.Transport ),false
+Unidentified Assets With Open Ports,"No matching OS, Type, or HW with at least one responsive port.",assets,miscellaneous,info,(os:= AND type:= AND hw:=) AND (tcp_count:>0 OR udp_count:>0),false
+Open Wireless Networks,Identifies wireless access points without authentication.,wireless,security,medium,auth:open,false
+SMB v3 Compression Enabled,Unpatched Windows systems with SMB compression enabled may be vulnerable to CVE-2020-0796.,services,security,info,_asset.protocol:smb AND os:Windows AND protocol:smb AND has:smb.compressionAlg,false
+SMB v1 Enabled,SMBv1 is deprecated and is considered a security risk.,services,security,medium,_asset.protocol:smb1 protocol:smb1,false
+Services with Expired TLS Certificates,TLS certificates with an expiration date in the past.,services,maintenance,medium,_asset.protocol:tls AND tls.notAfterTS:<now,false
+Database Services Exposed to the Network,Identifies any database services exposed to the network. This query is sped up by first filtering on the asset-level protocols field before filtering on the service-level protocol field.,services,security,low,"alive:t AND ((_asset.protocols:mysql OR _asset.protocols:postgres OR _asset.protocols:mssql OR _asset.protocols:oracledb OR _asset.protocols:mongodb OR _asset.protocols:memcache OR _asset.protocols:couchdb OR _asset.protocols:cassandra OR _asset.protocols:redis OR _asset.protocols:elasticsearch OR _asset.protocols:riak OR _asset.protocols:influxdb) 
+
+AND
+
+(protocol:mysql OR protocol:postgres OR protocol:mssql OR protocol:oracledb OR protocol:mongodb OR protocol:memcache OR protocol:couchdb OR protocol:cassandra OR protocol:redis OR protocol:elasticsearch OR protocol:riak OR protocol:influxdb) )",false
+Services with Soon to Expire TLS Certificates,TLS certificates expiring in the next six weeks.,services,maintenance,medium,_asset.protocol:tls AND tls.notAfterTS:<6weeks,false
+Treck OS Embedded Devices (IP TTL),Identifies devices running Treck OS using the IP TTL.,assets,security,low,ip.ttl.source:64 AND ip.ttl.source.icmp:255,false
+Treck OS Embedded Devices (Services),Identifies devices running Treck OS using service fingerprints.,services,security,low,"( _asset.protocol:http AND http.head.server:""$ProjectRevision:"")
+ OR 
+(_asset.protocol:ftp AND protocol:ftp AND banner:""Treck FTP"")
+OR
+(_asset.protocol:snmp AND protocol:snmp AND snmp.engineID.vendor:""Treck"")",false
+F5 Networks BIG-IP Assets,Identifies BIG-IP assets on the network,services,security,medium,"_asset.protocol:http AND protocol:http AND ( 
+service.vendor:F5 OR 
+html.title:""=BIG-IP%"" OR 
+html.copyright:""F5 Networks, Inc"" OR 
+http.body:""/tmui/"" OR 
+favicon.ico.image.md5:04d9541338e525258daf47cc844d59f3)",false
+NDAA 2019 Section 889 Vendors,Finds equipment manufactured by firms on the NDAA 2019 Section 899 list.,assets,audit,high,"alive:t AND (
+(
+vendor:zte OR vendor:huawei OR vendor:H3C OR vendor:CRRC OR vendor:dahua OR vendor:hikvision OR vendor:hisilicon OR vendor:panda OR vendor:dawning OR vendor:hangzhou OR vendor:hytera OR vendor:inspur OR vendor:""Aero Engine Corporation of China"" OR vendor:""Aviation Industry Corporation of China"" OR vendor:""China Aerospace"" OR vendor:""China Electronics"" OR vendor:""China General Nuclear Power"" OR vendor:""China Mobile"" OR vendor:""China National Nuclear Power"" OR vendor:""China North Industries Group"" OR vendor:""China Railway"" OR vendor:""China Shipbuilding"" OR vendor:""China South Industries Group"" OR vendor:""China State Shipbuilding"" OR vendor:""China Telecommunications"" OR vendor:ztec OR vendor:ztek OR vendor:""z-tec"" OR vendor:5shanghai OR vendor:""Hella Sonnen"" OR vendor:anhui OR vendor:""technology sdn bhd"" OR vendor:azteq
+)
+OR 
+(
+hw:zte OR hw:huawei OR hw:h3c OR hw:CRRC OR hw:dahua OR hw:hikvision OR hw:hisilicon OR hw:panda OR hw:dawning OR hw:hangzhou OR hw:hytera OR hw:inspur OR hw:""Aero Engine Corporation of China"" OR hw:""Aviation Industry Corporation of China"" OR hw:""China Aerospace"" OR hw:""China Electronics"" OR hw:""China General Nuclear Power"" OR hw:""China Mobile"" OR hw:""China National Nuclear Power"" OR hw:""China North Industries Group"" OR hw:""China Railway"" OR hw:""China Shipbuilding"" OR hw:""China South Industries Group"" OR hw:""China State Shipbuilding"" OR hw:""China Telecommunications"" OR hw:ztec OR hw:ztek OR hw:""z-tec"" OR hw:5shanghai OR hw:""Hella Sonnen"" OR hw:anhui OR hw:""technology sdn bhd"" OR hw:azteq
+) 
+)",false
+SolarWinds Orion,Identifies SolarWinds Orion services,services,security,medium,"_asset.protocol:http AND
+(
+ html.title:""SolarWinds Orion"" OR
+ last.html.title:""SolarWinds Orion"" OR
+ http.head.setCookie:""Orion_IsSessionExp"" OR
+ last.http.head.setCookie:""Orion_IsSessionExp"" OR
+ favicon.ico.image.md5:""53317933c27890ae9218697ecc0e97d9"" OR
+ last.http.uri:/Orion/Login.aspx
+)",false
+DNSMasq DNS Servers,Identifies DNS services running the dnsmasq software,services,miscellaneous,info,"_asset.protocol:dns AND dns.version.bind:""=dnsmasq%""",false
+Accellion Legacy FTA,Identifies legacy Accellion file transfer appliances,services,security,high,"products:apache AND (
+ favicon.ico.image.md5:=9423d9e9ce004c29dd5bc622f0112123 OR
+ http.head.setCookie:sfcurl=deleted OR
+ http.head.location:/wmLogin OR
+ last.http.head.location:/wmLogin
+ )",false
+Ubiquiti Devices,Finds equipment manufactured by Ubiquiti Networks.,assets,miscellaneous,info,vendor:Ubiquiti OR hw:Ubiquiti OR os:Ubiquiti OR protocol:ubnt OR names:unifi OR names:ubiquiti,false
+Exim Servers,Identifies Exim servers on the network,services,security,medium,_asset.protocol:smtp and protocol:smtp and banner:exim,false
+SolarWinds Serv-U MFT SSH,Identifies SSH services using the insecure Serv-U key or advertising the Serv-U banner.,services,security,medium,"_asset.protocol:ssh AND protocol:""ssh"" AND (banner:""SSH-2.0-Serv-U"" OR ssh.hostKey.md5:""=e4:dd:11:2e:82:34:ab:62:59:1c:c8:62:1d:4b:48:99"")",false
+SolarWinds Serv-U FTP,Identifies Serv-U FTP services using the product fingerprint,assets,security,medium,"product:""serv-u ftp server""",false
+HPE iLO 5 Vulnerable Firmware (<2.44),"Identifies HPE iLO 5 assets running firmware versions deemed ""recommended"" and ""critical"" to update by HPE",assets,security,high,"os:""iLO 5"" and (os_version:=1.% or os_version:=2.0% or os_version:=2.1% or os_version:=2.2% or os_version:=2.3% or os_version:=2.40 or os_version:=2.41 or os_version:=2.42 or os_version:=2.43)",false
+FortiWeb WAF,Identifies FortiWeb web application firewall assets on the network,services,security,medium,"os:fortinet AND (tls.names:=""FWB%"" OR (tls.names:=""FV%"" AND NOT tls.names:=""FVE%"" AND NOT tls.names:=""FVC%""))",false
+Asset OS past EOL,Finds assets running an OS with an expired end-of-life date,assets,compliance,medium,os_eol:<now,false
+NFS Shares with Allow All,Identifies NFS shares that allow any client to mount them,services,policy,medium,"protocol:=""mountd"" and nfs.allowed:""%=*""",false
+Confluence Servers,Identifies Confluence servers on the network that may be vulnerable to CVE-2022-26134,services,security,high,product:confluence OR (_asset.protocol:http AND protocol:http AND has:http.head.xConfluenceRequestTime),false
+OMI WSMAN Vulnerable Versions,Assets running OMI WSMAN services vulnerable to OMIGOD.,services,security,high,"_asset.protocol:wsman AND wsman.productVendor:=""Open Management Infrastructure"" AND (wsman.productVersion:=0.% or wsman.productVersion:=1.0.% or wsman.productVersion:=1.1.% or wsman.productVersion:1.2.% or wsman.productVersion:=1.3.% or wsman.productVersion:=1.4.% or wsman.productVersion:=1.5.% or wsman.productVersion:=1.6.0-% or wsman.productVersion:=1.6.1-% or wsman.productVersion:=1.6.2-% or wsman.productVersion:=1.6.3-% or wsman.productVersion:=1.6.4-% or wsman.productVersion:=1.6.5-% or wsman.productVersion:=1.6.6-% or wsman.productVersion:=1.6.7-% or wsman.productVersion:=1.6.8-0)",false
+Hikvision Devices with Open Webserver Ports,Finds Hikvision devices which may be vulnerable to unauthenticated RCE (CVE-2021-36260),assets,security,high,protocols:http AND (vendor:hikvision OR hw:hikvision),false
+Apache HTTP Server 2.4.49/2.4.50 Vulnerable Versions,Finds Apache HTTP Server instances which may be vulnerable to unauthenticated file disclosure (CVE-2021-41773) or RCE (CVE-2021-42013),services,security,high,"product:""apache httpd"" AND protocol:http AND (http.head.server:""Apache/2.4.49"" OR http.head.server:""Apache/2.4.50"")",false
+SMB Protocol In Use,,services,miscellaneous,info,protocol:smb,false
+Cisco IOS XE instances with CLI access,Identifies Cisco IOS XE devices and virtual instances which may be vulnerable to rool-level command execution (CVE-2021-1529).,services,security,high,"_asset.protocol:snmp AND protocol:snmp AND snmp.sysDesc:""IOS-XE"" AND (_asset.protocol:telnet or _asset.protocol:ssh)",false
+PAX point-of-sale devices,Identifies PAX point-of-sale terminal devices on the network,assets,security,medium,"mac_vendor:""PAX Computer Technology""",false
+Services allowing SSLv2 and SSLv3 connections,Identifies assets which are allowing insecure SSLv2 and SSLv3 connections for their service(s),services,security,high,"_asset.protocol:tls AND protocol:""tls"" AND tls.supportedVersionNames:""SSL""",false
+Authenticated Web Services with no encryption,,services,miscellaneous,info,"(_asset.protocol:http AND not _asset.protocol:tls) AND ( html.inputs:""password:"" OR last.html.inputs:""password:"" OR has:http.head.wwwAuthenticate OR has:last.http.head.wwwAuthenticate )",false
+Windows Hosts with SMBv1 or 2 Enabled,,assets,miscellaneous,info,"protocol:smb1,smb2 and os:Windows",false
+"HP LaserJet, PageWide, OfficeJet, and ScanJet printers","HP printer assets which may be vulnerable to ""Printing Shellz""",assets,security,high,"NOT hardware:""JetDirect"" AND (mac_vendor:""HP"" OR mac_vendor:=""Hewlett Packard%"" OR hardware:""HP%"" OR hardware:=""Hewlett Packard%"") AND (type:printer OR os.family:""LaserJet"" OR NOT (os:""%iLO%"" OR type:switch OR type:computer))",false
+NTP Services With Skewed Clocks,Systems running the NTP daemon with a clock skew greater than one second.,services,maintenance,low,_asset.protocol:ntp and protocol:ntp and has:ntp.skew,false
+Grafana Instances,Finds Grafana instances which may be exploitable via a path traversal vulnerability (leaked as an 0-day),assets,security,high,product:grafana,false
+"CISA January 2022 guidance for patching three ""Known Exploited"" vulnerabilities","Per January 10th announcement from CISA (https://www.cisa.gov/uscert/ncas/current-activity/2022/01/10/cisa-adds-15-known-exploited-vulnerabilities-catalog), this query can help surface assets which may be susceptible to the three vulnerabilities with a remediation date of January 2022. U.S. FCEB agencies are required to honor these remediation dates via BOD 22-01.",services,compliance,medium,"_asset.protocol:http and protocol:http and ((product:""vmware vcenter"" and tcp_port:443) or (_asset.vendor:hikvision or hw:hikvision) or (_asset.protocol:http and protocol:http and (html.title:""FatPipe IPVPN"" or last.html.title:""FatPipe IPVPN"" or html.title:""FatPipe MPVPN"" or last.html.title:""FatPipe MPVPN"" or html.title:""FatPipe WARP"" or last.html.title:""FatPipe WARP"")))",false
+Routers using vulnerable NetUSB modules,"Designed to support USB over IP, NetUSB module code vulnerable to CVE-2021-45608 contains an integer overflow vulnerability which can be successfully exploited (pre-authentication) to trigger a denial-of-service on the target router or even remote code execution (for more-advanced attackers). This query helps surface routing devices from vendors who manufactured vulnerable devices.",assets,security,medium,"(type:""router"" or type:""wap"") and (hardware:""d-link"" or hardware:""edimax"" or hardware:""netgear"" or hardware:""tenda"" or hardware:""tp-link"" or hardware:""western digital"")",false
+Windows with vulnerable HTTP Trailer Support logic,"Modern Windows versions may contain a HTTP protocol stack with vulnerability CVE-2022-21907. Considered “low complexity” to exploit, successful exploitation does not require authentication and can yield remote code execution to an attacker. This query will surface potentially vulnerable assets.",assets,security,high,"os:""microsoft windows 10"" or os:""microsoft windows 11"" or os:""microsoft windows server 2019"" or os:""microsoft windows server 2022"" or (os:=""microsoft windows"" and os_version:="""")",false
+Control Web Panel (CWP) Instances,Finds Control Web Panel (formerly CentOS Web Panel) instances which may be vulnerable to pre-auth remote code execution via exploitation of CVE-2021-45466 and CVE-2021-45467.,assets,security,high,"service.product:""CentOS Web Panel""",false
+Linux instances vulnerable to PwnKit,Identifies assets running Linux distributions that were affected by PwnKit (CVE-2021-4034).,assets,security,high,"os:debian or os:ubuntu or os:mint or os:raspbian or os:=""red hat%"" or os:fedora or os:centos or os:cloudlinux or os:oracle or os:=""arch%"" or os:manjaro or os:suse",false
+Samba instances,Identifies Samba instances which may potentially be vulnerable to CVE-2021-44142,services,security,high,"protocol:smb and (product:samba or smb.sessionID:=""0x00000000%"")",false
+SAP NetWeaver,"SAP NetWeaver instances which may be vulnerable to ICMAD (CVE-2022-22532, CVE-2022-22533, CVE-2022-22536).",assets,security,high,product:netweaver,false
+MXview instances,"Finds MXview instances which may be vulnerable to CVE-2021-38452, CVE-2021-38454, CVE-2021-38456, CVE-2021-38458, CVE-2021-38460, CVE-2021-40390, or CVE-2021-40392.",services,security,high,"_asset.protocol:http and protocol:http and (html.title:""mxview"" or last.html.title:”mxview”)",false
+Zabbix instances,Finds Zabbix instances which may be vulnerable to CVE-2022-23131 and CVE-2022-23134.,assets,security,medium,product:zabbix,false
+GitLab instances,"Identifies GitLab servers on the network which may be vulnerable to CVE-2022-0735, CVE-2022-0549, CVE-2022-0751, CVE-2022-0741, CVE-2021-4191, CVE-2022-0738, or CVE-2022-0489.",assets,security,high,product:gitlab,false
+APC assets using TLS,"Finds APC assets which may be vulnerable to TLStorm (CVE-2022-22805, CVE-2022-22806, CVE-2022-0715).",assets,security,high,hw:apc AND protocol:tls,false
+Veeam Distribution Service,"Identifies assets running the Veeam Distribution Service which expose the API and could include vulnerable Veeam Backup & Replication software (CVE-2022-26500, CVE-2022-26501).",assets,security,medium,tcp_port:9380,false
+Log4J Applications,Identifies applications that use the Log4J library and may be affected by CVE-2021-44228,assets,security,high,"product:atlassian or product:avaya or product:coldfusion or product:coyote or product:cpanel or product:druid or product:""elastic search"" or product:""epolicy orchestrator"" or product:flink or product:graylog or product:hadoop or product:horizon or product:imc or product:jamf or product:jboss or product:jetty or (product:""kerio connect"" and protocol:http) or product:logstash or product:metabase or product:minecraft or product:mongodb or product:neo4j or product:openfire or product:pega or product:recoverpoint or product:resin or product:rundeck or product:symantec or product:sonicwall or product:solarwinds or product:sophos or product:splunk or product:tableau or product:tomcat or product:=""ubiquiti unifi"" or product:""vmware horizon"" or product:""vmware vcenter"" or product:""vmware vrealize"" or product:""vmware site recovery"" or product:vmanage or product:wowza or hw:netapp or hw:imc or hw:""ucs manager"" or hw:""crosswork son appliance"" or hw:""site recovery manager"" or hw:sonicwall or tcp_port:8983 or tcp_port:9092 or tcp_port:7077 or tcp_port:5347 or protocol:cassandra or protocol:elasticsearch",false
+Netatalk/AFP instances,"Finds Netatalk instances (AFP services) on assets which may be vulnerable to CVE-2022-23121 (a.k.a. ""Mooncake"") and other critical CVEs.",assets,security,high,"port:548 AND (type:nas OR hw:""Western Digital"")",false
+Kaspersky EDR/AV,Identifies Windows assets which are running Kaspersky EDR/AV,assets,audit,medium,"edr.name:""Kaspersky""",false
+Computing assets without CrowdStrike,Finds laptops/desktops/servers which are missing CrowdStrike agents.,assets,compliance,info,not edr.name:crowdstrike and (type:server or type:laptop or type:desktop),false
+Windows Kerberos Assets,Assets running Windows Kerberos service,services,audit,info,_asset.protocol:kerberos and protocol:kerberos and kerberos.errorCode:68 and os:windows,false
+Windows NFS Assets,Windows assets running NFS,assets,audit,info,_asset.protocol:nfs and protocol:nfs and os:windows,false
+Windows LDAP Assets,Windows assets running LDAP,services,audit,info,"_asset.protocol:ldap and protocol:ldap and (has:""ldap.isSynchronized"" or has:""ldap.domainControllerFunctionality"") and type:server and os:windows",false
+Microsoft VPN instances,Microsoft Windows releases from Server 2008 through Server 2022 may contain an exploitable use-after-free vulnerability (CVE-2022-21972) in the included VPN software.,services,security,medium,_asset.protocol:pptp and protocol:pptp and pptp.vendor:microsoft,false
+Cisco EOL VPN Routers Vulnerable to Zero-day RCE,"An attacker could exploit it by sending a specially crafted request to the web-based management interface, resulting in command execution with root-level privileges. For more information: 
+
+[Overflow]https://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-sb-rv-overflow-s2r82P9v",assets,security,critical," hw:RV110W or hw:RV130 or hw:RV130W or hw:RV215W",true
+DrayTek Vigor routers,Finds DrayTek Vigor router assets which may be vulnerable to CVE-2022-32548.,assets,security,high,"hw:""DrayTek Vigor""",false
+AD Accounts with Host Logon Restrictions,Finds Active Directory accounts that can only log on to specific hosts,users,audit,info,has:userWorkstations,false
+AD Expiring Accounts,Finds Active Directory accounts that are set to expire,users,audit,info,has:accountExpiresTS,false
+AD Account Password Expired,Finds Active Directory accounts that have expired passwords,users,audit,info,passwordExpired:true OR msDS-UserPasswordExpiryTimeComputedTS:<now,false
+AD Disabled Accounts,Finds Active Directory accounts that are disabled,users,audit,info,isDisabled:true,false
+AD Domain Controllers,Finds assets that are domain controllers.,assets,audit,info,@ldap.computer.isDomainController:true,false
+AD Locked Accounts,Finds Active Directory accounts that are locked,users,audit,info,isLockedOut:true,false
+AD Managed Service Accounts,Finds Active Directory Managed Service Accounts,users,audit,info,objectClass:msDS-GroupManagedServiceAccount OR objectClass:msDS-ManagedServiceAccount,false
+AD Accounts with Non-Expiring Passwords,Finds Active Directory accounts with passwords that are not set to expire,users,audit,high,passwordNeverExpires:true,false
+FortiOS / FortiProxy / FortiSwitchManager assets,Fortinet assets which may be vulnerable to authentication bypass on the administrator interface via crafted HTTP/HTTPS requests (CVE-2022-40684).,assets,security,high,os:FortiOS or product:FortiProxy or product:FortiSwitchManager,false
+Assets that haven't been scanned in 3 days,,assets,miscellaneous,info,alive:t last_seen:>72hours,true
+OpenSSL 3.0.x with client certificate authentication enabled,Finds services using OpenSSL 3.0.x with client certificate authentication enabled. These services may be vulnerable to CVE-2022-3602 and CVE-2022-3786.,services,security,high,"_service.product:""OpenSSL:OpenSSL:3"" AND tls.requiresClientCertificate:""true""",false
+Google Workspace Admins,Finds Google Workspace accounts that are Administrators,users,audit,info,source:googleworkspace isAdmin:t,false
+Google Workspace Suspended Accounts,Finds Google Workspace accounts that are suspended.,users,audit,info,source:googleworkspace suspended:t,false
+Google Workspace Accounts Not Requiring 2-Step Verification,Finds Google Workspace accounts which are not required to use 2-Step Verification (MFA),users,audit,info,source:googleworkspace isEnforcedIn2Sv:f,false
+BMCs running MegaRAC firmware,"Locates Baseboard Management Controllers (BMCs) which may be vulnerable to CVE-2022-2827, CVE-2022-40242, and CVE-2022-40259.",assets,security,high,"type:""BMC"" and (hw:""MegaRAC"" or os:""MegaRAC"")",false
+Cisco 7800/8800 series IP phones,Finds Cisco 7800 and 8800 series IP phones which may be vulnerable to CVE-2022-20968.,assets,security,high,"type:""IP Phone"" and (hw:""Cisco CP-78"" or hw:""Cisco CP-88"")",false
