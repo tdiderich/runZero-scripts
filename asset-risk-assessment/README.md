@@ -9,5 +9,5 @@ You could also add your own searches based on your requirements. To do this, jus
 This results will output 3 CSVs: 
 
 1. Executive Report - report showing the counts of assets for each search 
-2. Action Report (Assets) - breakout of all the searches that matches for each asset 
-3. Action Report (Risks) - breakout of all the assets that matches each search 
+2. Action Report (Assets) - breakout of all the searches that match for each asset 
+3. Action Report (Risks) - breakout of all the assets that match each search 
