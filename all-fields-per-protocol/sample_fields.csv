@@ -1,0 +1,2433 @@
+protocol,field,sample
+http	http2	tls,banner,"HTTP/1.1 200 OK
+Content-Type: text/html
+Last-Modified: Wed, 30 Mar 2022 10:36:15 GMT
+Accept-Ranges: bytes
+ETag: ""0dc7dfb2144d81:0""
+Server: Microsoft-IIS/10.0
+Date: Thu, 08 Sep 2022 15:47:20 GMT
+Content-Length: 703
+
+<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Strict//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"">
+<html xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+<meta http-equiv=""Content-Type"" content=""text/html; charset=iso-8859-1"" />
+<title>IIS Windows Server</title>
+<style type="""
+http	http2	tls,fp.certainty,0.85
+http	http2	tls,html.title,IIS Windows Server
+http	http2	tls,http.body,"<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Strict//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"">
+<html xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+<meta http-equiv=""Content-Type"" content=""text/html; charset=iso-8859-1"" />
+<title>IIS Windows Server</title>
+<style type=""text/css"">
+<!--
+body {
+	color:#000000;
+	background-color:#0072C6;
+	margin:0;
+}
+
+#container {
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	}
+
+a img {
+	border:none;
+}
+
+-->
+</style>
+</head>
+<body>
+<div id=""container"">
+<a href=""http://go.microsoft.com/fwlink/?linkid=66138&amp;clcid=0x409""><img src=""iisstart.png"" alt=""IIS"" width=""960"" height=""600"" /></a>
+</div>
+</body>
+</html>"
+http	http2	tls,http.code,200
+http	http2	tls,http.head.connection,keep-alive
+http	http2	tls,http.head.contentLanguage,en-US
+http	http2	tls,http.head.contentLength,703
+http	http2	tls,http.head.contentType,text/html
+http	http2	tls,http.head.date,"Thu, 08 Sep 2022 15:47:01 GMT	Thu, 08 Sep 2022 15:47:13 GMT	Thu, 08 Sep 2022 15:47:20 GMT"
+http	http2	tls,http.head.location,https://wellnessitems.pepsico.com/
+http	http2	tls,http.head.server,Microsoft-IIS/10.0
+http	http2	tls,http.head.setCookie,ns_s=35f8286faa6e6aa0bdda20c36d72aa64; path=/; secure; HttpOnly; SameSite=lax	ns_s=4131bdf565e61cede19b05bdc4fb3d8e; path=/; secure; HttpOnly; SameSite=lax	ns_s=f98aaecb17796529f34f41a11dc3b530; path=/; secure; HttpOnly; SameSite=lax
+http	http2	tls,http.head.strictTransportSecurity,max-age=31536000
+http	http2	tls,http.head.vary,X-Requested-With
+http	http2	tls,http.head.xcontenttypeoptions,nosniff
+http	http2	tls,http.head.xdnsprefetchcontrol,off
+http	http2	tls,http.head.xdownloadoptions,noopen
+http	http2	tls,http.head.xframeoptions,SAMEORIGIN
+http	http2	tls,http.head.xxssprotection,1; mode=block
+http	http2	tls,http.message,200 OK
+http	http2	tls,http.uri,/
+http	http2	tls,http.url,https://199.65.212.64/	https://jjgatewayap.jnj.com/
+http	http2	tls,ip.flags,DF
+http	http2	tls,ip.id,61254
+http	http2	tls,ip.tos,0
+http	http2	tls,ip.ttl,238
+http	http2	tls,last.html.copyright,© 2019 Pepsico. All rights reserved.
+http	http2	tls,last.html.title,Redirecting to https://power.jnj.com/login	Welcome to Johnson &amp; Johnson Power Donations
+http	http2	tls,last.http.body,"<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=""UTF-8"" />
+        <meta http-equiv=""refresh"" content=""0;url='https://power.jnj.com/login'"" />
+
+        <title>Redirecting to https://power.jnj.com/login</title>
+    </head>
+    <body>
+        Redirecting to <a href=""https://power.jnj.com/login"">https://power.jnj.com/login</a>.
+    </body>
+</html>	<script>
+                window.onload = function() { addSsoButton() };
+                function addSsoButton() {
+                var ele = document.createElement(""button"");
+                ele.className = ""btn btn-primary"";
+                ele.innerHTML = ""Single Sign On"";
+                ele.name = ""sso_button"";
+                ele.id = ""sso_button"";
+                ele.style =""margin-left:44%"";
+                ele.onclick = function() {window.location.replace(""/login.php"")};
+                document.body.appendChild(ele);
+                }
+
+                </script><!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""utf-8"">
+    <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0""/>
+
+    <!-- CSRF Token -->
+    <meta name=""csrf-token"" content=""21fsTiSI5LIhXk73NlFq50cxWVk1j3cokzviWpeV"">
+
+    <title>Welcome to Johnson &amp; Johnson Power Donations</title>
+
+    <!-- Scripts -->
+    <script src=""https://power.jnj.com/assets/js/jquery.min.js""></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src=""https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js""></script>
+        <script src=""https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js""></script>
+    <![endif]-->
+
+    <!-- Favicon -->
+    <link rel=""icon"" type=""image/png"" href=""https://power.jnj.com/assets/images/favicon.png""/>
+
+    <!-- Styles -->
+    <link href=""https://power.jnj.com/assets/scss/style.css?1662652009"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/alert-popup.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/validate.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/select2.min.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/hierarchy-select.min.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/jqtree.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/jquery-ui.css"" rel=""stylesheet"">
+    <style type=""text/css"">
+        .login-page-block .logo{width:330px;}a{color:#C8102E;}.btn{background:#C8102E;}textarea:focus{border-color:#87d1ff!important}input[type=""submit""]{background:#C8102E;}.collapse-title .form-title:before,.collapse-title .form-title:after{background:#C8102E;}.content-top-bar a.setting-icon{color:#C8102E;}.content-top-bar .header-selector.short-by>ul>li>a:after{border-bottom-color:#C8102E;}.header-selector>ul>li>a:hover{color:#C8102E;}.header-selector>ul>li>a:before{border-top-color:#C8102E;}.header-selector>ul>li ul li a:hover{color:#C8102E;}ul.breadcrumbs li a:hover{color:#C8102E;}header .logo{background:#C8102E;}.header-top-menu>ul>li ul li a span svg,.header-bottom-menu>ul>li ul li a span svg{fill:#C8102E;}.header-top-menu>ul>li ul li a span svg path,.header-bottom-menu>ul>li ul li a span svg path{fill:#C8102E;}.header-top-menu>ul>li ul li a span svg circle,.header-bottom-menu>ul>li ul li a span svg circle{stroke:#C8102E;}.login-page-cover{background:linear-gradient(90deg,#f9f9f9 21px,transparent 1%) center,linear-gradient(#f9f9f9 21px,transparent 1%) center,#C8102E;;background-size:22px 22px}.login-page-cover .login-page-inner .login-page-block .login-page-block-bg .tabs li.current{background:#C8102E;}.section-tit h1:before{background:#C8102E;}.pagination-main .next-previus-arrow a:hover{color:#C8102E;}.user-listing-row td:last-child p.no-record-msg a{color:#C8102E;}.dashboard-manage-list-block span{color:#C8102E;}.dashboard-manage-list-block span svg{fill:#C8102E;}.form-cover .form-row>div label span,.stock-manage .form-row>div label span{color:#C8102E;}.form-cover .form-row>div input[type=""submit""],.stock-manage .form-row>div input[type=""submit""]{background:#C8102E;}.cancel-and-same a:hover{color:#C8102E;}.checkbox-block input[type=checkbox]:checked+span:before{background:#C8102E;}.form-title{border-left-color:#C8102E;}.value-check	<script>
+                window.onload = function() { addSsoButton() };
+                function addSsoButton() {
+                var ele = document.createElement(""button"");
+                ele.className = ""btn btn-primary"";
+                ele.innerHTML = ""Single Sign On"";
+                ele.name = ""sso_button"";
+                ele.id = ""sso_button"";
+                ele.style =""margin-left:44%"";
+                ele.onclick = function() {window.location.replace(""/login.php"")};
+                document.body.appendChild(ele);
+                }
+
+                </script><!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""utf-8"">
+    <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0""/>
+
+    <!-- CSRF Token -->
+    <meta name=""csrf-token"" content=""wjGJdUEMej9L3ax5SlLUJLJ1a3qtuYT9NjMGRBhq"">
+
+    <title>Welcome to Johnson &amp; Johnson Power Donations</title>
+
+    <!-- Scripts -->
+    <script src=""https://power.jnj.com/assets/js/jquery.min.js""></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src=""https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js""></script>
+        <script src=""https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js""></script>
+    <![endif]-->
+
+    <!-- Favicon -->
+    <link rel=""icon"" type=""image/png"" href=""https://power.jnj.com/assets/images/favicon.png""/>
+
+    <!-- Styles -->
+    <link href=""https://power.jnj.com/assets/scss/style.css?1662652086"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/alert-popup.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/validate.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/select2.min.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/hierarchy-select.min.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/jqtree.css"" rel=""stylesheet"">
+    <link href=""https://power.jnj.com/assets/css/jquery-ui.css"" rel=""stylesheet"">
+    <style type=""text/css"">
+        .login-page-block .logo{width:330px;}a{color:#C8102E;}.btn{background:#C8102E;}textarea:focus{border-color:#87d1ff!important}input[type=""submit""]{background:#C8102E;}.collapse-title .form-title:before,.collapse-title .form-title:after{background:#C8102E;}.content-top-bar a.setting-icon{color:#C8102E;}.content-top-bar .header-selector.short-by>ul>li>a:after{border-bottom-color:#C8102E;}.header-selector>ul>li>a:hover{color:#C8102E;}.header-selector>ul>li>a:before{border-top-color:#C8102E;}.header-selector>ul>li ul li a:hover{color:#C8102E;}ul.breadcrumbs li a:hover{color:#C8102E;}header .logo{background:#C8102E;}.header-top-menu>ul>li ul li a span svg,.header-bottom-menu>ul>li ul li a span svg{fill:#C8102E;}.header-top-menu>ul>li ul li a span svg path,.header-bottom-menu>ul>li ul li a span svg path{fill:#C8102E;}.header-top-menu>ul>li ul li a span svg circle,.header-bottom-menu>ul>li ul li a span svg circle{stroke:#C8102E;}.login-page-cover{background:linear-gradient(90deg,#f9f9f9 21px,transparent 1%) center,linear-gradient(#f9f9f9 21px,transparent 1%) center,#C8102E;;background-size:22px 22px}.login-page-cover .login-page-inner .login-page-block .login-page-block-bg .tabs li.current{background:#C8102E;}.section-tit h1:before{background:#C8102E;}.pagination-main .next-previus-arrow a:hover{color:#C8102E;}.user-listing-row td:last-child p.no-record-msg a{color:#C8102E;}.dashboard-manage-list-block span{color:#C8102E;}.dashboard-manage-list-block span svg{fill:#C8102E;}.form-cover .form-row>div label span,.stock-manage .form-row>div label span{color:#C8102E;}.form-cover .form-row>div input[type=""submit""],.stock-manage .form-row>div input[type=""submit""]{background:#C8102E;}.cancel-and-same a:hover{color:#C8102E;}.checkbox-block input[type=checkbox]:checked+span:before{background:#C8102E;}.form-title{border-left-color:#C8102E;}.value-check"
+http	http2	tls,last.http.code,200	302
+http	http2	tls,last.http.head.contentLanguage,en-US
+http	http2	tls,last.http.head.contentLength,49
+http	http2	tls,last.http.head.contentType,text/html; charset=UTF-8
+http	http2	tls,last.http.head.date,"Thu, 08 Sep 2022 15:46:50 GMT	Thu, 08 Sep 2022 15:48:06 GMT	Thu, 08 Sep 2022 15:48:07 GMT"
+http	http2	tls,last.http.head.location,https://power.jnj.com/login
+http	http2	tls,last.http.head.server,Sucuri/Cloudproxy
+http	http2	tls,last.http.head.setCookie,"PHPSESSID=ankueb4mill6m0ql4v14mv4h3t; path=/; secure; HttpOnly	PHPSESSID=cqqkd3ru2digso7qnvsfrjgu3f; path=/; secure; HttpOnly	PHPSESSID=ph7rfvk99n1l8msfd4mg9gh27l; path=/; secure; HttpOnly	jnj_power_system_session=eyJpdiI6IjFjY0lvSXF4a3FadVRlbnRWd2xnQWc9PSIsInZhbHVlIjoiNW1yTzZ2Nis3UGlQSHgyOFMzNkNoYXlzSGNtNW9adXN1OGxxZTVBVnRsS1ovNEczSjdzMG51WHFVWXRHVnVBZEJmV0JqbnNGVmREb3M4dnBVUk9oYjhZMjc1UXRDT0JmWnlwZnpiVnN0aWd6MWd4Y3QyRE4xS2kzL2tQaFNJbzgiLCJtYWMiOiI5NTk3OTY1ZWQ4NWQwNjQ2MWVmOTkxMjVjNWI2YzgyYTIyOTk2ZGNjZDA4MGYzNzkwYjFiYjAxOTc1ODM0NjRhIn0%3D; expires=Thu, 08-Sep-2022 16:03:06 GMT; Max-Age=900; path=/; secure; httponly	jnj_power_system_session=eyJpdiI6Ik9rVmJVYWNkS2NDVGN2N1BvZzZPQ1E9PSIsInZhbHVlIjoiN001Ylpkb2RvTVVla0hlbllPaGRocHhwZHBVUElMaXU0QmhtdkdTcGxWU21FT1lPQ05NUjlaWTQ4YXkva1FQNEJtdGg0Slk0YTBrMHhMVFdPZk1CUm4za1lRSHJtMzVaalVnb25RRU4vNGNCbG41VytmaXgySjdSbHA4N25oaEwiLCJtYWMiOiI2Mzc4ZjhiOTM0MTZiMzQwNTI3M2Y0NjkzMDZjMTEwNDAyNjZjZDBkYWZlYzQ5NTU5N2YyYmNlODE2NmI2MzYxIn0%3D; expires=Thu, 08-Sep-2022 16:01:49 GMT; Max-Age=900; path=/; secure; httponly	jnj_power_system_session=eyJpdiI6InkwRGhhYW5HOFJvangwZDkvdkF3S2c9PSIsInZhbHVlIjoicjZxSmQ1eGxPYkM0UGlSYzQvd2ovdG9nYUorajBYRFZBTjAzOWRTem5hNlk4bXpMQVE5YzlrcG9VSVFubzFqOXBwbDl3emNhMkFrZk55OUM1WVBmMndMbE1JQldERGpVeXJQL3BpVlpVeWxRZlU3c1E4eFk4aHFFVk5BUkxzU0IiLCJtYWMiOiI4NTgwMzFlYjE3YzdkMjY5ZjdkNmI3MjQ1ZWU1MTlmY2VhNTIxN2Y1ZjJhODY0MjY4OWNlM2MzM2Q0OTAwMjFlIn0%3D; expires=Thu, 08-Sep-2022 16:03:05 GMT; Max-Age=900; path=/; secure; httponly"
+http	http2	tls,last.http.head.strictTransportSecurity,max-age=31536000; includeSubdomains; preload
+http	http2	tls,last.http.head.vary,Accept-Encoding	Accept-Encoding
+http	http2	tls,last.http.head.xcontenttypeoptions,nosniff
+http	http2	tls,last.http.head.xdnsprefetchcontrol,off
+http	http2	tls,last.http.head.xdownloadoptions,noopen
+http	http2	tls,last.http.head.xframeoptions,SAMEORIGIN	deny
+http	http2	tls,last.http.head.xxssprotection,1; mode=block
+http	http2	tls,last.http.message,200 OK	302 Found
+http	http2	tls,last.http.uri,/	/login
+http	http2	tls,last.http.url,https://power.jnj.com/	https://power.jnj.com/login
+http	http2	tls,last.http2.body,"-moz-transition: opacity 500ms ease-in 750ms;
+	-webkit-transition: opacity 500ms ease-in 750ms;
+	.mainBoard{
+	<!DOCTYPE html> <html lang=""en""> <head> <title>GAME ON</title> <meta charset=""utf-8"" /> <meta http-equiv=""X-UA-Compatible"" content=""IE=Edge"" /> <meta name=""viewport"" content=""width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover"" /> <meta name=""apple-mobile-web-app-capable"" content=""yes"" /> <meta name=""format-detection"" content=""telephone=no"" /> <link rel=""shortcut icon"" href=""/favicon.ico"" type=""image/x-ico; charset=binary"" /> <link rel=""icon"" href=""/favicon.ico"" type=""image/x-ico; charset=binary"" /> <link rel=""stylesheet"" href=""/css/bootstrap.min.1588156340.css"" /> <link rel=""stylesheet"" data-attr=""theme-id"" href=""/colorscheme.css?v=1658556140-1"" /> <link rel=""stylesheet"" href=""/css/font-awesome.min.1588156340.css"" /> <link rel=""stylesheet"" href=""/css/common.1588930530.css"" /> <link rel=""stylesheet"" href=""/css/login.1641214846.css"" /> <link rel=""stylesheet"" href=""/css/chosen.1588156340.css"" /> <link rel=""stylesheet"" data-attr=""theme-id"" href=""/colorscheme_login.css?v=1658556140"" /> <script type=""text/javascript"" src=""/vars.js""></script> <style>
+	</style> </head> <body oncontextmenu=""return false;""> <div class=""page-wrap""> <div class=""login_tbl""> <div class=""login_tbl_row""> <div class=""login_tbl_cell""> <div class=""comoninerbg"" id=""""> <div class=""page-header""> </div> <div content-type=""module-body"" class=""error-body"" data-attr=""translate-text"" transattr-str-key=""404_ERROR""> <h1>Oops! The webpage cannot be found</h1> <p>The page that you have called does not exist or has moved.</p> </div> </div> </div> </div> </div> </div> <div data-attr-overlay=""RHS-section"" class=""loading-overlay"" id=""loading-overlay""> <i class=""fa fa-refresh fa-spin"" style=""font-size: inherit; line-height:inherit;""></i> </div> <div id=""portrait-mode-msg"" class=""alert alert-warning""> <span data-attr=""translate-text"" transattr-str-key=""PORTRAIT_MODE_MSG"" class=""alert-warning"" style=""z-index: 9999;display: inline-block;padding: 10px;border-radius:5px;"">Portrait mode is not available, please rotate your device to landsacape mode.</span> </div> <div class=""modal fade info-popup"" id=""check-alert-popup""> <div class=""modal-dialog""> <div class=""modal-content""> <div class=""modal-header""> <div class=""headerTitle""> <span></span> </div> </div> <div class=""modal-body""> <div class=""modal-body-text""> <img src=""/images/animated-loading.gif"" style=""width: 190px;margin-top: -21px;margin-bottom: 16px;"" /><br/> <p>We are currently checking your GMC number against the database, this may take a few moments.<br /> <br />
+Thank you for your patience.</p> </div> </div> </div> </div> </div> <div class=""modal fade info-popup"" id=""gmc-not-exist-popup""> <div class=""modal-dialog""> <div class=""modal-content""> <div class=""modal-header""> <div class=""headerTitle""> <span></span> </div> </div> <div class=""modal-body""> <button type=""button"" class=""bootbox-close-button close"" data-dismiss=""modal"" style=""margin-top: -40px;"">×</button> <div class=""modal-body-text""></div> <div class=""modal-footer""> <button type=""button"" class=""close btn btn-sm float-right"" data-dismiss=""modal"">OK</button> </div> </div> </div> </div> </div> <script type=""text/javascript"" src=""/js/jquery-3.3.1.min.1588156340.js""></script> <script type=""text/javascript"" src=""/js/jquery.validate.1588156340.js""></script> <script type=""text/javascript"" src=""/js/jquery-ui.min.1588156340.js""></script> <script type=""text/javascript"" src=""/js/bootstrap.min.1588156340.js""></script> <script type=""text/javascript"" src=""/js/login.1643607639.js""></script> <script type=""text/javascript"">
+	<?xml version=""1.0"" encoding=""UTF-8""?>
+<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Strict//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"">
+<html xmlns=""http://www.w3.org/1999/xhtml"">
+  <head>
+    <meta http-equiv=""content-type"" content=""text/html; charset=utf-8"">
+    <meta http-equiv=""refresh"" content=""0;URL='https://sso.connect.pingidentity.com/sso/idp/SSO.saml2?idpid=287cef81-89c7-4bcd-bcff-41e43e626cb7&amp;SAMLRequest=nVLBbtswDP0VQ3fZseM4iZBkyBoMC9CtQZ3usMsgU3SjwpY8Ud7Wv69sb2i3Qw47SXrkeySfuCHZNp3Y9%2F5i7vF7j%2BSjX21jSIyBLeudEVaSJmFkiyQ8iHL%2F6VZk8Ux0znoLtmFvKNcZkgid19aw6HjYsm8VZGq1BKXyNF8vIV%2FP0jSDYj6v8xyWRZ5KgBVAATWLvqCjwNyyIBToRD0eDXlpfIBmWcZnaz5bndOFyAuxWHxl0SFMo430I%2BvifUciSYhsDNYYBB932jxqhcZr%2FxzAdggmWnVJWd7FwzTZu%2FDSapuFJrFepXy1hiXPK1C8grrmeYr5HIusgGrJov2f6W6sob5FV6L7oQEf7m9f6z8GU7g18ZN5mkrqtmtwdPvSJa1VfYPxcB2ghKYz4xJoRBXWsm88p45Fp9%2F%2Bv9dGhUmuW19NSSQ%2Bns8nfrorz2y3GbTFaKXb%2FXeDLXqppJf%2F9LdJ3qpvpkX7HMSPh5NtNDxHH6xrpb%2Fe9oBoxesxVXgnDenwYcHsprE%2FbxxKj1vmXY8s2U0l%2F17n3Qs%3D&amp;RelayState=https%3A%2F%2Fgame-on.jnj.com%2Fssologin%3Fredirect%3D'"">
+    <title>Redirect</title>
+  </head>
+  <body>
+    <h1>Redirect</h1>
+      <p>You were redirected to: <a id=""redirlink"" href=""https://sso.connect.pingidentity.com/sso/idp/SSO.saml2?idpid=287cef81-89c7-4bcd-bcff-41e43e626cb7&amp;SAMLRequest=nVLBbtswDP0VQ3fZseM4iZBkyBoMC9CtQZ3usMsgU3SjwpY8Ud7Wv69sb2i3Qw47SXrkeySfuCHZNp3Y9%2F5i7vF7j%2BSjX21jSIyBLeudEVaSJmFkiyQ8iHL%2F6VZk8Ux0znoLtmFvKNcZkgid19aw6HjYsm8VZGq1BKXyNF8vIV%2FP0jSDYj6v8xyWRZ5KgBVAATWLvqCjwNyyIBToRD0eDXlpfIBmWcZnaz5bndOFyAuxWHxl0SFMo430I%2BvifUciSYhsDNYYBB932jxqhcZr%2FxzAdggmWnVJWd7FwzTZu%2FDSapuFJrFepXy1hiXPK1C8grrmeYr5HIusgGrJov2f6W6sob5FV6L7oQEf7m9f6z8GU7g18ZN5mkrqtmtwdPvSJa1VfYPxcB2ghKYz4xJoRBXWsm88p45Fp9%2F%2Bv9dGhUmuW19NSSQ%2Bns8nfrorz2y3GbTFaKXb%2FXeDLXqppJf%2F9LdJ3qpvpkX7HMSPh5NtNDxHH6xrpb%2Fe9oBoxesxVXgnDenwYcHsprE%2FbxxKj1vmXY8s2U0l%2F17n3Qs%3D&amp;RelayState=https%3A%2F%2Fgame-on.jnj.com%2Fssologin%3Fredirect%3D"">https://sso.connect.pingidentity.com/sso/idp/SSO.saml2?idpid=287cef81-89c7-4bcd-bcff-41e43e626cb7&amp;SAMLRequest=nVLBbtswDP0VQ3fZseM4iZBkyBoMC9CtQZ3usMsgU3SjwpY8Ud7Wv69sb2i3Qw47SXrkeySfuCHZNp3Y9%2F5i7vF7j%2BSjX21jSIyBLeudEVaSJmFkiyQ8iHL%2F6VZk8Ux0znoLtmFvKNcZkgid19aw6HjYsm8VZGq1BKXyNF8vIV%2FP0jSDYj6v8xyWRZ5KgBVAATWLvqCjwNyyIBToRD0eDXlpfIBmWcZnaz5bndOFyAuxWHxl0SFMo430I%2BvifUciSYhsDNYYBB932jxqhcZr%2FxzAdggmWnVJWd7FwzTZu%2FDSapuFJrFepXy1hiXPK1C8grrmeYr5HIusgGrJov2f6W6sob5FV6L7oQEf7m9f6z8GU7g18ZN5mkrqtmtwdPvSJa1VfYPxcB2ghKYz4xJoRBXWsm88p45Fp9%2F%2Bv9dGhUmuW19NSSQ%2Bns8nfrorz2y3GbTFaKXb%2FXeDLXqppJf%2F9LdJ3qpvpkX7HMSPh5NtNDxHH6xrpb%2Fe9oBoxesxVXgnDenwYcHsprE%2FbxxKj1vmXY8s2U0l%2F17n3Qs%3D&amp;RelayState=https%3A%2F%2Fgame-on.jnj.com%2Fssologin%3Fredirect%3D</a>
+        <script type=""text/javascript"">document.getElementById(""redirlink"").focus();</script>
+      </p>
+  </body>
+</html>	opacity: 0;	transition: opacity 500ms ease-in 750ms;
+	var _theme_embed = {""login"":{""type"":""video"",""opacity"":""1.0"",""data"":""\/media-files\/theme\/files\/Looped-animation-option-12.m4v"",""loop"":1}};
+</script> <div class=""offline-iframe-overlay"" style=""display: none;""> <div class=""wifi-loading-icon""> <img src=""/images/new_images/Wifi-PHOENIX-3.gif"" height=""180px"" width=""auto"" /	}"
+http	http2	tls,last.http2.code,302	404
+http	http2	tls,last.http2.head.contentLanguage,en-US
+http	http2	tls,last.http2.head.contentLength,138
+http	http2	tls,last.http2.head.contentType,text/html; charset=UTF-8
+http	http2	tls,last.http2.head.date,"Thu, 08 Sep 2022 15:46:55 GMT	Thu, 08 Sep 2022 15:46:56 GMT"
+http	http2	tls,last.http2.head.location,https://sso.connect.pingidentity.com/sso/idp/SSO.saml2?idpid=287cef81-89c7-4bcd-bcff-41e43e626cb7&SAMLRequest=nVLBbtswDP0VQ3fZseM4iZBkyBoMC9CtQZ3usMsgU3SjwpY8Ud7Wv69sb2i3Qw47SXrkeySfuCHZNp3Y9%2F5i7vF7j%2BSjX21jSIyBLeudEVaSJmFkiyQ8iHL%2F6VZk8Ux0znoLtmFvKNcZkgid19aw6HjYsm8VZGq1BKXyNF8vIV%2FP0jSDYj6v8xyWRZ5KgBVAATWLvqCjwNyyIBToRD0eDXlpfIBmWcZnaz5bndOFyAuxWHxl0SFMo430I%2BvifUciSYhsDNYYBB932jxqhcZr%2FxzAdggmWnVJWd7FwzTZu%2FDSapuFJrFepXy1hiXPK1C8grrmeYr5HIusgGrJov2f6W6sob5FV6L7oQEf7m9f6z8GU7g18ZN5mkrqtmtwdPvSJa1VfYPxcB2ghKYz4xJoRBXWsm88p45Fp9%2F%2Bv9dGhUmuW19NSSQ%2Bns8nfrorz2y3GbTFaKXb%2FXeDLXqppJf%2F9LdJ3qpvpkX7HMSPh5NtNDxHH6xrpb%2Fe9oBoxesxVXgnDenwYcHsprE%2FbxxKj1vmXY8s2U0l%2F17n3Qs%3D&RelayState=https%3A%2F%2Fgame-on.jnj.com%2Fssologin%3Fredirect%3D
+http	http2	tls,last.http2.head.server,Apache
+http	http2	tls,last.http2.head.strictTransportSecurity,max-age=16070400;
+http	http2	tls,last.http2.head.xcontenttypeoptions,nosniff
+http	http2	tls,last.http2.head.xdnsprefetchcontrol,off
+http	http2	tls,last.http2.head.xdownloadoptions,noopen
+http	http2	tls,last.http2.head.xframeoptions,SAMEORIGIN
+http	http2	tls,last.http2.head.xxssprotection,1; mode=block
+http	http2	tls,last.http2.message,302 Found	404 Not Found
+http	http2	tls,last.http2.uri,/sso/idp/SSO.saml2	/ssologin
+http	http2	tls,last.http2.url,https://game-on.jnj.com/sso/idp/SSO.saml2?idpid=287cef81-89c7-4bcd-bcff-41e43e626cb7&SAMLRequest=nVLBbtswDP0VQ3fZseM4iZBkyBoMC9CtQZ3usMsgU3SjwpY8Ud7Wv69sb2i3Qw47SXrkeySfuCHZNp3Y9%2F5i7vF7j%2BSjX21jSIyBLeudEVaSJmFkiyQ8iHL%2F6VZk8Ux0znoLtmFvKNcZkgid19aw6HjYsm8VZGq1BKXyNF8vIV%2FP0jSDYj6v8xyWRZ5KgBVAATWLvqCjwNyyIBToRD0eDXlpfIBmWcZnaz5bndOFyAuxWHxl0SFMo430I%2BvifUciSYhsDNYYBB932jxqhcZr%2FxzAdggmWnVJWd7FwzTZu%2FDSapuFJrFepXy1hiXPK1C8grrmeYr5HIusgGrJov2f6W6sob5FV6L7oQEf7m9f6z8GU7g18ZN5mkrqtmtwdPvSJa1VfYPxcB2ghKYz4xJoRBXWsm88p45Fp9%2F%2Bv9dGhUmuW19NSSQ%2Bns8nfrorz2y3GbTFaKXb%2FXeDLXqppJf%2F9LdJ3qpvpkX7HMSPh5NtNDxHH6xrpb%2Fe9oBoxesxVXgnDenwYcHsprE%2FbxxKj1vmXY8s2U0l%2F17n3Qs%3D&RelayState=https%3A%2F%2Fgame-on.jnj.com%2Fssologin%3Fredirect%3D	https://game-on.jnj.com/ssologin?redirect=
+http	http2	tls,product,Microsoft:IIS:	Microsoft:IIS:10.0
+http	http2	tls,protocol,http	http2	tls
+http	http2	tls,service.address,199.65.212.64
+http	http2	tls,service.id,6a9cbeaf-f1fe-4285-8a08-eb4e2ec39870
+http	http2	tls,service.port,443
+http	http2	tls,service.transport,tcp
+http	http2	tls,service.vhost,JJGATEWAYAP.JNJ.COM
+http	http2	tls,source,syn
+http	http2	tls,syn.rtt,248631717
+http	http2	tls,tcp.flags,"syn,ack"
+http	http2	tls,tcp.options,MSS:0550
+http	http2	tls,tcp.ts,499635716
+http	http2	tls,tcp.urg,0
+http	http2	tls,tcp.win,4080
+http	http2	tls,tls.authorityKeyID,17d9d6252767f931c24943d93036448c6ca94feb
+http	http2	tls,tls.certificates,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
+http	http2	tls,tls.cipher,0xc030
+http	http2	tls,tls.cipherName,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+http	http2	tls,tls.cn,jjgateway.jnj.com
+http	http2	tls,tls.crl,http://crl.sectigo.com/SectigoRSAOrganizationValidationSecureServerCA.crl
+http	http2	tls,tls.fp.caSha1,40cef3046c916ed7ae557f60e76842828b51de53
+http	http2	tls,tls.fp.sha1,a0f402c686945359e25802377ea4e6cecf038841
+http	http2	tls,tls.fp.sha256,SHA256:W94kro0/6NI/xXOZ+9s6/VzTnDU6gYL777HjaqOpstg=
+http	http2	tls,tls.issuer,"CN=Sectigo RSA Organization Validation Secure Server CA,O=Sectigo Limited,L=Salford,ST=Greater Manchester,C=GB"
+http	http2	tls,tls.issuingURL,http://crt.sectigo.com/SectigoRSAOrganizationValidationSecureServerCA.crt
+http	http2	tls,tls.names,itsbebedmzm0001.jnj.com	itsbebedmzm0002.jnj.com	itsbebewsp06505.jnj.com	itsbebewsp06506.jnj.com	itssgsgwdmz0018.jnj.com	itssgsgwdmz0019.jnj.com	itssgsgwsp02748.jnj.com	itssgsgwsp02749.jnj.com	itsusradmzw0003.jnj.com	itsusradmzw0009.jnj.com	itsusradmzw0010.jnj.com	jjgateway.jnj.com	jjgatewayap.jnj.com	jjgatewaydev.jnj.com	jjgatewaydevap.jnj.com	jjgatewaydeveu.jnj.com	jjgatewaydevna.jnj.com	jjgatewayeu.jnj.com	jjgatewayna.jnj.com	opcitsapw0042.jnj.com	opcitseuw00af.jnj.com	opcitsnaw006u.jnj.com	opcitsnaw007u.jnj.com	opcitsnaw011f.jnj.com	opcitsnaw011g.jnj.com
+http	http2	tls,tls.notAfter,2023-02-08T23:59:59Z
+http	http2	tls,tls.notAfterTS,1675900799
+http	http2	tls,tls.notBefore,2022-02-08T00:00:00Z
+http	http2	tls,tls.notBeforeTS,1644278400
+http	http2	tls,tls.oscp,http://ocsp.sectigo.com
+http	http2	tls,tls.serial,68ed18d31ae2f2399601462c205f8c5a
+http	http2	tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+http	http2	tls,tls.subject,"CN=jjgateway.jnj.com,OU=Digital Hosting,O=Johnson and Johnson,L=New Brunswick,ST=New Jersey,C=US"
+http	http2	tls,tls.subjectKeyID,a8e36404be7f7a10c8c9478e91fb6ec188be056e
+http	http2	tls,tls.supportedVersionNames,TLSv1.2
+http	http2	tls,tls.supportedVersions,0x0303
+http	http2	tls,tls.version,0x0303
+http	http2	tls,tls.versionName,TLSv1.2
+http	http2	tls,ts,1662651993
+http	http2	tls,vhost,jjgatewayap.jnj.com
+http	http2	tls,http2.body,"<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Strict//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"">
+<html xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+<meta http-equiv=""Content-Type"" content=""text/html; charset=iso-8859-1"" />
+<title>IIS Windows Server</title>
+<style type=""text/css"">
+<!--
+body {
+	color:#000000;
+	background-color:#0072C6;
+	margin:0;
+}
+
+#container {
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	}
+
+a img {
+	border:none;
+}
+
+-->
+</style>
+</head>
+<body>
+<div id=""container"">
+<a href=""http://go.microsoft.com/fwlink/?linkid=66138&amp;clcid=0x409""><img src=""iisstart.png"" alt=""IIS"" width=""960"" height=""600"" /></a>
+</div>
+</body>
+</html>"
+http	http2	tls,http2.code,200
+http	http2	tls,http2.head.contentLength,703
+http	http2	tls,http2.head.contentType,text/html
+http	http2	tls,http2.head.date,"Thu, 08 Sep 2022 15:49:03 GMT"
+http	http2	tls,http2.head.server,Microsoft-IIS/10.0
+http	http2	tls,http2.message,200 OK
+http	http2	tls,http2.uri,/
+http	http2	tls,http2.url,https://jjgatewayap.jnj.com/
+http	http2	tls,cookie,PHPSESSID
+http	http2	tls,favicon.ico.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/3341c1f4-8c5e-457b-b24c-d37f560f6310/41bb61c9-2e25-4f37-94e5-3ef7a8fc85b8/199.65.193.12/443/tcp/ITSCNSHDMZ00003.JNJ.COM/favicon.ico.image-40caf30b589f0650e6fcb23b31f8cad4.png
+http	http2	tls,favicon.ico.image.md5,40caf30b589f0650e6fcb23b31f8cad4
+http	http2	tls,favicon.ico.image.size,22382
+http	http2	tls,favicon.ico.image.url,https://itscnshdmz00003.jnj.com:443/favicon.ico
+http	http2	tls,last.html.favicon,https://power.jnj.com/assets/images/favicon.png
+http	http2	tls,last.html.forms,POST:https://power.jnj.com/login
+http	http2	tls,last.html.inputs,hidden:_token	password:password	text:email
+http	http2	tls,last.http.head.cacheControl,"no-store, no-cache, must-revalidate, max-age=0, must-revalidate, no-store, nocache, private	no-store, no-cache, must-revalidate, private, must-revalidate"
+http	http2	tls,last.http.head.contentSecurityPolicy,upgrade-insecure-requests;
+http	http2	tls,last.http.head.referrerPolicy,no-referrer
+http	http2	tls,last.http.head.xrobotstag,none
+http	http2	tls,last.http2.head.cacheControl,"no-cache, no-store, must-revalidate	no-store, no-cache, must-revalidate	public"
+http	http2	tls,last.http2.head.contentSecurityPolicy,frame-ancestors 'self'
+http	http2	tls,last.http2.head.referrerPolicy,strict-origin-when-cross-origin
+http	http2	tls,last.http2.head.setCookie,"PHPSESSID=cdf7f7v35ajvv80o0ep6e9r66i; path=/; secure; HttpOnly	PHPSESSID=pqjp9b4f9rmshasbk11evqmutl; path=/; secure; HttpOnly	reminders_modules_nc_ns=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+http	http2	tls,last.http2.head.xrobotstag,nofollow
+http	http2	tls,screenshot.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/3341c1f4-8c5e-457b-b24c-d37f560f6310/d7ef4248-5071-45f3-a043-80be6d0f6b4d/199.65.212.64/443/tcp/JJGATEWAYAP.JNJ.COM/screenshot.image-d442faacdb97b4929afa2179cab999de.png
+http	http2	tls,screenshot.image.md5,d442faacdb97b4929afa2179cab999de
+http	http2	tls,screenshot.image.size,97923
+http	http2	tls,html.favicon,favicon.ico
+http	http2	tls,http.head.acceptRanges,bytes
+http	http2	tls,http.head.cacheControl,"no-store, no-cache, must-revalidate"
+http	http2	tls,http.head.etag,"""0dc7dfb2144d81:0"""
+http	http2	tls,http.head.lastModified,"Wed, 30 Mar 2022 10:36:15 GMT"
+http	http2	tls,http2.head.acceptRanges,bytes
+http	http2	tls,http2.head.cacheControl,"no-store, no-cache, must-revalidate"
+http	http2	tls,http2.head.etag,"""0dc7dfb2144d81:0"""
+http	http2	tls,http2.head.lastModified,"Wed, 30 Mar 2022 10:36:15 GMT"
+http	http2	tls,last.http.head.acceptRanges,bytes
+http	http2	tls,last.http.head.etag,"""605d1fd7-31"""
+http	http2	tls,last.http.head.lastModified,"Thu, 01 Sep 2022 19:02:55 GMT"
+http	http2	tls,apache.info,(CentOS) OpenSSL/1.0.2k-fips
+http	http2	tls,http2.head.location,https://wellnessitems.pepsico.com/
+http	http2	tls,http2.head.setCookie,ns_s=e7bf14269384754a287f3606142e9f5e; path=/; secure; HttpOnly; SameSite=lax
+http	http2	tls,http.head.xamzid2,5lA8gQm4PIcR4XZe3mQAnv+19YiJxFblfLXuCKwvkZ6bPpIVqn2P0vb6NRVxxYX2Vbf3Jzquqp4=	BwrRWr8hTsUPvn00KXSl6zzB5Uh4L8hLPxHnSf/e/tgsnxEdxgf1mLBsd0myjHIMo8X+JQWGdFA=
+http	http2	tls,http.head.xamzrequestid,AS3A1D5M71XAYDJW	G3K21QKEZNAC8PBC
+http	http2	tls,http.head.xamzserversideencryption,AES256
+http	http2	tls,http2.head.xamzid2,aw0mKOwF7UVWqrna+v5RmePNDLvfT+qIgectqgeWPmqGstLXfJQ0pqoQ5hZYiOegZnlHJo6BGZ8=
+http	http2	tls,http2.head.xamzrequestid,FW63MWD9B9XD2APM
+http	http2	tls,http2.head.xamzserversideencryption,AES256
+http	http2	tls,http.head.p3p,"CP=""ALL PUR DSP CUR ADMi DEVi CONi OUR COR IND"""
+http	http2	tls,http.head.xuacompatible,IE=edge
+http	http2	tls,http2.head.p3p,"CP=""ALL PUR DSP CUR ADMi DEVi CONi OUR COR IND"""
+http	http2	tls,http2.head.xuacompatible,IE=edge
+http	http2	tls,http.head.age,0
+http	http2	tls,http.head.via,"vcache14.cn2811[,403666]	vcache20.cn2811[,403666]"
+http	http2	tls,http.head.xamzcfid,dSJFdtXm2KEWG4tFEtiu0eOXDsR6NxVq0lPWYNiwbm65vlbKeiPodg==	yrly5PqXQeA7KkItVEgIx9qugH_uID6wJ87hboQ6gIoBAC8JJ2BNXA==
+http	http2	tls,http.head.xamzcfpop,EWR53-C3
+http	http2	tls,http.head.xamzversionid,F9fgKdpDe4rM8Wj4JBZKR3DwMopi8KJL
+http	http2	tls,http.head.xcache,TCP_MISS from a104-77-103-166.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)	TCP_NEGATIVE_HIT from a104-77-103-166.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)	TCP_REFRESH_MISS from a104-77-103-155.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (S)
+http	http2	tls,http2.head.age,2
+http	http2	tls,http2.head.via,"vcache3.cn2811[,403666]"
+http	http2	tls,http2.head.xamzcfid,dSJFdtXm2KEWG4tFEtiu0eOXDsR6NxVq0lPWYNiwbm65vlbKeiPodg==
+http	http2	tls,http2.head.xamzcfpop,EWR53-C3
+http	http2	tls,http2.head.xamzversionid,F9fgKdpDe4rM8Wj4JBZKR3DwMopi8KJL
+http	http2	tls,http2.head.xcache,TCP_NEGATIVE_HIT from a104-77-103-166.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)
+http	http2	tls,http2.head.vary,"Accept-Encoding,X-Requested-With"
+http	http2	tls,http.head.wwwAuthenticate,"Basic realm=""This site is protected"""
+http	http2	tls,http2.head.wwwAuthenticate,"Basic realm=""This site is protected"""
+http	http2	tls,http.head.xamzbucketregion,us-east-1
+http	http2	tls,http2.head.xamzbucketregion,us-east-1
+http	http2	tls,http.head.contentSecurityPolicy,default-src 'self'; frame-ancestors 'self';
+http	http2	tls,http.head.expires,"Thu, 19 Nov 1981 08:52:00 GMT"
+http	http2	tls,http.head.permissionsPolicy,"accelerometer=(), autoplay=(), camera=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), sync-xhr=(), usb=()"
+http	http2	tls,http.head.referrerPolicy,strict-origin-when-cross-origin
+http	http2	tls,http.head.traceresponse,00-1712ed30784a9bba851895e4084fc7e3-5c52b36cf5575cbe-00	00-1712ed32dde4ed5524147cb2bfa8bac5-9af43f0bc9c8784f-00	00-1712ed343a66f5d6cb80e8b9a79d17e1-0ef979be6d4256f4-00	00-1712ed440fa369d106706b4938b7e805-2a5c062abec7faf5-00
+http	http2	tls,http.head.xdebuginfo,eyJyZXRyaWVzIjowfQ==
+http	http2	tls,http.head.xdrupalcache,MISS
+http	http2	tls,http.head.xgenerator,Drupal 8 (https://www.drupal.org)
+http	http2	tls,http.head.xplatformcache,MISS
+http	http2	tls,http.head.xplatformcluster,7l6nqdow2lrzo-master-7rqtwti
+http	http2	tls,http.head.xplatformprocessor,tkngei52n4wghnguuxdymc7hlu
+http	http2	tls,http.head.xplatformrouter,3g336zlcqot3w53rrhhbydsb7q
+http	http2	tls,last.html.generator,WordPress 6.0.1
+http	http2	tls,last.http.head.expires,"Thu, 19 Nov 1981 08:52:00 GMT, -1	Thu, 19 Nov 1981 08:52:00 GMT, Sun, 02 Jan 1990 00:00:00 GMT"
+http	http2	tls,last.http.head.permissionsPolicy,interest-cohort=()
+http	http2	tls,last.http.head.traceresponse,00-1712ed443868f0176085422026694bc2-72898b0d31476026-00
+http	http2	tls,last.http.head.xdebuginfo,eyJyZXRyaWVzIjowfQ==
+http	http2	tls,last.http.head.xdrupalcache,MISS
+http	http2	tls,last.http.head.xdrupaldynamiccache,HIT	UNCACHEABLE
+http	http2	tls,last.http.head.xgenerator,Drupal 8 (https://www.drupal.org)
+http	http2	tls,last.http.head.xplatformcache,MISS
+http	http2	tls,last.http.head.xplatformcluster,7l6nqdow2lrzo-master-7rqtwti
+http	http2	tls,last.http.head.xplatformprocessor,tkngei52n4wghnguuxdymc7hlu
+http	http2	tls,last.http.head.xplatformrouter,3g336zlcqot3w53rrhhbydsb7q
+http	http2	tls,last.http.head.xuacompatible,IE=edge
+http	http2	tls,last.http2.head.expires,"Thu, 19 Nov 1981 08:52:00 GMT"
+http	http2	tls,last.http2.head.permissionsPolicy,interest-cohort=()
+http	http2	tls,last.http2.head.traceresponse,00-1712ed4c29c22b3ef4b1eb927997363c-2204f5c7cfb25268-00
+http	http2	tls,last.http2.head.xdebuginfo,eyJyZXRyaWVzIjowfQ==
+http	http2	tls,last.http2.head.xdrupalcache,MISS
+http	http2	tls,last.http2.head.xdrupaldynamiccache,HIT
+http	http2	tls,last.http2.head.xgenerator,Drupal 7 (http://drupal.org)
+http	http2	tls,last.http2.head.xplatformcache,MISS
+http	http2	tls,last.http2.head.xplatformcluster,fys6uk2xguwam-master-7rqtwti
+http	http2	tls,last.http2.head.xplatformprocessor,ihhm5ts2kqbsz2lnb66atna42m
+http	http2	tls,last.http2.head.xplatformrouter,ajqbcjtrtbvomxohbze5xcouzu
+http	http2	tls,last.http2.head.xuacompatible,"IE=edge,chrome=1"
+http	http2	tls,html.forms,POST:/tpextranet/login.do;jsessionid=MkIdyE09L5Uq8pXOg7wqbV2LqU8ulAFGw-5K89DShVBNYKXju7v1!168508706	POST:/tpextranet/login.do;jsessionid=XsQdyDW8cqwbi3-RULz_d3A9LELZ0L3VVNxu4cv9JhQsBFEHnAE5!168508706	POST:/tpextranet/login.do;jsessionid=qyQdyF-LyduvazEcTvUrKuAjkk8u6YxvZ63W01ncz9YoWT0IL3eL!168508706
+http	http2	tls,html.generator,Drupal 9 (https://www.drupal.org)
+http	http2	tls,html.inputs,hidden:encpass	password:password	text:dob	text:username
+http	http2	tls,http.head.featurePolicy,microphone 'none'; geolocation 'none'
+http	http2	tls,http.head.xdrupaldynamiccache,UNCACHEABLE
+http	http2	tls,http2.head.contentLanguage,en-US
+http	http2	tls,http2.head.contentSecurityPolicy,default-src 'self'; frame-ancestors 'self';
+http	http2	tls,http2.head.expires,"Thu, 19 Nov 1981 08:52:00 GMT"
+http	http2	tls,http2.head.featurePolicy,microphone 'none'; geolocation 'none'
+http	http2	tls,http2.head.permissionsPolicy,"accelerometer=(), autoplay=(), camera=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), sync-xhr=(), usb=()"
+http	http2	tls,http2.head.referrerPolicy,strict-origin-when-cross-origin
+http	http2	tls,http2.head.strictTransportSecurity,max-age=31536000
+http	http2	tls,http2.head.traceresponse,00-1712ed4ba6dcfe65c4c9745d58760e7e-483235d27f0d9014-00
+http	http2	tls,http2.head.xcontenttypeoptions,nosniff
+http	http2	tls,http2.head.xdebuginfo,eyJyZXRyaWVzIjowfQ==
+http	http2	tls,http2.head.xdrupalcache,MISS
+http	http2	tls,http2.head.xdrupaldynamiccache,UNCACHEABLE
+http	http2	tls,http2.head.xframeoptions,SAMEORIGIN
+http	http2	tls,http2.head.xgenerator,Drupal 8 (https://www.drupal.org)
+http	http2	tls,http2.head.xplatformcache,MISS
+http	http2	tls,http2.head.xplatformcluster,7l6nqdow2lrzo-master-7rqtwti
+http	http2	tls,http2.head.xplatformprocessor,tkngei52n4wghnguuxdymc7hlu
+http	http2	tls,http2.head.xplatformrouter,3g336zlcqot3w53rrhhbydsb7q
+http	http2	tls,http2.head.xxssprotection,1; mode=block
+http	http2	tls,last.http.head.featurePolicy,none
+http	http2	tls,os.certainty,0.5
+http	http2	tls,os.family,Windows
+http	http2	tls,os.vendor,Microsoft
+http	http2	tls,http.head.requestContext,appId=cid-v1:3b318eb9-1856-4e90-bab8-fcaadc9e6eac
+http	http2	tls,http.head.xazureref,0viYaYwAAAAAaM/Fs3I0WRr8LEWQXuZP3RVdSMzExMDAwMTEwMDM5ADY2Y2RjZmFkLTkxYzctNGI3MC1hOTI1LWFkNGI5N2I1MzgzNw==	0wyYaYwAAAADBkB6NrCxYSKI8SSi13K+cRVdSMzBFREdFMDUwNgBlMTI4OTY4NC05ODkwLTQ4OTItYjMyMy1lNGVlZDUwZTgyYjU=	0yCYaYwAAAABI0f15Ljw9SKx9SsckRIenRVdSMzExMDAwMTA5MDUzADJkZjc1ZjFlLTc1ZDQtNDYxNC1iODU3LTYyYTdlYjVlYTIyOQ==
+http	http2	tls,http2.head.requestContext,appId=cid-v1:3b318eb9-1856-4e90-bab8-fcaadc9e6eac
+http	http2	tls,http2.head.xazureref,0AScaYwAAAABvS+N9cvNQTL+rCdtpRh2HRVdSMzBFREdFMDUwNwBlMTI4OTY4NC05ODkwLTQ4OTItYjMyMy1lNGVlZDUwZTgyYjU=
+http	http2	tls,http.head.accessControlAllowOrigin,*
+http	http2	tls,http.head.pragma,no-cache
+http	http2	tls,http.head.xazurereforiginshield,0yCYaYwAAAABavkW8UPBOT5wT/JpYrSPHRVdSMzBFREdFMTUxNQAyZGY3NWYxZS03NWQ0LTQ2MTQtYjg1Ny02MmE3ZWI1ZWEyMjk=
+http	http2	tls,http.head.xenvoyupstreamservicetime,17	31
+http	http2	tls,http.head.xpimcoreoutputcachedisablereason,Debug flag DISABLE_FULL_PAGE_CACHE is enabled
+http	http2	tls,http.head.xpoweredby,ASP.NET
+http	http2	tls,http.head.xrobotstag,"noindex, nofollow"
+http	http2	tls,last.http2.head.via,1.1 vegur
+http	http2	tls,last.http2.head.xamzcfid,xjnq1IDz7xAHi74tLgN9QvK3-GseWD0lRCppLdtZKkofh3WqI1Vt0A==
+http	http2	tls,last.http2.head.xamzcfpop,CDG50-P1
+http	http2	tls,last.http2.head.xcache,HIT
+http	http2	tls,last.http2.head.age,1
+http	http2	tls,http.head.xamzapigwid,YJcvvFdqjoEFyzQ=	YJcx8GJ3DoEFmbw=
+http	http2	tls,http.head.xamznerrortype,ForbiddenException
+http	http2	tls,http.head.xamznrequestid,3863f586-6c66-40fe-bb2d-3b2b96e9f391	51dcfa8e-9d0e-4f5c-bf4a-2cf11ec6fbcd
+http	http2	tls,http2.head.xamzapigwid,YJcwaFPboAMFVCw=
+http	http2	tls,http2.head.xamznerrortype,ForbiddenException
+http	http2	tls,http2.head.xamznrequestid,032fce74-b0a5-4ee4-8b3f-65a6f1263429
+http	http2	tls,json.message,Server is running
+http	http2	tls,http.head.keepAlive,timeout=60
+http	http2	tls,http.head.xalbserver,ALB/1.0.9.002
+http	http2	tls,http.head.xserverprocesstime,0.003	0.0049	0.005
+http	http2	tls,http.head.xupstreamprocesstime,0.003	0.004
+http	http2	tls,http2.head.xalbserver,ALB/1.0.9.002
+http	http2	tls,http2.head.xserverprocesstime,0.0039
+http	http2	tls,http2.head.xupstreamprocesstime,0.0039
+http	http2	tls,last.http.head.xalbserver,ALB/1.0.9.002
+http	http2	tls,last.http.head.xserverprocesstime,0.0199
+http	http2	tls,last.http.head.xupstreamprocesstime,0.0169
+http	http2	tls,tls.caUnknown,"issuer=CN=Entrust Certification Authority - L1K,OU=See www.entrust.net/legal-terms+OU=(c) 2012 Entrust\, Inc. - for authorized use only,O=Entrust\, Inc.,C=US"
+http	http2	tls,last.http.head.pragma,"no-cache, no-cache"
+http	http2	tls,last.http2.head.pragma,no-cache
+http	http2	tls,last.http.head.xpoweredby,PHP/7.3.33	PleskLin
+http	http2	tls,http2.head.pragma,no-cache
+http	http2	tls,json.error,Not Found
+http	http2	tls,http.head.xb3traceid,1df83ac68da1eba7	32e4bb0f1ab1365f	4e7ab48e71238e94	755233b949026d2f
+http	http2	tls,http2.head.xb3traceid,051ef607b786a2d6
+http	http2	tls,json.reason,Unauthorized
+http	http2	tls,last.http.head.xb3traceid,f2459ae10249e620
+http	http2	tls,http.head.appleOriginatingSystem,UnknownOriginatingSystem
+http	http2	tls,http.head.appleSeq,0.0
+http	http2	tls,http.head.appleTk,false
+http	http2	tls,http.head.b3,2372ce527a76fee163f312fc60883918-dca5c9b33ebb6df7	5006ed620194154c478f7973df94c04d-4ecc083a5545e68a	b0618aaf6637dd8010983d392e4339be-22e17d30f5f1485e
+http	http2	tls,http.head.xapplejinglecorrelationkey,C6KL43KKK55TEXAN5E5UTLK7C4	QII4RAMB2JS7VAA4MNMU7EZJIM	YWXBRKXQFV3MO5BTEGIRNXQQVM	ZCRVZ6QY6YZR57UR6LDQGB3DZA
+http	http2	tls,http.head.xapplerequestuuid,f14443a2-0915-a040-c36b-6244916dad7d
+http	http2	tls,http.head.xb3spanid,22e17d30f5f1485e	4ecc083a5545e68a	dca5c9b33ebb6df7
+http	http2	tls,http.head.xdlbupstream,10.117.86.165:8083
+http	http2	tls,http.head.xrespondingserver,st13p01su-ztav04242301:9343:105:2223B6	st13p01su-ztav04244801:9343:110:2223B6	st13p01su-ztav08263701:9343:104:2223B6
+http	http2	tls,http2.head.appleOriginatingSystem,UnknownOriginatingSystem
+http	http2	tls,http2.head.appleSeq,0.0
+http	http2	tls,http2.head.appleTk,false
+http	http2	tls,http2.head.b3,a15e814485d436de404282d7dd35da65-09ba5eb5ff75a5aa
+http	http2	tls,http2.head.xapplejinglecorrelationkey,UIASLCARJKEIEBGM5XGYNI74PU
+http	http2	tls,http2.head.xapplerequestuuid,f14443a2-0915-a040-c36b-6244916dad7d
+http	http2	tls,http2.head.xb3spanid,09ba5eb5ff75a5aa
+http	http2	tls,http2.head.xdlbupstream,17.164.32.102:9343
+http	http2	tls,http2.head.xrespondingserver,st13p01su-ztav04242301:9343:105:2223B6
+http	http2	tls,last.http.head.appleOriginatingSystem,UnknownOriginatingSystem
+http	http2	tls,last.http.head.appleSeq,0.0
+http	http2	tls,last.http.head.appleTk,false
+http	http2	tls,last.http.head.b3,ecad7eaf7f5c43e0f310932e50834f22-9c55f1fefa2280e3
+http	http2	tls,last.http.head.via,"CHN-HEshijiazhuang-AREACUCC1-CACHE12[235],CHN-HEshijiazhuang-AREACUCC1-CACHE22[232,TCP_MISS,234],CHN-HEshijiazhuang-GLOBAL1-CACHE80[195],CHN-HEshijiazhuang-GLOBAL1-CACHE45[190,TCP_MISS,194],CHN-HAzhengzhou-GLOBAL3-CACHE53[175],CHN-HAzhengzhou-GLOBAL3-CACHE12[172,TCP_MISS,174]	CHN-HEshijiazhuang-AREACUCC1-CACHE2[295],CHN-HEshijiazhuang-AREACUCC1-CACHE47[290,TCP_MISS,293],CHN-HEshijiazhuang-GLOBAL1-CACHE98[252],CHN-HEshijiazhuang-GLOBAL1-CACHE57[240,TCP_MISS,250],CHN-HAzhengzhou-GLOBAL3-CACHE37[187],CHN-HAzhengzhou-GLOBAL3-CACHE107[184,TCP_MISS,186]	CHN-HEshijiazhuang-AREACUCC1-CACHE42[347],CHN-HEshijiazhuang-AREACUCC1-CACHE8[345,TCP_MISS,347],CHN-HEshijiazhuang-GLOBAL1-CACHE95[328],CHN-HEshijiazhuang-GLOBAL1-CACHE8[319,TCP_MISS,327],CHN-HAzhengzhou-GLOBAL3-CACHE26[252],CHN-HAzhengzhou-GLOBAL3-CACHE82[223,TCP_MISS,250]"
+http	http2	tls,last.http.head.xapplejinglecorrelationkey,KWK3PTA23TLSMCPQIRWP3D4LSM
+http	http2	tls,last.http.head.xapplerequestuuid,f14443a2-0915-a040-c36b-6244916dad7d
+http	http2	tls,last.http.head.xb3spanid,a5df540d8bef8cac
+http	http2	tls,last.http.head.xdlbupstream,17.164.32.102:9343
+http	http2	tls,last.http.head.xrespondingserver,st13p01su-ztav04242301:9343:105:2223B6
+http	http2	tls,http.head.xb3sampled,1
+http	http2	tls,json.path,/
+http	http2	tls,json.status,Failure
+http	http2	tls,json.timestamp,1662652350361	1662652607574	1662652615146	1662652615261	1662652619821
+http	http2	tls,http2.head.xb3sampled,1
+http	http2	tls,last.http.head.xb3sampled,1
+http	http2	tls,http.head.accessControlAllowCredentials,true
+http	http2	tls,http.head.accessControlAllowHeaders,"Origin, X-Requested-With, Content-Type, Accept"
+http	http2	tls,http.head.accessControlAllowMethods,"GET, POST, PUT, DELETE, OPTIONS"
+http	http2	tls,http.head.accessControlExposeHeaders,customHeader
+http	http2	tls,http.head.accessControlMaxAge,86400
+http	http2	tls,http.head.lbInfra,ST PROD DLB
+http	http2	tls,http2.head.accessControlAllowCredentials,true
+http	http2	tls,http2.head.accessControlAllowHeaders,"Origin, X-Requested-With, Content-Type, Accept"
+http	http2	tls,http2.head.accessControlAllowMethods,"POST,GET,OPTIONS,DELETE"
+http	http2	tls,http2.head.accessControlAllowOrigin,*
+http	http2	tls,http2.head.accessControlExposeHeaders,customHeader
+http	http2	tls,http2.head.accessControlMaxAge,86400
+http	http2	tls,http2.head.lbInfra,ST PROD DLB
+http	http2	tls,last.http.head.accessControlAllowCredentials,true
+http	http2	tls,last.http.head.accessControlAllowHeaders,Content-Type
+http	http2	tls,last.http.head.accessControlAllowMethods,"POST,GET,OPTIONS,DELETE"
+http	http2	tls,last.http.head.accessControlAllowOrigin,https://*.huawei.com
+http	http2	tls,last.http.head.accessControlExposeHeaders,Request-Context
+http	http2	tls,last.http.head.accessControlMaxAge,600
+http	http2	tls,last.http.head.lbInfra,ST PROD DLB
+http	http2	tls,http.head.xdaiquiriinstance,daiquiri:42282002:st53p00it-qujn13050102:7987:22RELEASE113:daiquiri-amp-store-l7shared-ext-001-st	daiquiri:42282005:st53p00it-qujn14050102:7987:22RELEASE113:daiquiri-amp-store-l7shared-ext-001-st
+http	http2	tls,http2.head.xdaiquiriinstance,daiquiri:42282002:st53p00it-qujn13050102:7987:22RELEASE113:daiquiri-amp-store-l7shared-ext-001-st
+http	http2	tls,last.http.head.xdaiquiriinstance,daiquiri:42282006:st53p00it-qujn15040502:7987:22RELEASE113:daiquiri-amp-store-l7shared-ext-001-st
+http	http2	tls,http.head.xdaiquiriratelimitgeneric,generic-minute-lim:12000;generic-minute-rem:11976;	generic-minute-lim:12000;generic-minute-rem:11997;	generic-minute-lim:12000;generic-minute-rem:11999;
+http	http2	tls,http.head.xdaiquiriratelimittiminggeneric,0
+http	http2	tls,http2.head.xdaiquiriratelimitgeneric,generic-minute-lim:12000;generic-minute-rem:11999;
+http	http2	tls,http2.head.xdaiquiriratelimittiminggeneric,0
+http	http2	tls,last.http.head.xdaiquiriratelimitgeneric,generic-minute-lim:12000;generic-minute-rem:11988;
+http	http2	tls,last.http.head.xdaiquiriratelimittiminggeneric,0
+http	http2	tls,hw.device,VoIP
+http	http2	tls,hw.vendor,Cisco
+http	http2	tls,http.head.childSrc,'none';
+http	http2	tls,http.head.defaultSrc,'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http.head.host,it-training.apple.com
+http	http2	tls,http.head.imgSrc,'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http.head.scriptSrc,'unsafe-inline' 'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http.head.styleSrc,'unsafe-inline' 'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http2.head.childSrc,'none';
+http	http2	tls,http2.head.defaultSrc,'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http2.head.host,it-training.apple.com
+http	http2	tls,http2.head.imgSrc,'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http2.head.scriptSrc,'unsafe-inline' 'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,http2.head.styleSrc,'unsafe-inline' 'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,last.http.head.childSrc,'none';
+http	http2	tls,last.http.head.defaultSrc,'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,last.http.head.host,it-training.apple.com
+http	http2	tls,last.http.head.imgSrc,'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,last.http.head.scriptSrc,'unsafe-inline' 'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,last.http.head.styleSrc,'unsafe-inline' 'self' msc-nova-prod.apple.com www.apple.com;
+http	http2	tls,last.http2.head.host,gbi-virtualtraveler-prz.apple.com
+http	http2	tls,http.head.xrespondinginstance,MZDaap:211802:::	MZDaap:212006:::	MZDaap:219703:::
+http	http2	tls,http2.head.xrespondinginstance,MZDaap:214605:::
+http	http2	tls,last.http.head.xrespondinginstance,MZDaap:218201:::
+http	http2	tls,last.http.head.wwwAuthenticate,Bearer
+http	http2	tls,html.copyright,"Johnson & Johnson Services, Inc.1997-2020. All Rights Reserved."
+http	http2	tls,http.head.xappleserverhint,SH:1:kt-prod:804254e8-c220-4aab-83e1-85099cb4db92::1662652617:1ecfb5266393ae1e5460394c9d1fcca872f649a5a50ef2a46f5275ad94af47bb:EM	SH:1:kt-prod:dc7ab4cb-af6b-42ce-a7ac-3cf7f1a90c8a::1662652607:69ed601cd3b43eca5f0a09ac5ccf6bb5f5163c7a2c935307c0ba58d072312fc2:EM
+http	http2	tls,http2.head.xappleserverhint,SH:1:kt-prod:dc7ab4cb-af6b-42ce-a7ac-3cf7f1a90c8a::1662652607:69ed601cd3b43eca5f0a09ac5ccf6bb5f5163c7a2c935307c0ba58d072312fc2:EM
+http	http2	tls,last.http.head.xappleserverhint,SH:1:kt-prod:1f30702d-2845-40fb-aff1-1f5aec9ca498::1662652350:e58877bd9400017a683d949f68f48801939e8ed06a525cff6fd575050074c42d:EM
+http	http2	tls,http.head.edgeControl,"!no-store, cache-maxage=120"
+http	http2	tls,http2.head.edgeControl,"!no-store, cache-maxage=120"
+http	http2	tls,last.http.head.edgeControl,"!no-store, cache-maxage=120"
+http	http2	tls,last.http2.head.vary,"Accept-Encoding,User-Agent"
+http	http2	tls,last.http2.head.xb3traceid,3c20a63a5907532d	a161571ee6520b1e	b12c7258d0d947c3	d3e198d284b19e53
+http	http2	tls,http.head.features,CHPWD;RTCK;STCK;ASC;DNDISP
+http	http2	tls,http2.head.features,CHPWD;RTCK;STCK;ASC;DNDISP
+http	http2	tls,last.http.head.features,CHPWD;RTCK;STCK;ASC;DNDISP
+http	http2	tls,http.head.xrequestid,719b81840dd9a7321e13bb6a34388dc4	d4f543dbdbc5810a2907046af5ff88d0
+http	http2	tls,http2.head.xenvoyupstreamservicetime,14
+http	http2	tls,http2.head.xrequestid,0124f940507c3461dffd5d8c08ac043a	53674612d20e9bd190e3e789b6094900	656e272a937087b6740b5023839207b2	b31db7e8cafa4f5fcfc47f5dd1397096	c9ce913af038c1017a90ba29bd41d890
+http	http2	tls,last.http.head.xenvoyupstreamservicetime,149	34	43
+http	http2	tls,last.http.head.xrequestid,v-a4e301a2-2f8d-11ed-8708-c37fdce5e4cf
+http	http2	tls,http.head.cookie,""""""
+http	http2	tls,http2.head.cookie,""""""
+http	http2	tls,http.head.xapplejinglerespondinginstance,MZPlayLocal-33b0f0109cbf-8921-9001	MZPlayLocal-70eff5230425-8921-9019	MZPlayLocal-8b72dcc76b6d-8921-9003
+http	http2	tls,http2.head.xapplejinglerespondinginstance,MZPlayLocal-6bb780e55ab8-8921-9005
+http	http2	tls,http.head.appleTimingApp,1 ms	2 ms
+http	http2	tls,http2.head.appleTimingApp,1 ms
+http	http2	tls,http.head.xruntime,0.005913
+http	http2	tls,http2.head.xruntime,0.006026
+http	http2	tls,json.errorMessage,Try again later.
+http	http2	tls,http.head.xshred,28772d3de484f8b48ec526489d166fda	2ebb96b973565ef8b80e88f46a208c09	78ca5d3152d494e5bf0963b0333fd492
+http	http2	tls,http2.head.xshred,8fb100e3f19d1868fb2bd1e832aa849c
+http	http2	tls,last.http.head.xshred,471e2eb2ba043210a62f761bb56f4a0f	57721fa4eb7f680c04062b58110ab07e	f0fb8cb28d87a60c1957abd42b4f500b
+http	http2	tls,last.http2.head.edgeControl,"!no-store, cache-maxage=120"
+http	http2	tls,last.http2.head.etag,"W/""630dd53f-4be"""
+http	http2	tls,last.http2.head.lastModified,"Tue, 30 Aug 2022 09:15:43 GMT"
+http	http2	tls,last.http2.head.xrequestid,v-745fd078-2f8d-11ed-81ed-4391d0a45f43
+http	http2	tls,last.http2.head.xshred,63cc98e4b5abb5859093b51da650d383
+http	http2	tls,http.head.xprotobufmessage,GenericError
+http	http2	tls,http.head.xprotobufschema,errors.proto
+http	http2	tls,http2.head.xprotobufmessage,GenericError
+http	http2	tls,http2.head.xprotobufschema,errors.proto
+http	http2	tls,tls.selfSigned,serial=366a792d7b8b590ec395f9b4a5eb7617	serial=e0258f5ac4c90cbb222b5eee4a6cd17
+http	http2	tls,http.head.apnsId,2C577076-106E-673D-B24B-B357380091C9	6593167C-DB93-51DB-5F73-23316F101234
+http	http2	tls,http2.head.apnsId,30ED036C-EA25-75BB-B98B-C881F9229C05
+http	http2	tls,http.head.cdnuuid,7ec2f7e3-91d4-45da-afad-db6d022d1ad1-12291257059	df4e8fb0-adba-459a-8b32-d251b052a450-19807232730	e24db796-a40f-4ee7-b47e-c8ccc2306c85-16146862740	f2c059f2-c873-41e7-bd47-231c468cc61a-16155276730
+http	http2	tls,http2.head.cdnuuid,16572ec2-b76e-4fe8-ae21-fbd53600d03d-16061654918	1672ea16-85cf-4dd6-8013-122911e90b19-3067154985	2be71c90-add1-41fe-82bf-6a98b367c26f-15497175005	5b2df029-71b6-41f5-a90a-854518ce2b46-19828643717	e24db796-a40f-4ee7-b47e-c8ccc2306c85-16146862863
+http	http2	tls,http.head.cdnServer,akam
+http	http2	tls,http2.head.cdnServer,akam
+http	http2	tls,last.http.head.age,0
+http	http2	tls,last.http.head.cdnuuid,1672ea16-85cf-4dd6-8013-122911e90b19-3065583177
+http	http2	tls,last.http.head.xamzbucketregion,us-east-1
+http	http2	tls,last.http.head.xamzcfid,Gs7sn1NBAiukXlve4tcZFBzWz6APfo1N5OO9TjWE9DmvPsPKQ8L8yg==
+http	http2	tls,last.http.head.xamzcfpop,EWR53-C3
+http	http2	tls,last.http.head.xamzid2,AC7gVkzt0J46UaHsgny1Rt6tUcmhJUOttHXGL5FoSgP5TNu7hXaCnnxVzU8Q1HempdzxsbVQPHE=
+http	http2	tls,last.http.head.xamzrequestid,SMP7V0AMFXZN2YR1
+http	http2	tls,last.http.head.xcache,TCP_MISS from a104-77-103-166.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)
+http	http2	tls,json.bucket,transporter.amp.apple.com
+http	http2	tls,json.maxKeys,100
+http	http2	tls,json.truncated,true
+http	http2	tls,json.versions,false
+http	http2	tls,tls.expired,serial=eda54b7f239b429f9ff78c85195d4f61
+http	http2	tls,last.http2.head.xpoweredby,ASP.NET
+http	http2	tls,http.head.mimeVersion,1.0
+http	http2	tls,http2.head.mimeVersion,1.0
+http	http2	tls,os.device,Web Proxy
+http	http2	tls,http.head.xappleversionnumber,1738.0.0
+http	http2	tls,http2.head.xappleversionnumber,1738.0.0
+http	http2	tls,last.http.head.xappleversionnumber,1738.0.0
+http	http2	tls,http.head.reasons,signature
+http	http2	tls,http.head.xappleapplicationinstance,211802	212006	219703
+http	http2	tls,http2.head.reasons,signature
+http	http2	tls,http2.head.xappleapplicationinstance,214605
+http	http2	tls,last.http.head.appleTimingApp,1 ms
+http	http2	tls,last.http.head.reasons,signature
+http	http2	tls,last.http.head.xappleapplicationinstance,218201
+http	http2	tls,http.head.akamaiMonIucidDel,725809	918215
+http	http2	tls,http.head.altSvc,"h3="":8443""; ma=86400, h3-29="":8443""; ma=86400"
+http	http2	tls,http.head.xcity,ZZZ
+http	http2	tls,http.head.xcountrycode,US
+http	http2	tls,http2.head.akamaiMonIucidDel,918215
+http	http2	tls,http2.head.xcity,ZZZ
+http	http2	tls,http2.head.xcountrycode,US
+http	http2	tls,http.head.xvia,1.0 PSmgdfDEN1eh74:9 (Cdn Cache Server V2.0)	1.1 PSmgdfDEN1eh74:9 (Cdn Cache Server V2.0)
+http	http2	tls,http2.head.xvia,1.1 PSmgdfDEN1eh74:9 (Cdn Cache Server V2.0)
+http	http2	tls,last.http.head.altSvc,"h3-Q050="":443""; ma=93600,quic="":443""; ma=93600; v=""46,43"""
+http	http2	tls,http.head.xosfailover,true
+http	http2	tls,http.head.contentLocation,index.html.ar
+http	http2	tls,http.head.tcn,choice
+http	http2	tls,http2.head.contentLocation,index.html.ar
+http	http2	tls,http2.head.tcn,choice
+http	http2	tls,last.http.head.contentLocation,index.html.ar
+http	http2	tls,last.http.head.tcn,choice
+http	http2	tls,last.http.head.mimeVersion,1.0
+http	http2	tls,last.http.head.xamzserversideencryption,AES256
+http	http2	tls,http2.head.xpoweredby,ASP.NET
+http	http2	tls,last.http2.head.accessControlAllowOrigin,http://www.wordbee.com
+http	http2	tls,http.head.xahenvironment,prod
+http	http2	tls,http.head.xcachehits,0
+http	http2	tls,last.http.head.xahenvironment,dev2
+http	http2	tls,last.http2.head.xahenvironment,prod
+http	http2	tls,http.head.xb2fcscache,no-cache
+http	http2	tls,http.head.xcachestatus,MISS from KS-CLOUD-QZ-MP-12-07	MISS from KS-CLOUD-XZ-CT-11-12
+http	http2	tls,http.head.xcdnrequestid,44f0e469b4eafff0804006b217b16c8f	a8693d539303bc56cd65264dbe8238f4	deb94ade5a9431d5ad05ddc38580516b
+http	http2	tls,http.head.xkscrequestid,44f0e469b4eafff0804006b217b16c8f	a8693d539303bc56cd65264dbe8238f4	deb94ade5a9431d5ad05ddc38580516b
+http	http2	tls,http.head.xlinkvia,xzct11:8443;qzmp12:443;
+http	http2	tls,http.head.xrid,3c66ed03-bce7-4242-ae46-2145735fc740	68dc32d2-f651-4bbe-a1bb-4b8beebb93e3	8ae214f4-0891-487e-808f-2ea2c6c62ea4
+http	http2	tls,http2.head.xb2fcscache,no-cache
+http	http2	tls,http2.head.xcachestatus,MISS from KS-CLOUD-QZ-MP-12-07	MISS from KS-CLOUD-QD-CT-212-09
+http	http2	tls,http2.head.xcdnrequestid,8ed7d40eb5ef88b14d8c8b47cefddd9b
+http	http2	tls,http2.head.xkscrequestid,8ed7d40eb5ef88b14d8c8b47cefddd9b
+http	http2	tls,http2.head.xlinkvia,qdct212:8443;qzmp12:443;
+http	http2	tls,http2.head.xrid,a8f5abd4-d4a1-42bf-981a-61eec74bd8b1
+http	http2	tls,http.head.xserverid,2
+http	http2	tls,last.http.head.requestContext,appId=cid-v1:e9fa4d7a-aee2-4031-a6dd-5b25231327f6
+http	http2	tls,last.http.head.xserverid,4
+http	http2	tls,last.http2.head.accessControlAllowHeaders,Content-Type
+http	http2	tls,last.http2.head.accessControlExposeHeaders,Request-Context
+http	http2	tls,last.http2.head.requestContext,appId=cid-v1:e9fa4d7a-aee2-4031-a6dd-5b25231327f6
+http	http2	tls,last.http2.head.xserverid,1
+http	http2	tls,http.head.xaspnetmvcversion,5.2
+http	http2	tls,http2.head.xaspnetmvcversion,5.2
+http	http2	tls,last.http2.head.acceptRanges,none
+http	http2	tls,last.http2.head.xaspnetmvcversion,5.2
+http	http2	tls,http.head.xmsportalapp,sites-95a23294-f1ca-4de4-9c95-2cdcf8349c83-USw
+http	http2	tls,http.head.xmsrequestid,da2bb204-c64f-4ea3-bea2-5f01ddcac7b4	e46418fc-ba96-4c6c-b2d0-4aab5daea1e7	f3655192-a38e-41f4-bb92-4fc4fb168ac0
+http	http2	tls,http2.head.xmsportalapp,sites-95a23294-f1ca-4de4-9c95-2cdcf8349c83-USw
+http	http2	tls,http2.head.xmsrequestid,fe793017-5b3a-4311-b24c-1e24a646e32d
+http	http2	tls,last.http.head.xmsportalapp,sites-95a23294-f1ca-4de4-9c95-2cdcf8349c83-USw
+http	http2	tls,last.http.head.xmsrequestid,6ea07d89-ad70-4db2-8544-c716595e44f3	815f5b55-edc2-4261-8fe0-d6f96453fc37	873036b2-d008-4bcb-873f-0830277b413c	a61ac0a5-be95-4375-b92f-84214d38f08b	c54dd226-52bc-4e6f-a775-44a6b8592e89	cfc84b64-3579-4e70-9939-39df4e741627	ddc277c0-7929-407a-a077-9945ad27b90f	f94f2c65-e92f-4a59-b4f5-84cffbda0182
+http	http2	tls,last.http2.head.xmsportalapp,sites-95a23294-f1ca-4de4-9c95-2cdcf8349c83-USw
+http	http2	tls,last.http2.head.xmsrequestid,32f93053-9e6d-497d-9274-737d8674ab41	9772cad5-6e67-4a9e-9564-8523729c194d	d3c310ee-a801-483a-a154-57f2c9b70736
+http	http2	tls,http.head.testAdditionalHeader,1
+http	http2	tls,http.head.xcfroutererror,unknown_route
+http	http2	tls,http.head.xvcaprequestid,097598b2-6852-4199-44ea-5b8225928a96
+http	http2	tls,last.http.head.testAdditionalHeader,1
+http	http2	tls,last.http.head.xvcaprequestid,1d4e6664-11ff-4188-7758-5971345bf99e	45ad7bff-f983-415e-652f-0ae2da19dda5
+http	http2	tls,last.http2.head.testAdditionalHeader,1
+http	http2	tls,last.http2.head.xvcaprequestid,9b001883-c28a-4e3c-6e40-c71c1c87a4ce
+http	http2	tls,http2.head.xahenvironment,prod
+http	http2	tls,http2.head.xcfroutererror,unknown_route
+http	http2	tls,last.http.head.contentScriptType,text/javascript
+http	http2	tls,last.http.head.contentStyleType,text/css
+http	http2	tls,last.http2.head.contentScriptType,text/javascript
+http	http2	tls,last.http2.head.contentStyleType,text/css
+http	http2	tls,last.http2.head.p3p,"CP=""CAO PSA OUR"""
+http	http2	tls,http.head.xgeocountry,US
+http	http2	tls,http2.head.xgeocountry,US
+http	http2	tls,last.http.head.responseUrl,https://home-cms.jnj.com/login?ReturnUrl=%2F	https://home-cms.jnj.com/login?returnUrl=%2F	https://home-cms.jnj.com/loginCheck?returnUrl=%2f&callbackDomain=https%3a%2f%2fhome-cms.jnj.com&rememberMe=False&redir=1
+http	http2	tls,last.http.head.unilySiteId,1117
+http	http2	tls,last.http2.head.responseUrl,https://home-cms.jnj.com/login?ReturnUrl=%2F	https://home-cms.jnj.com/login?returnUrl=%2F
+http	http2	tls,last.http2.head.unilySiteId,1117
+http	http2	tls,os.cpe23,cpe:/o:microsoft:windows:-
+http	http2	tls,os.product,Windows
+http	http2	tls,last.http.head.p3p,"CP=""CAO PSA OUR"""
+http	http2	tls,http2.head.xdownloadoptions,noopen
+http	http2	tls,http2.head.xpermittedcrossdomainpolicies,none
+http	http2	tls,last.http2.head.xenvoyupstreamservicetime,44
+http	http2	tls,last.http.head.xhirotraceerrcode,200002
+http	http2	tls,last.http.head.xtraceenable,true
+http	http2	tls,last.http2.head.xhirotraceerrcode,200002
+http	http2	tls,last.http2.head.xtraceenable,true
+http	http2	tls,last.http2.head.xamzversionid,1vZXc8EJyeejho1XycO2guWd5TNHw1RF
+http	http2	tls,http.head.cfCacheStatus,DYNAMIC
+http	http2	tls,http.head.cfRay,747969b4595a0ce5-EWR	747969d3c9dd19f3-EWR	747969f33dcf8cc0-EWR
+http	http2	tls,http2.head.cfRay,747969d54ce48cdc-EWR
+http	http2	tls,http.head.xdeveloper,"Page: 18.2ms, Render: 0.0ms, Mem: 2,048kB, Cache: 0Q (0.0ms), DB: 0Q (0.0ms), Prop: 0Q (0.0ms)	Page: 8.2ms, Render: 0.0ms, Mem: 2,048kB, Cache: 0Q (0.0ms), DB: 0Q (0.0ms), Prop: 0Q (0.0ms)"
+http	http2	tls,http.head.xservedby,cache-ewr18136-EWR	cache-ewr18140-EWR	cache-ewr18156-EWR	cache-ewr18167-EWR
+http	http2	tls,http2.head.altSvc,"h3="":8443""; ma=86400, h3-29="":8443""; ma=86400"
+http	http2	tls,http2.head.cfCacheStatus,DYNAMIC
+http	http2	tls,http2.head.xdeveloper,"Page: 6.0ms, Render: 0.0ms, Mem: 2,048kB, Cache: 0Q (0.0ms), DB: 0Q (0.0ms), Prop: 0Q (0.0ms)"
+http	http2	tls,http2.head.xservedby,cache-lga21920-LGA	cache-lga21929-LGA	cache-lga21977-LGA	cache-lga21979-LGA	cache-lga21980-LGA
+http	http2	tls,last.http.head.cfRay,7478d7a578ba1859-EWR	7478d9e69f1e1a07-EWR	7478df9999e80cad-EWR	7478e260ff3a17d9-EWR
+http	http2	tls,last.http2.head.cfCacheStatus,DYNAMIC
+http	http2	tls,last.http2.head.cfRay,7478d1b518a58c2d-EWR	7478d1ba6ebe1825-EWR	7478d1bd69e4c47c-EWR	7478d1c1f8e01855-EWR	7478d1c378dfe718-EWR
+http	http2	tls,last.http2.head.xgeocountry,US
+http	http2	tls,http.head.jnjCorrelationId,126ed532-4b49-411d-9c41-c1029573ba09	7bb36083-6123-4810-967d-eab830b30247
+http	http2	tls,http2.head.jnjCorrelationId,91340e90-7607-4cce-b574-e3fba82ff86e
+http	http2	tls,http.head.expectCt,max-age=0
+http	http2	tls,http.head.xpermittedcrossdomainpolicies,none
+http	http2	tls,http2.head.expectCt,max-age=0
+http	http2	tls,http2.head.xdnsprefetchcontrol,off
+http	http2	tls,last.http2.head.xcachehits,1
+http	http2	tls,http.head.sapPerfFesrec,694.000000
+http	http2	tls,http.head.sapServer,true
+http	http2	tls,http2.head.sapServer,true
+http	http2	tls,http.head.xaspnetversion,4.0.30319
+http	http2	tls,last.http2.head.xaspnetversion,4.0.30319
+http	http2	tls,http.head.xxsrftoken,46b1fad5-5c45-43d3-9b47-062dbb645080	b7f4d1d7-2562-4ee6-bac0-455ed67415d7
+http	http2	tls,http2.head.xxsrftoken,ca6518e7-b96b-427c-9e5b-7f102e20d7f2
+http	http2	tls,last.http2.head.link,"<https://dnablog.jnj.com/wp-json/>; rel=""https://api.w.org/"""
+http	http2	tls,http.head.xredirectby,WordPress
+http	http2	tls,http2.head.xredirectby,WordPress
+http	http2	tls,http.head.serverTiming,"dtSInfo;desc=""0"", dtRpid;desc=""2069345393""	dtSInfo;desc=""0"", dtRpid;desc=""487298553"""
+http	http2	tls,http.head.xoneagentjsinjection,true
+http	http2	tls,http.head.xruxitjsagent,true
+http	http2	tls,http2.head.serverTiming,"dtSInfo;desc=""0"", dtRpid;desc=""1612704324"""
+http	http2	tls,http2.head.xoneagentjsinjection,true
+http	http2	tls,http2.head.xruxitjsagent,true
+http	http2	tls,last.http2.head.serverTiming,"dtSInfo;desc=""0"", dtRpid;desc=""1407062397"""
+http	http2	tls,last.http2.head.xoneagentjsinjection,true
+http	http2	tls,last.http2.head.xruxitjsagent,true
+http	http2	tls,http.head.xpingback,https://a1ads.jnj.com/xmlrpc.php
+http	http2	tls,http2.head.xaspnetversion,4.0.30319
+http	http2	tls,http.head.link,"<https://dev.scdigital.jnj.com/>; rel=shortlink	<https://dev.scdigital.jnj.com/wp-json/>; rel=""https://api.w.org/""	<https://dev.scdigital.jnj.com/wp-json/wp/v2/pages/251>; rel=""alternate""; type=""application/json""	<https://qa.scdigital.jnj.com/>; rel=shortlink	<https://qa.scdigital.jnj.com/wp-json/>; rel=""https://api.w.org/""	<https://qa.scdigital.jnj.com/wp-json/wp/v2/pages/251>; rel=""alternate""; type=""application/json"""
+http	http2	tls,http2.head.link,"<https://dev.scdigital.jnj.com/wp-json/>; rel=""https://api.w.org/"""
+http	http2	tls,http2.head.sapPerfFesrec,2529.000000
+http	http2	tls,http.head.xarequestid,706x248067x1	706x249451x1
+http	http2	tls,last.http2.head.xarequestid,706x248070x1	706x249447x1
+http	http2	tls,last.http2.head.xredirectby,WordPress
+http	http2	tls,http.head.xanodeid,jiradevnode1	jiradevnode2
+http	http2	tls,http.head.xausername,anonymous
+http	http2	tls,last.http2.head.xanodeid,jiradevnode1	jiradevnode2
+http	http2	tls,last.http2.head.xasessionid,flnjeh	rqtopg
+http	http2	tls,last.http2.head.xausername,anonymous
+http	http2	tls,http.head.xratelimitlimit,1000
+http	http2	tls,http.head.xratelimitremaining,993	999
+http	http2	tls,http.head.xratelimitreset,1662652900
+http	http2	tls,http2.head.xratelimitlimit,1000
+http	http2	tls,http2.head.xratelimitremaining,997
+http	http2	tls,http2.head.xratelimitreset,1662652900
+http	http2	tls,http.head.xqtestrequestid,3905b7633c00596634cc0d48
+http	http2	tls,json.code,Server_Up
+http	http2	tls,http.head.as2Version,1.2
+http	http2	tls,http.head.ediintFeatures,multiple-attachments
+http	http2	tls,http2.head.as2Version,1.2
+http	http2	tls,http2.head.ediintFeatures,multiple-attachments
+http	http2	tls,http.head.xconfluenceclusternode,3a94065c	3a94082d
+http	http2	tls,http.head.xconfluenceclusternodename,dev-node4	dev-node6
+http	http2	tls,http.head.xconfluencerequesttime,1662652004128	1662652016191
+http	http2	tls,last.http2.head.xconfluenceclusternode,3a9406d8
+http	http2	tls,last.http2.head.xconfluenceclusternodename,dev-node5
+http	http2	tls,last.http2.head.xconfluencerequesttime,1662652011026
+http	http2	tls,http2.head.xrobotstag,"noindex, nofollow"
+http	http2	tls,http.head.auditId,2afb1088-69aa-4095-906e-c35f3c788710	5b8053e3-6f5a-4139-b3c6-d9d0fac63a90
+http	http2	tls,http2.head.auditId,d94b41bc-5d1f-4c5a-879d-f4b90b8dbe0d
+http	http2	tls,json.apiVersion,v1
+http	http2	tls,json.kind,Status
+http	http2	tls,http.head.contentDisposition,inline; filename=hostingstart.html
+http	http2	tls,http2.head.contentDisposition,inline; filename=hostingstart.html
+http	http2	tls,http.head.initialHost,pedocs.apple.com
+http	http2	tls,http2.head.initialHost,pedocs.apple.com
+http	http2	tls,last.http2.head.initialHost,pedocs.apple.com
+http	http2	tls,http.head.xalbcode,404000
+http	http2	tls,http.head.xrouterstatus,MISS : cant find any router from cache or remote
+http	http2	tls,http2.head.xalbcode,404000
+http	http2	tls,http2.head.xrouterstatus,MISS : cant find any router from cache or remote
+http	http2	tls,http.head.xccdncachettl,0
+http	http2	tls,http.head.xccdnorigintime,206	246	70	76	80
+http	http2	tls,http.head.xhcsproxytype,0
+http	http2	tls,http2.head.xccdncachettl,0
+http	http2	tls,http2.head.xccdnorigintime,255
+http	http2	tls,http2.head.xhcsproxytype,0
+http	http2	tls,last.http.head.xccdncachettl,0
+http	http2	tls,last.http.head.xccdnorigintime,172	184	223
+http	http2	tls,last.http.head.xhcsproxytype,0
+http	http2	tls,http.head.retryAfter,0
+http	http2	tls,http.head.xtimer,"S1662652339.631244,VS0,VE0	S1662652607.841713,VS0,VE0	S1662652607.885755,VS0,VE0	S1662652617.914647,VS0,VE0"
+http	http2	tls,http2.head.retryAfter,0
+http	http2	tls,http2.head.xcachehits,0
+http	http2	tls,http2.head.xtimer,"S1662652607.019152,VS0,VE0	S1662652607.039171,VS0,VE0	S1662652607.945627,VS0,VE0	S1662652607.977710,VS0,VE0	S1662652607.994617,VS0,VE0"
+http	http2	tls,last.http.head.retryAfter,0
+http	http2	tls,last.http.head.xcachehits,0
+http	http2	tls,last.http.head.xservedby,cache-ewr18176-EWR
+http	http2	tls,last.http.head.xtimer,"S1662652339.647492,VS0,VE0"
+http	http2	tls,http.head.bingoEnv,production
+http	http2	tls,http.head.xwsrequestid,631a26ab_PSmgdfDEN1sy76_48324-60150	631a26c3_PSmgdfDEN1yd75_31993-30244	631a26c8_PSmgdfDEN1sy76_48537-9104	631a26cd_PSmgdfDEN1sy76_48392-15932
+http	http2	tls,http2.head.bingoEnv,production
+http	http2	tls,http2.head.xwsrequestid,631a26c9_PSmgdfDEN1sy76_48417-3011
+http	http2	tls,last.http.head.bingoEnv,production
+http	http2	tls,last.http.head.xvia,1.1 PSmgdfDEN1eh74:9 (Cdn Cache Server V2.0)
+http	http2	tls,last.http.head.xwsrequestid,631a26c3_PSmgdfDEN1sy76_48376-12925
+http	http2	tls,http.head.eagleid,b47a4ea416626526345827357e	b47a4eaa16626526091513506e	b47a4eaa16626526286544191e
+http	http2	tls,http.head.timingAllowOrigin,*
+http	http2	tls,http2.head.eagleid,b47a4e9916626526295173126e
+http	http2	tls,http2.head.timingAllowOrigin,*
+http	http2	tls,http.head.xsucuricache,MISS
+http	http2	tls,http.head.xsucuriid,14018
+http	http2	tls,http2.head.xsucuricache,MISS
+http	http2	tls,http2.head.xsucuriid,14018
+http	http2	tls,last.http.head.xsucuricache,BYPASS	MISS
+http	http2	tls,last.http.head.xsucuriid,14018
+http	http2	tls,http.head.nel,"{""success_fraction"":0,""report_to"":""cf-nel"",""max_age"":604800}"
+http	http2	tls,http.head.reportTo,"{""endpoints"":[{""url"":""https:\/\/a.nel.cloudflare.com\/report\/v3?s=WYlfzPPDWRBazzOcR%2Fzi550K7OxwEZYKzvZLz1FTwc2t42cLbWTYEPj3uvjYjpEfGSMlpm6Ibs%2B3Hk1suriCqGkG5%2Bd1sF5Yf4Zs9IWf6eRtcA8Z5InLHTmaCbXJx3Mrt1b8ov2sSydUqIxN4WglfarEO0g%3D""}],""group"":""cf-nel"",""max_age"":604800}	{""endpoints"":[{""url"":""https:\/\/a.nel.cloudflare.com\/report\/v3?s=fMlFGunm5qaBDBIBhui71HIvAK3X7ay5g5jFKhFqFY4ScRcLWdfE5SaXA7ygXM5zrSbN8q7o6ELLBbpRUIyiMUGn%2Blbu2bipd5LFxDs1%2BMQJigC1bmcTrepxnyqPSZyzkxuKNitfBlAEONR%2FoAieudY1x3E%3D""}],""group"":""cf-nel"",""max_age"":604800}	{""endpoints"":[{""url"":""https:\/\/a.nel.cloudflare.com\/report\/v3?s=q6DV7ytuqACRAEsZ3mWk94wrdtT02lvDfmwdxyTHG7HvAijpdB6M30XAgdYuOpCkNxAzre1u25WOKayrcUo7W9WjVUasTkSX6fCEhDTOAvVbz0ybEr%2Fz8S4AYP5lGic9eLLKiislDpL%2FT%2BlWKK65%2B7PQujQ%3D""}],""group"":""cf-nel"",""max_age"":604800}"
+http	http2	tls,http2.head.nel,"{""success_fraction"":0,""report_to"":""cf-nel"",""max_age"":604800}"
+http	http2	tls,http2.head.reportTo,"{""endpoints"":[{""url"":""https:\/\/a.nel.cloudflare.com\/report\/v3?s=Npa6fCQuJFHxc8NAN0kTmMrdm%2F1J1Z1YZd0%2FkTgGLowlBuNcJYm8YbsSCdLRtRj97diuepmMVWGI8ELAcdyI9JdtiPVZ4HRhU2II4jq%2Fr0sKlolbStEFHscmnZNaYLBkPxQrxsdDtzX3AkXHD0jOhwlYzio%3D""}],""group"":""cf-nel"",""max_age"":604800}"
+http,banner,"HTTP/1.1 403 Forbidden
+Server: Tengine
+Date: Thu, 08 Sep 2022 16:05:40 GMT
+Content-Type: text/html
+Content-Length: 238
+Connection: keep-alive
+XXXXXLOG: connType=-&&firstByteServed=1&&lastByteServed=1&&hostHeader=gspe72-cn-ssl.ls.apple.com&&servedFromCache=0&&storeFront=-&&itspod=-&&TrPod=-&&turnAroundTime=0&&maps-tile-x=-&&maps-tile-y=-&&maps-tile-z=-&&maps-auth-token=-&&maps-tile-style=-&&eTag=-&&ifNoneMatch=-
+Via: vcache17.cn2687[,403666]
+Timing-Allow-Origin: *
+EagleId: dde7519316626531405673979e"
+http,fp.certainty,0.85
+http,html.title,403 Forbidden
+http,http.body,"<!DOCTYPE HTML PUBLIC ""-//IETF//DTD HTML 2.0//EN"">
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<h1>403 Forbidden</h1>
+<p>You don't have permission to access the URL on this server.<hr/>Powered by Tengine</body>
+</html>"
+http,http.code,403
+http,http.head.connection,keep-alive
+http,http.head.contentLength,238
+http,http.head.contentType,text/html
+http,http.head.date,"Thu, 08 Sep 2022 16:05:40 GMT	Thu, 08 Sep 2022 16:05:46 GMT"
+http,http.head.location,http://www.ge.com/
+http,http.head.server,Tengine
+http,http.message,403 Forbidden
+http,http.uri,/
+http,http.url,http://221.231.81.248/	http://gspe72-cn-ssl.ls.apple.com/
+http,ip.flags,DF
+http,ip.id,0
+http,ip.tos,0
+http,ip.ttl,47
+http,product,Taobao:Tengine:
+http,protocol,http
+http,service.address,221.231.81.248
+http,service.id,217fa21f-0064-4b55-8364-a776cf1ac917
+http,service.port,80
+http,service.transport,tcp
+http,service.vhost,GSPE72-CN-SSL.LS.APPLE.COM
+http,source,syn
+http,syn.rtt,2053254
+http,tcp.flags,"syn,ack"
+http,tcp.options,MSS:05b4
+http,tcp.ts,1242373641
+http,tcp.urg,0
+http,tcp.win,42340
+http,ts,1662653135
+http,vhost,gspe72-cn-ssl.ls.apple.com
+http,http.head.expires,"Thu, 01 Jan 1970 00:00:01 GMT"
+http,http.head.strictTransportSecurity,max-age=0
+http,http.head.xzsbagid,72057594037928828
+http,http.head.xzsbarequestid,MHg3ZjM2MDA4NTNlMTggMTM0LjIwOS4zOS44MDo0OTA3NC0+MTAuMjMuMjA4LjE3ODo4MCBzPTEyNDUgc25pPXVuZW5jcnlwdGVkIGlkPTU0Mjg0Mjk6MDoweDdmMzYwNDI3MTBkOA==	MHg3ZjM2MTM2MjQ1MjggMTM0LjIwOS4zOS44MDo0OTA0MC0+MTAuMjMuMjA4LjE3ODo4MCBzPTI3ODcgc25pPXVuZW5jcnlwdGVkIGlkPTU0MjgzODY6MDoweDdmMzYxMGM4ZDY1OA==
+http,http.head.xcontenttypeoptions,nosniff
+http,http.head.xpoweredby,ASP.NET
+http,apache.info,(CentOS) OpenSSL/1.0.2k-fips
+http,http.head.contentSecurityPolicy,frame-ancestors 'self' https://iframe.lucy.ai https://*.starmind.com https://*.pepsico.com https://*.sap.com https://mytableau.mypepsico.com https://tableau.mypepsico.com https://public.tableau.com https://analytics.kraftheinz.com https://us-west-2b.online.tableau.com;
+http,http.head.xframeoptions,SAMEORIGIN
+http,http.head.xxssprotection,1; mode=block
+http,json.fault.detail.errorcode,messaging.adaptors.http.flow.ApplicationNotFound
+http,json.fault.faultstring,Unable to identify proxy for host: default and url: /
+http,screenshot.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/3341c1f4-8c5e-457b-b24c-d37f560f6310/9804cd48-5c6b-43b0-a19c-a09463322705/177.87.136.22/80/tcp/TRACK.CONBR.JNJ.COM/screenshot.image-e5ce91fcf42f27ac55b3361d5183b18a.png
+http,screenshot.image.md5,e5ce91fcf42f27ac55b3361d5183b18a
+http,screenshot.image.size,8782
+http,http.head.vary,Accept-Encoding	Accept-Encoding
+http,http.head.via,"vcache17.cn2687[,403666]	vcache34.cn2687[,403666]"
+http,os.cpe23,cpe:/o:microsoft:windows:-
+http,os.family,Linux
+http,os.product,Linux
+http,os.vendor,Akamai
+http,http.head.xamzcfid,ImJaQtkFI1wiK5MbHatYG_Fq8LDdpaIxohrAqAyyYo5_uNs5acunNQ==	nXj9s7O-unz9u05VEOpFjvcHfpVa_AA1MQ_h5mT7DKRUNI0h8Ky2sg==
+http,http.head.xamzcfpop,BOS50-C3	EWR53-C3
+http,http.head.xcache,TCP_REFRESH_MISS from a104-77-103-155.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (S)	TCP_REFRESH_MISS from a104-77-103-166.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (S)
+http,http.head.traceresponse,00-1712ed42d3ed4e45f71230e5f83a145f-d0d3921ccf713817-00
+http,http.head.xdebuginfo,eyJyZXRyaWVzIjowfQ==
+http,http.head.xplatformcluster,fys6uk2xguwam-master-7rqtwti
+http,http.head.xplatformrouter,ajqbcjtrtbvomxohbze5xcouzu
+http,http.head.xmsedgeref,0tyYaYwAAAACQA/T4JDPDS4K9QYbZrXUIRVdSMzBFREdFMTUwOABFZGdl
+http,http.head.cacheControl,"private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+http,http.head.referrerPolicy,same-origin
+http,http.head.setCookie,"SHOP_SESSION_TOKEN=1cbf23be-47b9-4e23-bdcc-56348e523ba9; Expires=Thu, 15 Sep 2022 17:30:31 GMT; Path=/; Secure; HttpOnly; SameSite=None	SHOP_SESSION_TOKEN=2fa6fa40-b1d6-4874-8ce9-55e21ab7d410; Expires=Thu, 15 Sep 2022 17:30:36 GMT; Path=/; Secure; HttpOnly; SameSite=None	Shopper-Pref=6183FD5AD131A05D287D512FE95631918CDA0CB9-1663263031900-x%7B%22cur%22%3A%22USD%22%7D; Expires=Thu, 15 Sep 2022 17:30:31 GMT; Path=/; HttpOnly	Shopper-Pref=8710801A8B94E38EC4DD1D2FBB5EF28B08F1DE80-1663263036840-x%7B%22cur%22%3A%22USD%22%7D; Expires=Thu, 15 Sep 2022 17:30:36 GMT; Path=/; HttpOnly	athena_short_visit_id=352fe02c-5e69-4237-a476-05898146400f:1662658231; Expires=Thu, 08 Sep 2022 18:00:31 GMT; Path=/; Secure; HttpOnly; SameSite=None	athena_short_visit_id=afe019b2-2372-4f5a-91af-78a9b64b9d3a:1662658236; Expires=Thu, 08 Sep 2022 18:00:36 GMT; Path=/; Secure; HttpOnly; SameSite=None	fornax_anonymousId=89571e46-ef2f-4205-a86d-340371f4c7b0; Expires=Sat, 07 Sep 2024 17:30:31 GMT; Path=/; Secure; SameSite=None	fornax_anonymousId=a0c3f7ee-2278-496c-9297-b1dbd422bdb0; Expires=Sat, 07 Sep 2024 17:30:36 GMT; Path=/; Secure; SameSite=None"
+http,http.head.xsfdcrequestid,a7ffa709f551a18e6edc684328a296c6	e10f995f2dd162dbdbdf69a2e9e8768b
+http,http.head.erRequestId,4fe3e4246e3e0be2bc35d559d3ec2b9c	6a77fd1ad1d54db7df715818980e4fa4
+http,http.head.erRuleId,r-8ca768e7-2e45-4130-a771-abafd6f500ca
+http,http.head.pragma,no-cache
+http,http.head.keepAlive,timeout=60
+http,http.head.xalbserver,ALB/1.0.9.002
+http,http.head.xserverprocesstime,0.0039	0.004
+http,http.head.xupstreamprocesstime,0.0029	0.003
+http,http.head.xb3traceid,755233b949026d2f	df10fad7a1cef9fe
+http,http.head.accessControlAllowCredentials,true
+http,http.head.accessControlAllowHeaders,"Origin, X-Requested-With, Content-Type, Accept"
+http,http.head.accessControlAllowMethods,"GET, POST, PUT, DELETE, OPTIONS"
+http,http.head.accessControlAllowOrigin,*
+http,http.head.accessControlExposeHeaders,customHeader
+http,http.head.accessControlMaxAge,1728000
+http,http.head.lbInfra,ST PROD DLB
+http,http.head.xapplejinglecorrelationkey,KXQPGE3CNWT24LF7DB5UET6JWY	QL3WDOGKOCTVNTQX6RNPKSN2FE
+http,http.head.xdaiquiriinstance,daiquiri:42282005:st53p00it-qujn14050102:7987:22RELEASE113:daiquiri-amp-store-l7shared-ext-001-st
+http,http.head.host,idiagnostics.apple.com
+http,http.head.xhost,sy02p01ls-geo01161301.ls.apple.com
+http,http.head.xtraceid,3fb01e4e-b12b-409c-8fc1-228e4ced83c7:c0412f9f-1673744
+http,http.head.xrid,13a1af6a-fee4-4dc2-8beb-424fee3e9789	16c6f491-e988-45a2-bf77-7dc736083548	e9fd8f3e-f2cd-4efd-89c0-15f516b7e1e4
+http,json.error.details,[]
+http,json.error.message,Not Found
+http,http.head.xdlbupstream,10.117.106.100:8082	10.117.108.36:8080
+http,http.head.xrespondinginstance,PdsInit:1:pdsinit-5b7dc8d656-54xdl:9025:2222B-108:nocommit	PdsInit:1:pdsinit-5b7dc8d656-7lltf:9025:2222B-108:nocommit
+http,json.message,No route known for jlabs.jnj.com
+http,http.head.appleOriginatingSystem,UnknownOriginatingSystem
+http,http.head.appleSeq,0
+http,http.head.appleTk,false
+http,http.head.b3,69d5fae360fe3c4c7d9856f5b092b673-f8d12da82f1471c9	cd0322c9a1fd98a79ee484f8c1859763-c5b31fdf8bfac7eb
+http,http.head.xapplerequestuuid,55e0f313-626d-a7ae-2cbf-187b424fc9b6	82f761b8-ca70-a756-ce17-f45af549ba29
+http,http.head.xb3spanid,c5b31fdf8bfac7eb	f8d12da82f1471c9
+http,http.head.contentLanguage,en
+http,html.generator,BBEdit 7.0.1
+http,http.head.acceptRanges,none
+http,http.head.lastModified,"Thu, 08 Sep 2022 18:48:55 GMT"
+http,http.head.etag,"W/""1880-1660561887000"""
+http,http.head.cdnuuid,6d726387-0286-4cb2-8674-d8901c7e3626-8280515510	6d726387-0286-4cb2-8674-d8901c7e3626-8280550231
+http,http.head.age,9
+http,http.head.xamzbucketregion,us-east-1
+http,http.head.xamzid2,ps72AedkahIlkfv6Bq5+XrIjsJB6vs2KttMAKZQ+MumYVtPi22GRbQa52Pox/jJBCcrtv8JdBB4=	yajHcPcsjNSO3gZ42SnU6fA+SDkNBhybzyj42yTko0YFT8Q/BqEuq9smTHIDlw/+qxWxBb8WVno=
+http,http.head.xamzrequestid,0RYRA8BV8065GRKE	2N0X1H9DEPJ52VR4
+http,http.head.cdnServer,akam
+http,http.head.referer,http://www.solutionprofessionals.apple.com/
+http,favicon.ico.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/3341c1f4-8c5e-457b-b24c-d37f560f6310/34a682b7-11de-4cf1-97cb-6945cc4dbb74/172.64.152.50/80/tcp/PRD.EMPSTATUSAPP.JNJ.COM/favicon.ico.image-4859e39ae6c0f1f428f2126a6bb32bd9.png
+http,favicon.ico.image.md5,4859e39ae6c0f1f428f2126a6bb32bd9
+http,favicon.ico.image.size,32038
+http,favicon.ico.image.url,http://prd.empstatusapp.jnj.com:80/favicon.ico
+http,html.favicon,favicon.ico
+http,http.head.mimeVersion,1.0
+http,os.device,Web Proxy
+http,http.head.akamaiMonIucidDel,103
+http,http.head.xcity,ZZZ
+http,http.head.xcountrycode,US
+http,http.head.xN,S
+http,http.head.xvia,ap-southeast-1
+http,http.head.xakamaistaging,ESSL
+http,http.head.xcachehits,0
+http,http.head.xrequestid,44f4c332d3fca322993fbcefc5ac33f8	f425c6f847081b22453fcd16de11255d
+http,http.head.xb2fcscache,no-cache
+http,http.head.xcachestatus,MISS from KS-CLOUD-QZ-MP-12-07	MISS from KS-CLOUD-XZ-CT-11-12
+http,http.head.xcdnrequestid,7714d47d10b50d881e4e34302c81fe58	aee6334aafd958c1d9ac8df93dd0c97d
+http,http.head.xkscrequestid,7714d47d10b50d881e4e34302c81fe58	aee6334aafd958c1d9ac8df93dd0c97d
+http,http.head.xlinkvia,xzct11:8099;qzmp12:443;
+http,html.copyright,© 2016
+http,html.forms,GET:/	POST:/javascript:void(0)
+http,http.head.xaspnetmvcversion,5.2
+http,http.head.xaspnetversion,4.0.30319
+http,os.certainty,0.5
+http,json.errorCode,APIG.0101
+http,json.errorMsg,The API does not exist or has not been published in the environment
+http,json.requestId,63564b8e25b60a9b506393035e11bd85	8dc9130e8b13f8db0053357e78099a6f
+http,http.head.p3p,"CP=""CAO PSA OUR"""
+http,http.head.wwwAuthenticate,"Basic realm=""Integration Server"", encoding=""UTF-8"""
+http,http.head.xahenvironment,prod
+http,http.head.microsoftsharepointteamservices,16.0.0.22824
+http,http.head.msCv,oGMFUNzgACBCKICWHqSvhg.0	oGMFUjdgACBCKIqAZD1rig.0
+http,http.head.nel,"{""success_fraction"":0,""report_to"":""cf-nel"",""max_age"":604800}"
+http,http.head.reportTo,"{""endpoints"":[{""url"":""https:\/\/a.nel.cloudflare.com\/report\/v3?s=2LCsFEtQ8Mu33Fh0qzdopY%2FaLOXu5zyfeiv6J9vbhEwBs4pM7WMm%2BHtAlEi4Xl31fwiwWz5Gm6nMyt0lJidEUuc%2B%2FUwjstEmF0xNGRSo4plW5LDktzK7CMDKWuWhBfxWy2A4N2KFH9CypOWw5bUYZGOcpZU%3D""}],""group"":""cf-nel"",""max_age"":604800}	{""endpoints"":[{""url"":""https:\/\/a.nel.cloudflare.com\/report\/v3?s=FktDUKh0JlsHidQ%2BR%2B012oO3WCQJynZIYuDuzT65ckaOVK3ijgHGqGMtq66LgdZF5OBZywWPvol2tZG%2Bue9NW2WmK90TrkiVjlkTQUb%2FQRJJVD59DHoh5RbxIEEIFn52nDsGJIEx0MmlcONcqNxnGbJFs7c%3D""}],""group"":""cf-nel"",""max_age"":604800}"
+http,http.head.requestId,500563a0-e0dc-2000-4228-80961ea4af86	520563a0-6037-2000-4228-8a80643d6b8a
+http,http.head.spiislatency,0
+http,http.head.sprequestduration,11	12
+http,http.head.sprequestguid,500563a0-e0dc-2000-4228-80961ea4af86	520563a0-6037-2000-4228-8a80643d6b8a
+http,http.head.x1dscollectorurl,https://mobile.events.data.microsoft.com/OneCollector/1.0/
+http,http.head.xariacollectorurl,https://browser.pipe.aria.microsoft.com/Collector/3.0/
+http,http.head.xdataboundary,None
+http,http.head.xmsinvokeapp,1; RequireReadOnly
+http,json.status,404
+http,http.head.xgeocountry,US
+http,http.head.xalbcode,404000
+http,http.head.xrouterstatus,MISS : cant find any router from cache or remote
+http,json.error,Not Found
+http,json.path,/
+http,json.timestamp,2022-09-08T17:30:17.472+00:00	2022-09-08T17:30:43.428+00:00
+http,http.head.altSvc,"h3="":443""; ma=86400, h3-29="":443""; ma=86400"
+http,http.head.cfRay,747969926a6517d9-EWR	747969b1cdde17f9-EWR
+http,http.head.cfCacheStatus,DYNAMIC
+http,cookie,AWSELB
+http,http.head.xdrupalcache,MISS
+http,last.html.title,No Access
+http,last.http.body,"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"" />
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>No Access</title>
+    <script src=""/bundles/jquery?v=HULxcsWR0plXjExLp7B6xnhYAwIe-4lGFxSXBikK3LA1""></script>
+
+    <script src=""/bundles/jqueryval?v=WIBS3z4DRypbvQbaw1N2AJ2LFkQZ9d8fbf1093pq4cs1""></script>
+
+    <script src=""/bundles/bootstrap?v=2Fz3B0iizV2NnnamQFrx-NbYJNTFeBJ2GM05SilbtQU1""></script>
+
+    <script src=""/bundles/datatables?v=iRzInuXcsQhtbwGrjbK6r2qdPQxg7_uEWGJZcrrMe_g1""></script>
+
+    <link href=""/Content/datatables?v=s53nDU8pcHj9xOG7QmJt4x4AG2mVi97keO1ow3I04cI1"" rel=""stylesheet""/>
+
+    <link href=""/Content/css?v=BMwHizA4h9MWtWihcfKblJGZdUfSpxf4uOIFOiFKpNk1"" rel=""stylesheet""/>
+
+    <link href=""/Assets/CSS/main.css"" rel=""stylesheet""/>
+
+    <script src=""/bundles/modernizr?v=wBEWDufH_8Md-Pbioxomt90vm6tJN2Pyy9u9zHtWsPo1""></script>
+
+</head>
+<body>
+    <div class=""loaded"">Loading&#8230;</div>
+    <div class=""navbar navbar-inverse navbar-fixed-top"">
+        <html><head><title>Object moved</title></head><body>
+<h2>Object moved to <a href=""https://sso.connect.pingidentity.com/sso/idp/SSO.saml2?idpid=2b7417d6-f910-46bf-bcf1-4299613c9e9d&amp;SAMLRequest=fZHBbsIwEER%2fxfLdSbACBItEoqCqkWiLIO2hl8okGzBK7NTr0PL3TUMr0QNcR7PzZnenKOuqEbPW7fUaPlpAR9JFTN95FGwlAGfjfByykG8LFo34iOV8MprwUIa8HFPyChaV0THlXkBJithCqtFJ7Top4JwFExZE2WAowkgEwzdKVtY4k5vqTulC6V1MW6uFkahQaFkDCpeLzexxKbpEsT2bUDxk2YqtnjcZJTNEsK6Dzo3Gtga7AXtUObyslzHdO9eg8H10O1Y74x30wctN7SMa%2fwhWlSdKvupKo%2bj3vk1vfqvSZPrjFv169mL%2b9rj8K0qTK7Wm%2fkXuGdKIpy4oXaxMpfITuTe2lu46Z%2bANekUVrOytotXYQK5KBUV3q6oyn3ML0kFMnW2BEj85U%2f%2f%2fPPkG"">here</a>.</h2>
+</body></html>
+<div class=""container"">
+    <div class=""navbar-header"">
+        <button type=""button"" class=""navbar-toggle"" data-toggle=""collapse"" data-target="".navbar-collapse"">
+            <span class=""icon-bar""></span>
+            <span class=""icon-bar""></span>
+            <span class=""icon-bar""></span>
+        </button>
+    </div>
+    <div class=""navbar-collapse collapse topNavBar"">
+        <ul class=""nav navbar-nav"">
+            
+        </ul>
+        <ul class=""nav navbar-nav navbar-nav-right"">
+                <li><a class=""silos"" href=""/Silos/Index"">My Silos</a></li>
+            <li>
+                
+                <a class = ""profile""></a>
+                
+            </li>
+        </ul>
+    </div>
+</div>
+    </div>
+    <div class=""container body-content"">
+
+
+        
+
+<h2>
+    Currently you do not have access to this site or page.<br/>
+    To request access please e-mail:<a href=""/cdn-cgi/l/email-protection#503b2324353636353e103924237e3a3e3a7e333f3d""><span class=""__cf_email__"" data-cfemail=""107b6364757676757e507964633e7a7e7a3e737f7d"">[email&#160;protected]</span></a>(Orthopedics) or <a href=""/cdn-cgi/l/email-protection#a6d5d4d2c1d4c9d3d6cbc7e6cfd2d588ccc8cc88c5c9cb""><span class=""__cf_email__"" data-cfemail=""7a09080e1d08150f0a171b3a130e095410141054191517"">[email&#160;protected]</span></a> (Spine)
+</h2>
+
+    
+
+    </div>
+    <div class=""container footer"">
+        <footer>
+            <div>
+                Johnson &amp; Johnson Confidential - Use Pursuant to Company Instructions. The information contained within the J&amp;J Enterprise Directory is for internal use only.<br>
+                © Johnson &amp; Johnson Services, Inc., 2012. All Rights Reserved.<br>
+            </div>
+            <div>
+                <a class=""contact"" href=""/Home/PrivacyPolicy"">Privacy Policy</a> |
+                <a class=""contact"" href=""/Home/LegalNotice"">Legal Notice</a>
+                <br>
+            </div>
+        </footer>
+    </div>
+<script data-cfasync=""false"" src=""/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js""></script></body>
+</html>"
+http,last.http.code,302
+http,last.http.head.cacheControl,private
+http,last.http.head.cfCacheStatus,DYNAMIC
+http,last.http.head.cfRay,7478d38facf278db-EWR
+http,last.http.head.contentType,text/html; charset=utf-8
+http,last.http.head.date,"Thu, 08 Sep 2022 15:48:05 GMT"
+http,last.http.head.location,https://sso.connect.pingidentity.com/sso/idp/SSO.saml2?idpid=2b7417d6-f910-46bf-bcf1-4299613c9e9d&SAMLRequest=fZHBbsIwEER%2fxfLdSbACBItEoqCqkWiLIO2hl8okGzBK7NTr0PL3TUMr0QNcR7PzZnenKOuqEbPW7fUaPlpAR9JFTN95FGwlAGfjfByykG8LFo34iOV8MprwUIa8HFPyChaV0THlXkBJithCqtFJ7Top4JwFExZE2WAowkgEwzdKVtY4k5vqTulC6V1MW6uFkahQaFkDCpeLzexxKbpEsT2bUDxk2YqtnjcZJTNEsK6Dzo3Gtga7AXtUObyslzHdO9eg8H10O1Y74x30wctN7SMa%2fwhWlSdKvupKo%2bj3vk1vfqvSZPrjFv169mL%2b9rj8K0qTK7Wm%2fkXuGdKIpy4oXaxMpfITuTe2lu46Z%2bANekUVrOytotXYQK5KBUV3q6oyn3ML0kFMnW2BEj85U%2f%2f%2fPPkG
+http,last.http.head.server,cloudflare
+http,last.http.head.setCookie,ReturnUrl=http://stg-mto.jnj.com/NoAccess/Index; path=/	JJCFGEOCC=us; Max-Age=3600; Path=/; Domain=.stg-mto.jnj.com;=nil
+http,last.http.head.xaspnetmvcversion,5.2
+http,last.http.head.xaspnetversion,4.0.30319
+http,last.http.head.xpoweredby,ASP.NET
+http,last.http.message,302 Found
+http,last.http.uri,/NoAccess/Index
+http,last.http.url,http://stg-mto.jnj.com/NoAccess/Index
+http,http.head.serverTiming,"dtSInfo;desc=""0"", dtRpid;desc=""534961895""	dtSInfo;desc=""0"", dtRpid;desc=""963747438"""
+http,http.head.xoneagentjsinjection,true
+http,http.head.xruxitjsagent,true
+http,http.head.xarequestid,@1CYX0F5x707x29387x0	@1CYX0F5x708x29391x0
+http,html.inputs,password:Password	submit:Field	text:UserName
+http,http.head.xccdncachettl,0
+http,http.head.xccdnorigintime,70	86
+http,http.head.xhcsproxytype,0
+http,http.head.processtime,0.000
+http,http.head.retryAfter,0
+http,http.head.xservedby,cache-ewr18140-EWR	cache-ewr18158-EWR
+http,http.head.xtimer,"S1662652339.625045,VS0,VE0	S1662652339.631244,VS0,VE0"
+http,http.head.sapPerfFesrec,1373.000000
+http,http.head.sapServer,true
+http,http.head.eagleid,dde7519316626531405673979e	dde751a416626531464896386e
+http,http.head.timingAllowOrigin,*
+http,http.head.xcacheremote,TCP_MISS from a23-40-16-78.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)
+http,http.head.xsucuriid,14018
+http,http.head.xxxxxlog,connType=-&&firstByteServed=1&&lastByteServed=1&&hostHeader=gspe72-cn-ssl.ls.apple.com&&servedFromCache=0&&storeFront=-&&itspod=-&&TrPod=-&&turnAroundTime=0&&maps-tile-x=-&&maps-tile-y=-&&maps-tile-z=-&&maps-auth-token=-&&maps-tile-style=-&&eTag=-&&ifNoneMatch=-
+http	tls,banner,"HTTP/1.1 403 Forbidden
+Server: Tengine
+Date: Thu, 08 Sep 2022 15:57:27 GMT
+Content-Type: text/html
+Content-Length: 238
+Connection: keep-alive
+XXXXXLOG: connType=-&&firstByteServed=1&&lastByteServed=1&&hostHeader=gspe72-cn-ssl.ls.apple.com&&servedFromCache=0&&storeFront=-&&itspod=-&&TrPod=-&&turnAroundTime=0&&maps-tile-x=-&&maps-tile-y=-&&maps-tile-z=-&&maps-auth-token=-&&maps-tile-style=-&&eTag=-&&ifNoneMatch=-
+Via: vcache24.cn2687[,403666]
+Timing-Allow-Origin: *
+EagleId: dde7519a16626526479171864e"
+http	tls,http.code,403
+http	tls,http.head.contentLength,238
+http	tls,http.head.contentType,text/html
+http	tls,http.head.date,"Thu, 08 Sep 2022 15:56:54 GMT	Thu, 08 Sep 2022 15:57:15 GMT	Thu, 08 Sep 2022 15:57:27 GMT"
+http	tls,http.head.expires,"Thu, 01 Jan 1970 00:00:00 GMT"
+http	tls,http.head.location,https://events03.huawei.com/
+http	tls,http.head.server,Tengine
+http	tls,http.head.strictTransportSecurity,max-age=31536000; includeSubDomains
+http	tls,http.head.xzsbagid,72057594037928828	72057594037928829
+http	tls,http.head.xzsbarequestid,MHg3ZjAyYTYxNTRmODggMTM0LjIwOS4zOS44MDo0NDY0Ni0+MTAuMjMuMjA4LjIzNDo0NDMgcz0xMDcwIHNuaT11YXQtbXlhY3V2dWUtdXpvci1hZG1pbi5qbmouY29tIGlkPTU0MDUzNDg6MDoweDdmMDI5MTU4OTM2OA==	MHg3ZjM2MjBlYmJlMzggMTM0LjIwOS4zOS44MDo0NDU4Mi0+MTAuMjMuMjA4LjE3ODo0NDMgcz0yNzI4IHNuaT11YXQtbXlhY3V2dWUtdXpvci1hZG1pbi5qbmouY29tIGlkPTU0Mjc4MjA6MDoweDdmMzYyMGNhMGFkOA==
+http	tls,http.message,403 Forbidden
+http	tls,http.uri,/
+http	tls,http.url,https://221.231.81.248/	https://gspe72-cn-ssl.ls.apple.com/
+http	tls,ip.flags,DF
+http	tls,ip.id,0
+http	tls,ip.tos,0
+http	tls,ip.ttl,46
+http	tls,protocol,http	tls
+http	tls,service.address,221.231.81.248
+http	tls,service.id,f56ff5c7-6f7d-4cd0-95e6-35388e367caa
+http	tls,service.port,443
+http	tls,service.transport,tcp
+http	tls,service.vhost,GSPE72-CN-SSL.LS.APPLE.COM
+http	tls,source,syn
+http	tls,syn.rtt,52260781
+http	tls,tcp.flags,"syn,ack"
+http	tls,tcp.options,MSS:05b4
+http	tls,tcp.ts,3186713654
+http	tls,tcp.urg,0
+http	tls,tcp.win,42340
+http	tls,tls.authorityKeyID,1e5c1791055702fc775ce37043ec6bfdddd2d869	96de61f1bd1c1629531cc0cc7d3b830040e61a7c
+http	tls,tls.certificates,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
+http	tls,tls.cipher,0xc02f
+http	tls,tls.cipherName,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+http	tls,tls.cn,*.alicdn.com	gspe72-cn-ssl.ls.apple.com
+http	tls,tls.crl,http://crl.apple.com/apsrsa12g1.crl	http://crl.globalsign.com/gs/gsorganizationvalsha2g2.crl
+http	tls,tls.fp.caSha1,0040a5e5da9c1808f8f18cdaf1fc20ba1564f6aa	902ef2deeb3c5b13ea4c3d5193629309e231ae55
+http	tls,tls.fp.sha1,376e6355415be647bdf8205a68d15e3447ea74ba	eecc04400fa8dd389136aca6e27a1587baab96d7
+http	tls,tls.fp.sha256,SHA256:LsKQpQIyQ6eNsISUIO//uN+KcNCOOu5rwaScxAqqAYY=	SHA256:VAw8Ohau/MFiCJANECGpwDzkHJCct793/IQQGhAAkxg=
+http	tls,tls.issuer,"CN=Apple Public Server RSA CA 12 - G1,O=Apple Inc.,ST=California,C=US	CN=GlobalSign Organization Validation CA - SHA256 - G2,O=GlobalSign nv-sa,C=BE"
+http	tls,tls.issuingURL,http://certs.apple.com/apsrsa12g1.der	http://secure.globalsign.com/cacert/gsorganizationvalsha2g2r1.crt
+http	tls,tls.names,*.alicdn.com	*.alikunlun.com	*.cmos.greencompute.org	*.django.t.taobao.com	*.mobgslb.tbcache.com	alicdn.com	alikunlun.com	cmos.greencompute.org	gspe72-cn-ssl.ls.apple.com	m.intl.taobao.com	s.tbcdn.cn
+http	tls,tls.notAfter,2023-06-19T00:34:03Z	2023-08-05T08:16:16Z
+http	tls,tls.notAfterTS,1687134843	1691223376
+http	tls,tls.notBefore,2022-05-20T00:34:04Z	2022-07-04T08:16:17Z
+http	tls,tls.notBeforeTS,1653006844	1656922577
+http	tls,tls.oscp,http://ocsp.apple.com/ocsp03-apsrsa12g101	http://ocsp2.globalsign.com/gsorganizationvalsha2g2
+http	tls,tls.serial,6e775ee2cf9b27d3de3ce79d	7cf3b9051791b89b3f9f82f55c2b423
+http	tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+http	tls,tls.subject,"CN=*.alicdn.com,O=Alibaba (China) Technology Co.\, Ltd.,L=HangZhou,ST=ZheJiang,C=CN	CN=gspe72-cn-ssl.ls.apple.com,OU=management:idms.group.5707239,O=Apple Inc.,ST=California,C=US"
+http	tls,tls.subjectKeyID,3316e68373a71a9ce128563c0b8f52cd732fc72c	765ed4e6cd9149235e320cfb81450083ff98f864
+http	tls,tls.supportedVersionNames,TLSv1.2
+http	tls,tls.supportedVersions,0x0303
+http	tls,tls.version,0x0303
+http	tls,tls.versionName,TLSv1.2
+http	tls,ts,1662652602
+http	tls,vhost,gspe72-cn-ssl.ls.apple.com
+http	tls,html.copyright,International Business Machines Corporation 1999 -->
+http	tls,html.forms,GET:https://nursing.jnj.com/search	POST:/
+http	tls,html.inputs,hidden:brightspot.form.id	hidden:dummyIEField	search:q	text:email	text:first-name	text:last-name
+http	tls,html.title,403 Forbidden
+http	tls,http.body,"<!DOCTYPE HTML PUBLIC ""-//IETF//DTD HTML 2.0//EN"">
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<h1>403 Forbidden</h1>
+<p>You don't have permission to access the URL on this server.<hr/>Powered by Tengine</body>
+</html>"
+http	tls,http.head.connection,keep-alive
+http	tls,http.head.contentSecurityPolicy,default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; frame-ancestors 'self'; base-uri 'self'; block-all-mixed-content
+http	tls,http.head.vary,Accept-Encoding	Accept-Encoding
+http	tls,http.head.xcontenttypeoptions,nosniff
+http	tls,http.head.xframeoptions,SAMEORIGIN
+http	tls,http.head.xpoweredby,pimcore
+http	tls,screenshot.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/3341c1f4-8c5e-457b-b24c-d37f560f6310/c107e1a3-ec86-4feb-be05-93f24c2f50c0/199.65.209.3/443/tcp/SBOXBISGAPTAB.JNJ.COM/screenshot.image-26871850d3cf24975a4ebeea9e027c73.png
+http	tls,screenshot.image.md5,26871850d3cf24975a4ebeea9e027c73
+http	tls,screenshot.image.size,80372
+http	tls,http.head.accept,*/*
+http	tls,http.head.host,radarclient-rws.apple.com
+http	tls,http.head.userAgent,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36 runZero/3"
+http	tls,http.head.xforwardedfor,134.209.39.80
+http	tls,http.head.xforwardedport,13540
+http	tls,http.head.xforwardedproto,https
+http	tls,favicon.ico.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/5c56e728-df83-48e5-be57-15846fd807eb/4660ad8d-27b3-4a5e-8256-38514bed5a32/199.91.74.211/7443/tcp/EVENTS03.HUAWEI.COM/favicon.ico.image-ea7e735be4d52793d3a7a71a15e19586.png
+http	tls,favicon.ico.image.md5,ea7e735be4d52793d3a7a71a15e19586
+http	tls,favicon.ico.image.size,16958
+http	tls,favicon.ico.image.url,https://events03.huawei.com:7443/favicon.ico
+http	tls,fp.certainty,0.85
+http	tls,html.favicon,/assets/icon/android-icon-192x192.png
+http	tls,http.head.acceptRanges,bytes
+http	tls,http.head.cacheControl,no-store
+http	tls,http.head.etag,"""61eaa9a0-1094"""
+http	tls,http.head.lastModified,"Sat, 20 Aug 2022 18:25:49 GMT	Sat, 20 Aug 2022 18:30:00 GMT"
+http	tls,http.head.via,"vcache23.cn2687[,403666]	vcache24.cn2687[,403666]	vcache33.cn2687[,403666]"
+http	tls,product,Taobao:Tengine:
+http	tls,http.head.xamzid2,32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSBq4vLN2kLzVdNeSlBCxyXP1rG55k4S
+http	tls,http.head.xamzrequestid,000001831E29008F640C1696598BF1A0
+http	tls,http.head.xamzserversideencryption,AES256
+http	tls,last.html.title,403 Forbidden
+http	tls,last.http.body,"<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->"
+http	tls,last.http.code,403
+http	tls,last.http.head.acceptRanges,bytes
+http	tls,last.http.head.contentLength,548
+http	tls,last.http.head.contentType,text/html
+http	tls,last.http.head.date,"Thu, 08 Sep 2022 17:29:52 GMT	Thu, 08 Sep 2022 17:29:56 GMT	Thu, 08 Sep 2022 17:30:45 GMT"
+http	tls,last.http.head.etag,"""61eaa9a0-1094"""
+http	tls,last.http.head.lastModified,"Fri, 21 Jan 2022 12:40:00 GMT"
+http	tls,last.http.head.server,openresty
+http	tls,last.http.head.xamzid2,32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSt0usR4LGH+NN37zbQRvhw2jUQSZ5yT
+http	tls,last.http.head.xamzrequestid,000001831E26CA95640CF5B39902B2E6
+http	tls,last.http.head.xamzserversideencryption,AES256
+http	tls,last.http.message,403 Forbidden
+http	tls,last.http.uri,/
+http	tls,last.http.url,https://events03.huawei.com/
+http	tls,http.head.accessControlAllowOrigin,*
+http	tls,http.head.altSvc,"h3-Q050="":443""; ma=93600,quic="":443""; ma=93600; v=""46,43"""
+http	tls,http.head.xxssprotection,1
+http	tls,tls.rzfp0,"v0|t10:alert#02#46:,t12:hello#0303#cca8#:sdone#00#,t13:hello#0304#1302#0033=n0024/002b=n0002:hello#0000#0000#,f0:hello#0304#1302#0033=n0024/002b=n0002:hello#0000#0000#,f5:hello#0304#1302#0033=n0024/002b=n0002:hello#0000#0000#,sne:alert#02#70:,t12hc:hello#0303#cca8#:sdone#00#,ale:alert#02#32:,alu:hello#0304#1302#0033=n0024/002b=n0002:hello#0000#0000#,fd2:alert#02#28:,rts:random|0304|fd2||fd2"
+http	tls,http.head.age,32	37
+http	tls,http.head.xamzcfid,8bvq2o7P4TLLEtv-x7GDvUCTFXut6HPMejZgNlAO3Qwgz191_QAkRw==	cduocudtwi3ABXNsjO8N8hzhxv5qCd0Kcx_gpoLRVE-0OpAdkIjUxg==	nNtC7tmYy7mJruz7nHdS2NojImmlo4XWbTy8U3lhYfhKHQ2qwqRHiA==
+http	tls,http.head.xamzcfpop,CDG50-C1
+http	tls,http.head.xcache,TCP_MISS from a104-77-103-166.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)
+http	tls,http.head.xamzversionid,eEyHgWeJbAkgD_ZvKlet7GJigF1_b8B.
+http	tls,tls.expired,serial=18de1efa571cc70b11bd153c9fb58f81
+http	tls,http.head.setCookie,CLOUDWAFSESID=4e501791a3ae57b162; path=/	CLOUDWAFSESID=81c3173871979d166d; path=/	CLOUDWAFSESTIME=1662658250664; path=/	CLOUDWAFSESTIME=1662658345099; path=/
+http	tls,http.head.xaspnetmvcversion,5.2
+http	tls,last.html.favicon,/favicon.ico
+http	tls,last.http.head.cacheControl,"no-cache, must-revalidate	no-cache, no-store"
+http	tls,last.http.head.setCookie,CLOUDWAFSESID=2143f73aff11a7db64; path=/	CLOUDWAFSESID=caf0e7332db5bfa719; path=/	CLOUDWAFSESID=faa0a765a9566907ff; path=/	CLOUDWAFSESTIME=1662658191991; path=/	CLOUDWAFSESTIME=1662658192310; path=/	CLOUDWAFSESTIME=1662658245427; path=/
+http	tls,last.http.head.xaspnetmvcversion,5.2
+http	tls,last.http.head.xpoweredby,pimcore
+http	tls,os.certainty,0.5
+http	tls,os.family,Linux
+http	tls,os.vendor,Cisco
+http	tls,last.http.head.location,/my.logout.php3?errorcode=19	/my.policy
+http	tls,http.head.p3p,"CP=""NON COR CURa ADMa OUR NOR UNI COM NAV STA"""
+http	tls,http.head.referrerPolicy,same-origin
+http	tls,http.head.xsfdcedgeerr,true
+http	tls,http.head.xsfdcrequestid,0f8870f0c6cf5a6827ce9d5d47f4877e	77bbc390ec4158fceca6c2eebae5dd6a	9b32f4f9790b86e6ba7dd3391a9431a3	b1d4009773a67ec63de187aada8e4653
+http	tls,last.html.forms,POST:/en/account/login
+http	tls,last.html.inputs,hidden:_target_path	hidden:_token	hidden:language	password:_password	text:_username
+http	tls,last.http.head.contentSecurityPolicy,frame-ancestors  'self'
+http	tls,last.http.head.expires,"Thu, 08 Sep 2022 15:49:49 GMT	Thu, 19 Nov 1981 08:52:00 GMT"
+http	tls,last.http.head.p3p,"CP=""NON COR CURa ADMa OUR NOR UNI COM NAV STA"""
+http	tls,last.http.head.referrerPolicy,no-referrer
+http	tls,last.http.head.strictTransportSecurity,max-age=16070400;
+http	tls,last.http.head.vary,"Accept-Encoding,User-Agent"
+http	tls,last.http.head.xcontenttypeoptions,nosniff
+http	tls,last.http.head.xframeoptions,DENY
+http	tls,last.http.head.xsfdcrequestid,65dc1b889789e0128959810231fa9066
+http	tls,last.http.head.xxssprotection,1; mode=block
+http	tls,tls.caUnknown,issuer=CN=HWIT Enterprise CA 1
+http	tls,http.head.contentSecurityPolicyReportOnly,connect-src * https://*.tiles.mapbox.com https://api.mapbox.com; default-src blob:; font-src * data:; frame-src * data:; img-src * data: blob:; object-src data:; report-uri /vizql/csp-report; script-src * blob:; style-src * 'unsafe-inline'
+http	tls,last.http.head.pragma,no-cache
+http	tls,http.head.erRequestId,2b982ed8a78c7025a8258bdaf1a27504	6a77fd1ad1d54db7df715818980e4fa4	842bf8d3086b70791f123cb5bdd90c51	ac4053e15730ea12db3769a5884cabf6	d45ccc097923fd297c7c935d5fbce70a
+http	tls,http.head.erRuleId,r-8ca768e7-2e45-4130-a771-abafd6f500ca
+http	tls,http.head.pragma,no-cache
+http	tls,last.http.head.erRequestId,e47c14956ad573498aa4936cff4ca95e
+http	tls,last.http.head.erRuleId,r-8ca768e7-2e45-4130-a771-abafd6f500ca
+http	tls,http.head.contentLanguage,en
+http	tls,http.head.expectCt,max-age=0
+http	tls,http.head.xoktarequestid,YxoOZO2Bq-eq5jti0_i9zQAACx0	YxoObq-4L9oZ53RrZGL0fAAAC2c	YxoOdEfVSCrVXofCu9TlfAAABm0
+http	tls,http.head.xratelimitlimit,60
+http	tls,http.head.xratelimitremaining,56	58	59
+http	tls,http.head.xratelimitreset,1662652064	1662652080
+http	tls,http.head.xrobotstag,"noindex, nofollow"
+http	tls,http.head.xuacompatible,IE=edge
+http	tls,last.http.head.contentLanguage,en
+http	tls,last.http.head.expectCt,"report-uri=""https://oktaexpectct.report-uri.com/r/t/ct/reportOnly"", max-age=0"
+http	tls,last.http.head.xoktarequestid,YxoOuO7zFBEFkCUO3Y4URAAACug
+http	tls,last.http.head.xratelimitlimit,60
+http	tls,last.http.head.xratelimitremaining,58
+http	tls,last.http.head.xratelimitreset,1662652146
+http	tls,last.http.head.xrobotstag,"noindex,nofollow"
+http	tls,last.http.head.xuacompatible,IE=edge
+http	tls,http.head.keepAlive,timeout=60
+http	tls,http.head.xalbserver,ALB/1.0.9.002
+http	tls,http.head.xserverprocesstime,0.003	0.004	0.0099
+http	tls,http.head.xupstreamprocesstime,0.003	0.009
+http	tls,last.http.head.xalbserver,ALB
+http	tls,last.http.head.xserverprocesstime,0.0049
+http	tls,last.http.head.xupstreamprocesstime,0.0049
+http	tls,http.head.xhelpappresponseid,2d2b2efe-39ea-46cc-8639-e37a04c473a6	659cf2fc-2d2e-415b-b8bb-b0cdcbcc776b	f03258d9-6808-47dd-bf8f-0806b21985ee
+http	tls,json.errorCode,APIG.0101
+http	tls,json.errorId,authentication.failed
+http	tls,json.errorMessage,Unable to validate authenticity of the credentials provided
+http	tls,json.errorTitle,Authentication Failed
+http	tls,json.responseId,2707b2c1-8019-4d14-a2aa-1f087bd99a07	2d2b2efe-39ea-46cc-8639-e37a04c473a6	659cf2fc-2d2e-415b-b8bb-b0cdcbcc776b	f03258d9-6808-47dd-bf8f-0806b21985ee
+http	tls,last.http.head.xhelpappresponseid,2707b2c1-8019-4d14-a2aa-1f087bd99a07
+http	tls,http.head.xapplerequestuuid,2181c68d-72cd-e535-b761-80ba604329b0	9ba2f8a7-5a31-8136-dff1-b23490ba630a	c2f0c6a3-65ec-1b23-fff7-541cebe3a1d3
+http	tls,http.head.xdlbupstream,10.191.34.77:2001	10.191.34.9:2001	17.172.65.13:2001
+http	tls,last.http.head.via,"LA-MEX-queretaro-EDGE2-CACHE6[2101],LA-MEX-queretaro-EDGE2-CACHE7[1934,TCP_MISS,2099],LA-MEX-mexicocity-GLOBAL1-CACHE27[1925],LA-MEX-mexicocity-GLOBAL1-CACHE18[1661,TCP_MISS,1924],EA-SGP-GLOBAL1-CACHE13[1424],EA-SGP-GLOBAL1-CACHE23[963,TCP_MISS,1423]	LA-MEX-queretaro-EDGE2-CACHE7[1466],LA-MEX-queretaro-EDGE2-CACHE8[1461,TCP_MISS,1464],LA-MEX-mexicocity-GLOBAL1-CACHE30[1448],LA-MEX-mexicocity-GLOBAL1-CACHE26[1188,TCP_MISS,1444],EA-SGP-GLOBAL1-CACHE11[950],EA-SGP-GLOBAL1-CACHE16[947,TCP_MISS,949]	LA-MEX-queretaro-EDGE2-CACHE7[2165],LA-MEX-queretaro-EDGE2-CACHE7[2161,TCP_MISS,2164],LA-MEX-mexicocity-GLOBAL1-CACHE23[2152],LA-MEX-mexicocity-GLOBAL1-CACHE33[1894,TCP_MISS,2152],EA-SGP-GLOBAL1-CACHE10[969],EA-SGP-GLOBAL1-CACHE26[967,TCP_MISS,968]"
+http	tls,last.http.head.xapplerequestuuid,19fdd286-c77f-4e0d-8987-79a408ca318f
+http	tls,last.http.head.xdlbupstream,10.191.34.11:2001
+http	tls,http.head.xwafflestreamid,3d1ab4ba-f50d-4170-8769-4e8c924146fd	6409f45c-187d-4de2-a561-a0ecf0aa288e	d135c3c4-85e4-4b7c-b300-81dc779cc879
+http	tls,last.http.head.xwafflestreamid,e9120597-a141-4ba7-9a32-5ea5c9680cf0
+http	tls,last.http.head.host,reno-incline-prod.apple.com
+http	tls,http.head.xtableau,Tableau Server
+http	tls,last.http.head.contentSecurityPolicyReportOnly,report-uri https://sentry.io/api/1479396/security/?sentry_key=ebff80a744024d8a8f5630df4ea55e5d&sentry_environment=PROD&sentry_release=2022-8-24-1; default-src 'self'; script-src 'self' static.dynamicsignal.com cdn.pendo.io data.pendo.io platform.twitter.com connect.facebook.net assets.adobedtm.com 'nonce-53356ff37751c421848484f5c6f0e809'; style-src 'self' static.dynamicsignal.com *.cloudfront.net *.googleapis.com maxcdn.bootstrapcdn.com 'unsafe-inline'; font-src * data: blob:; img-src * data: blob:; media-src * data: blob:; frame-src 'self' www.youtube.com platform.twitter.com www.facebook.com reg.voicestorm.com reg-eu.voicestorm.com reg.voicestorm.biz reg.dynamicsignal.com; manifest-src *; connect-src cdn.pendo.io data.pendo.io 'self' static.dynamicsignal.com api.dynamicsignal.com www.googletagmanager.com www.google-analytics.com ssl.google-analytics.com translate.google.com *.googleapis.com *.cloudfront.net *.doubleclick.net platform.twitter.com connect.facebook.net assets.adobedtm.com *.sentry.io sentry.io olivia.paradox.ai gateway.zscloud.net relay.voicestorm.com relay-eu.voicestorm.com relay.voicestorm.biz relay.dynamicsignal.com freq.voicestorm.com freq-eu.voicestorm.com freq.voicestorm.biz freq.dynamicsignal.com api.voicestorm.com api-eu.voicestorm.com api.voicestorm.biz api.dynamicsignal.com apigateway.voicestorm.com apigateway-eu.voicestorm.com apigateway.voicestorm.biz apigateway.dynamicsignal.com streaming.voicestorm.com:* streaming-eu.voicestorm.com:* streaming.voicestorm.biz:* streaming.dynamicsignal.com:*; object-src 'none'; base-uri 'none'	report-uri https://sentry.io/api/1479396/security/?sentry_key=ebff80a744024d8a8f5630df4ea55e5d&sentry_environment=PROD&sentry_release=2022-8-24-1; script-src 'self' static.dynamicsignal.com cdn.pendo.io data.pendo.io platform.twitter.com connect.facebook.net assets.adobedtm.com 'nonce-5852a857aa804acae7f449311ad8bf5c'; style-src 'self' static.dynamicsignal.com *.cloudfront.net *.googleapis.com maxcdn.bootstrapcdn.com 'unsafe-inline'; font-src * data: blob:; img-src * data: blob:; media-src * data: blob:; frame-src 'self' www.youtube.com platform.twitter.com www.facebook.com reg.voicestorm.com reg-eu.voicestorm.com reg.voicestorm.biz reg.dynamicsignal.com; manifest-src *; connect-src cdn.pendo.io data.pendo.io 'self' static.dynamicsignal.com api.dynamicsignal.com www.googletagmanager.com www.google-analytics.com ssl.google-analytics.com translate.google.com *.googleapis.com *.cloudfront.net *.doubleclick.net platform.twitter.com connect.facebook.net assets.adobedtm.com *.sentry.io sentry.io olivia.paradox.ai gateway.zscloud.net relay.voicestorm.com relay-eu.voicestorm.com relay.voicestorm.biz relay.dynamicsignal.com freq.voicestorm.com freq-eu.voicestorm.com freq.voicestorm.biz freq.dynamicsignal.com api.voicestorm.com api-eu.voicestorm.com api.voicestorm.biz api.dynamicsignal.com apigateway.voicestorm.com apigateway-eu.voicestorm.com apigateway.voicestorm.biz apigateway.dynamicsignal.com streaming.voicestorm.com:* streaming-eu.voicestorm.com:* streaming.voicestorm.biz:* streaming.dynamicsignal.com:*; object-src 'none'; base-uri 'none'
+http	tls,last.http.head.xtableau,Tableau Server
+http	tls,http.head.xnto,SB
+http	tls,last.http.head.xnto,SB
+http	tls,http.head.accessControlAllowCredentials,true
+http	tls,last.http.head.accessControlAllowCredentials,true
+http	tls,http.head.xb3traceid,0cc0f3238ca1c933	99793b73991c63bf	d9089f4f7835376e
+http	tls,json.error,Not Found
+http	tls,json.message,No route known for jlabs.jnj.com
+http	tls,json.path,/
+http	tls,json.status,404
+http	tls,json.timestamp,2022-09-08T17:30:21.079+00:00	2022-09-08T17:30:53.333+00:00	2022-09-08T17:30:58.801+00:00
+http	tls,last.http.head.xb3traceid,2e139f74a7550a67
+http	tls,last.http.head.xappletxnid,8f0763e6b5340f92
+http	tls,last.http.head.xprotobufmessage,com.apple.sse.ocean.ErrorResponseBody
+http	tls,last.http.head.xprotobufschema,errors.proto
+http	tls,http.head.xb3sampled,1
+http	tls,http.head.xb3spanid,75db69b5ac021692	be7928838e6ce868	ca98541809b80f0e
+http	tls,http.head.appleOriginatingSystem,UnknownOriginatingSystem
+http	tls,http.head.appleSeq,0
+http	tls,http.head.appleTk,false
+http	tls,http.head.xapplejinglecorrelationkey,EGA4NDLSZXSTLN3BQC5GAQZJWA	TORPRJ22GGATNX7RWI2JBOTDBI	YLYMNI3F5QNSH77XKQOOXY5B2M
+http	tls,last.http.head.appleOriginatingSystem,UnknownOriginatingSystem
+http	tls,last.http.head.appleSeq,0
+http	tls,last.http.head.appleTk,false
+http	tls,last.http.head.xapplejinglecorrelationkey,DH65FBWHP5HA3CMHPGSARSRRR4
+http	tls,http.head.xrespondinginstance,PdsInit:1:pdsinit-b487b989b-4695m:9025:2222B-108:nocommit	PdsInit:1:pdsinit-b487b989b-pp4vd:9025:2222B-108:nocommit	PdsInit:1:pdsinit-canary-79c5d94d54-927tp:9025:2222B-108:nocommit
+http	tls,last.http.head.xrespondinginstance,""""""
+http	tls,http.head.mimeVersion,1.0
+http	tls,http.head.xcachelookup,NONE from ms13p01if-skad-dps001.ms.if.apple.com:8080
+http	tls,http.head.xsquiderror,ERR_INVALID_URL 0
+http	tls,http.head.xdaiquiriinstance,daiquiri:35887001:pv50p00it-hyhk12043701:7987:22RELEASE113:daiquiri-amp-all-shared-int-001-pv
+http	tls,last.http.head.xdaiquiriinstance,daiquiri:18493001:mr85p00it-hyhk03154801:7987:22RELEASE113:daiquiri-amp-all-shared-ext-001-mr
+http	tls,http.head.xserver,(null)
+http	tls,hw.cpe23,cpe:/h:cisco:adaptive_security_appliance:-
+http	tls,hw.device,Firewall
+http	tls,hw.family,Adaptive Security Appliance
+http	tls,hw.product,Adaptive Security Appliance
+http	tls,hw.vendor,Cisco
+http	tls,os.product,Linux
+http	tls,http.head.iscorporateuser,false
+http	tls,last.html.copyright,International Business Machines Corporation 1999 -->
+http	tls,last.http.head.iscorporateuser,false
+http	tls,http.head.wwwAuthenticate,"Basic realm=""Integration Server"", encoding=""UTF-8"""
+http	tls,last.http.head.wwwAuthenticate,"Basic realm=""Hello user"""
+http	tls,last.http.head.contentDisposition,inline;filename=f.txt
+http	tls,http.head.xrid,1a0f15a6-885b-4fae-b245-1537e9433c21	2a52b0a4-3477-4a34-8cdc-2fb5becca005	64a7a194-7428-4324-962b-209f29c847fc
+http	tls,json.error.details,[]
+http	tls,json.error.message,Not Found
+http	tls,http.head.xdnsprefetchcontrol,off
+http	tls,http.head.xdownloadoptions,noopen
+http	tls,last.http.head.xdnsprefetchcontrol,off
+http	tls,last.http.head.xdownloadoptions,noopen
+http	tls,http.head.xhost,sy02p01ls-geo01072301.ls.apple.com	sy02p01ls-geo01161301.ls.apple.com	sy02p02ls-geo01112001.ls.apple.com
+http	tls,http.head.xtraceid,a96535aa-85ef-4118-a5b5-8b918e31f3c9:8354f9ee-1668128	cb8ef7ac-3cb9-4be7-9426-6426d5b39bf1:0a6c7896-1682125	fbd4ef0b-a412-4d0e-a951-5a864dafe35d:2c4183a1-1678958
+http	tls,http.head.xauthurl,https://idmsac.apple.com/IDMSWebAuth/login?appIdKey=bfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506&rv=1
+http	tls,last.http.head.xauthurl,https://idmsac.apple.com/IDMSWebAuth/login?appIdKey=bfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506&path=%2FIDMSWebAuth%2Flogin%3FappIdKey%3Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%26path%3D%252FIDMSWebAuth%252Flogin%253FappIdKey%253Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%2526path%253D%25252FIDMSWebAuth%25252Flogin%25253FappIdKey%25253Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%252526path%25253D%2525252FIDMSWebAuth%2525252Flogin%2525253FappIdKey%2525253Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%25252526rv%2525253D1%252526rv%25253D1%2526rv%253D1%26rv%3D1&rv=1	https://idmsac.apple.com/IDMSWebAuth/login?appIdKey=bfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506&path=%2FIDMSWebAuth%2Flogin%3FappIdKey%3Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%26path%3D%252FIDMSWebAuth%252Flogin%253FappIdKey%253Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%2526path%253D%25252FIDMSWebAuth%25252Flogin%25253FappIdKey%25253Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%252526rv%25253D1%2526rv%253D1%26rv%3D1&rv=1	https://idmsac.apple.com/IDMSWebAuth/login?appIdKey=bfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506&path=%2FIDMSWebAuth%2Flogin%3FappIdKey%3Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%26path%3D%252FIDMSWebAuth%252Flogin%253FappIdKey%253Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%2526rv%253D1%26rv%3D1&rv=1	https://idmsac.apple.com/IDMSWebAuth/login?appIdKey=bfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506&path=%2FIDMSWebAuth%2Flogin%3FappIdKey%3Dbfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506%26rv%3D1&rv=1	https://idmsac.apple.com/IDMSWebAuth/login?appIdKey=bfdd6e4cf464007be6b0e77aacccdf820e77bfe12aacafce0519b334d32f1506&rv=1
+http	tls,http.head.b3,18d4b37ed790146d2f320b0355828c35-ca98541809b80f0e	53b4888cb15a012700406786b84184d3-be7928838e6ce868	e11c1cc7376bfd33f79709af5719c35e-75db69b5ac021692
+http	tls,last.http.head.connection,Close	Keep-Alive
+http	tls,last.http.head.liferayPortal,Liferay Digital Experience Platform
+http	tls,last.http.head.serverTiming,"dtRpid;desc=""-1918990298""	dtRpid;desc=""1021187605""	dtRpid;desc=""1274320760""	dtRpid;desc=""1551055048"""
+http	tls,last.http.head.xoneagentjsinjection,true
+http	tls,http.head.appleTimingApp,0 ms
+http	tls,json.code,130102
+http	tls,last.http.head.accessControlAllowOrigin,*
+http	tls,last.http.head.frameworkCsrfToken,c7036721-0456-45db-a5e5-d214371b9bc7	df2617a0-60ff-4930-8461-8397b32543a9
+http	tls,http.head.xappleinternalserviceversion,"v3,v4,v7"
+http	tls,http.head.xappletraceid,GEN-GSX-176e5d92-8ac4-45db-8ed9-6091b0f4ea94	GEN-GSX-5b1f7bf9-ad66-4b48-b7e2-614ac5b3fb97	GEN-GSX-d763e4b9-0362-4f12-af29-792db0554f51
+http	tls,last.http.head.xappleinternalserviceversion,"v3,v4,v7"
+http	tls,last.http.head.xappletraceid,GEN-GSX-99006f7b-766c-44f4-8261-24d691038a7d	GEN-GSX-d23858e2-b41d-47cc-a873-47550d745bf5	GEN-GSX-dbb6262a-5175-4227-bc48-f38efa24503d
+http	tls,last.http.head.keepAlive,timeout=30
+http	tls,http.head.cneonction,Close
+http	tls,http.head.scnt,002fa8f624056ad2c6ddb4eb87fc1b33	01f3c96d3328cd463025c2f4e4e2f8f4	c43b02d1eb148372160ae43f7e16552e
+http	tls,http.head.xbuildversion,R15
+http	tls,last.http.head.scnt,0fe5df07475d56c3a4039dab02a70828	37cc9de62fa767cf73546c55f9097aec	755a7ca425d252aad598a89d9000bdaa	8fb03dfeaab66c85a3d96db33e0fd903	aeddcb49e6c77b102e5805a28fe14636	b692e420e227c97e33cf649dbf4c84b5	d02f30ac2a44da4abb68baf1cb02b3f2	d5b2924518a697eae130ea265d917a96
+http	tls,last.http.head.xbuildversion,R15
+http	tls,http.head.transactionId,196d350c-d32f-45a5-87e0-f5b93a8351b7	5655235f-ec38-4d8a-99a5-d91ef856dea6	e912ce9a-ce34-4444-9c01-f6326094b0cf
+http	tls,last.http.head.transactionId,1711e9a6-a26c-4a11-bfae-a57eaf2e4d7d	79b1a3b8-2dcb-494e-a306-0fca002a489e	bf44dc03-db05-46df-bab5-bc824fcb5eaf
+http	tls,cookie,PHPSESSID
+http	tls,http.head.xgwsmsgseqnum,110ad2c1-f222-4670-8b8b-e4c5ec51a808	16a92dcd-2e3d-46dd-8947-ec15215c1d2a	54e7c709-af4e-4402-a2e7-8e56d3090e4e
+http	tls,last.http.head.xgwsmsgseqnum,a35c659c-072f-497b-ab39-882e31b14ee1
+http	tls,html.generator,BBEdit 7.0.1
+http	tls,http.head.features,CHPWD;RTCK;STCK;ASC;DNDISP
+http	tls,http.head.surrogateControl,no-store
+http	tls,last.http.head.surrogateControl,no-store
+http	tls,http.head.shieldHrsignup,ye2ARRMLAG7pwpR6uKGpsg
+http	tls,last.http.head.shieldHrsignup,ye2ARRMLAG7pwpR6uKGpsg
+http	tls,http.head.xdrupalcache,MISS
+http	tls,last.http.head.xdrupalcache,MISS
+http	tls,http.head.cookie,""""""
+http	tls,last.http.head.cookie,""""""
+http	tls,http.head.xenvoyupstreamservicetime,2
+http	tls,http.head.xrequestid,1cbbb10d5e437f85e7d9b37581ba145e	3a5d1bde1d25b98f25a91a43e3546ae5	e4aacc057d6a05019a5260fd50323c36
+http	tls,last.http.head.xrequestid,1dd19f18649e378b388243da05bb7ebc
+http	tls,http.head.xprotobufmessage,GenericError
+http	tls,http.head.xprotobufschema,errors.proto
+http	tls,last.http.head.xenvoyupstreamservicetime,1
+http	tls,http.head.accessControlExposeHeaders,*
+http	tls,http.head.xappleedgeresponsetime,19	40
+http	tls,last.http.head.accessControlExposeHeaders,"X-Apple-Request-UUID,Via"
+http	tls,last.http.head.xappleedgeresponsetime,21
+http	tls,http.head.cdnuuid,f34f0572-a8e0-4a20-82d3-70f089ede707-8307272030	f34f0572-a8e0-4a20-82d3-70f089ede707-8307288768	f34f0572-a8e0-4a20-82d3-70f089ede707-8307308217
+http	tls,http.head.xamzbucketregion,us-east-1
+http	tls,http.head.xapiversion,1.0
+http	tls,http.head.referer,http://www.solutionprofessionals.apple.com/	https://www.applepayments.apple.com/	https://www.wdirect.apple.com/
+http	tls,last.http.head.referer,https://www.solutionprofessionals.apple.com/
+http	tls,os.cpe23,cpe:/o:redhat:enterprise_linux:-
+http	tls,http.head.xpimcoreoutputcachedisablereason,Debug flag DISABLE_FULL_PAGE_CACHE is enabled
+http	tls,ntlmssp.dnsComputer,pepwds33994.cww.pep.pvt
+http	tls,ntlmssp.dnsDomain,cww.pep.pvt
+http	tls,ntlmssp.negFlags,0x62898215
+http	tls,ntlmssp.netbiosComputer,pepwds33994
+http	tls,ntlmssp.netbiosDomain,cwwpvt
+http	tls,ntlmssp.ntlmRevision,15
+http	tls,ntlmssp.targetName,cwwpvt
+http	tls,ntlmssp.timestamp,2022-09-08T17:30:47Z
+http	tls,ntlmssp.timestampTS,Thu Sep  8 17:30:47 UTC 2022
+http	tls,ntlmssp.version,10.0.14393
+http	tls,last.http.head.xoracledmsecid,c62bd2e2-11ab-4a69-bfca-230302d4e85d-00000014
+http	tls,last.http.head.xoracledmsrid,0
+http	tls,http.head.xdebugtoken,646e57
+http	tls,http.head.xdebugtokenlink,http://cepadmin2.spo.nonprod.wspdop.pepsico.com/_profiler/646e57
+http	tls,http.head.xappletxnid,e0eee1b7691eaf48	e2d76f088cfc574f	fc462983a645bcad
+http	tls,os.device,Web Proxy
+http	tls,http.head.accessControlAllowHeaders,"access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,x-api-key,Content-Type,authorization,SiteId,associatedcustomer"
+http	tls,http.head.clientRealIp,134.209.39.80	23.40.16.5
+http	tls,last.http.head.xcache,MISS
+http	tls,http.head.xN,S
+http	tls,http.head.xvia,"1.0 PSrbJP1al65:6 (Cdn Cache Server V2.0), 1.1 PSygldLON2hl59:5 (Cdn Cache Server V2.0)"
+http	tls,http.head.xakamaistaging,ESSL
+http	tls,http.head.accessControlAllowMethods,"POST, GET, OPTIONS, HEAD"
+http	tls,http.head.accessControlMaxAge,3600
+http	tls,http.head.akamaiMonIucidDel,103
+http	tls,http.head.xosfailover,true
+http	tls,http.head.cdnServer,akam
+http	tls,http.head.xorigin,https://clouddrive-szv.huawei.com
+http	tls,http.head.xb2fcscache,no-cache
+http	tls,http.head.xcachestatus,MISS from KS-CLOUD-QZ-MP-12-07	MISS from KS-CLOUD-XZ-CT-11-12
+http	tls,http.head.xcdnrequestid,18e8bcdcc9bd835415f430a63f034d78	8f98de14a4e9469d271b0701c93b22cb	c9c8689d2ab131d8d115dc61641fae7c
+http	tls,http.head.xkscrequestid,18e8bcdcc9bd835415f430a63f034d78	8f98de14a4e9469d271b0701c93b22cb	c9c8689d2ab131d8d115dc61641fae7c
+http	tls,http.head.xlinkvia,xzct11:443;qzmp12:443;
+http	tls,http.head.requestContext,appId=beb40dad-9ad2-4658-b7d8-8569afcac0da
+http	tls,last.http.head.requestContext,appId=beb40dad-9ad2-4658-b7d8-8569afcac0da
+http	tls,last.http.head.serviceWorkerAllowed,/
+http	tls,tls.selfSigned,serial=9286c183960e0a46
+http	tls,http.head.requestIdToken,2746cd7ad1714044b65388e524ddef72	59b52b92cac977695c217f1fd294f715	741516452eaaf044a8b2c780adda4e0c
+http	tls,http.head.xslbstarttime,1662658222.246	1662658256.120	1662658261.934
+http	tls,last.http.head.accessControlAllowHeaders,"access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,x-api-key,Content-Type,authorization,SiteId,associatedcustomer"
+http	tls,last.http.head.accessControlAllowMethods,"POST, GET, OPTIONS, HEAD"
+http	tls,last.http.head.requestIdToken,5ec0192830a46cf2427956e63073ed9a	9234a939dc99a11cb7027d19a8a87758	967045c02bc87f2870ccee4e72f91479	f2d412247c7796622692d1f5038d26af
+http	tls,last.http.head.xslbstarttime,1662658256.797	1662658257.465	1662658258.133	1662658258.820
+http	tls,last.http.head.xcontentsecuritypolicy,allow self
+http	tls,json.errorMsg,The API does not exist or has not been published in the environment
+http	tls,json.requestId,873f5abb0289b7155665c1d6984437f3	88139333a1623d0ae30194abeaeb334c	d64afbaaad048284d67a9885a37d1458
+http	tls,last.http.head.xcfroutererror,unknown_route
+http	tls,last.http.head.testAdditionalHeader,1
+http	tls,last.http.head.xvcaprequestid,4b991e12-4c9f-476b-623e-0d8e465243ba	c20391c5-721e-4f33-71ae-7b4041a6516f	eb2b9149-cba5-42cc-6915-6fdf602f8b44
+http	tls,http.head.testAdditionalHeader,1
+http	tls,http.head.xvcaprequestid,097598b2-6852-4199-44ea-5b8225928a96	8af54655-3253-4a84-64d8-f4ddf7a44700
+http	tls,http.head.microsoftsharepointteamservices,16.0.0.22824
+http	tls,http.head.msCv,oGMFVOTQACBzEcCWT8mXSA.0
+http	tls,http.head.nel,"{""report_to"":""network-errors"",""max_age"":7200,""success_fraction"":0.001,""failure_fraction"":1.0}"
+http	tls,http.head.reportTo,"{""group"":""network-errors"",""max_age"":7200,""endpoints"":[{""url"":""https://spo.nel.measure.office.net/api/report?tenantId=00000000-0000-0000-0000-000000000000&destinationEndpoint=192910&frontEnd=FarmDirect""}]}"
+http	tls,http.head.requestId,540563a0-d0e4-2000-7311-c0964fc99748
+http	tls,http.head.spiislatency,0
+http	tls,http.head.sprequestduration,20
+http	tls,http.head.sprequestguid,540563a0-d0e4-2000-7311-c0964fc99748
+http	tls,http.head.x1dscollectorurl,https://mobile.events.data.microsoft.com/OneCollector/1.0/
+http	tls,http.head.xariacollectorurl,https://browser.pipe.aria.microsoft.com/Collector/3.0/
+http	tls,http.head.xdataboundary,None
+http	tls,http.head.xmsinvokeapp,1; RequireReadOnly
+http	tls,last.html.generator,Microsoft SharePoint
+http	tls,last.http.head.microsoftsharepointteamservices,16.0.0.22824
+http	tls,last.http.head.msCv,oGMFVQIwACBCKIh2cFSlXg.0
+http	tls,last.http.head.nel,"{""report_to"":""network-errors"",""max_age"":7200,""success_fraction"":0.001,""failure_fraction"":1.0}"
+http	tls,last.http.head.reportTo,"{""group"":""network-errors"",""max_age"":7200,""endpoints"":[{""url"":""https://spo.nel.measure.office.net/api/report?tenantId=15ccb6d1-d335-4996-b6f9-7b6925f08121&destinationEndpoint=192910&frontEnd=FarmDirect""}]}"
+http	tls,last.http.head.requestId,550563a0-3002-2000-4228-88767054a55e
+http	tls,last.http.head.sharepointerror,0
+http	tls,last.http.head.spiislatency,0
+http	tls,last.http.head.sprequestduration,87
+http	tls,last.http.head.sprequestguid,550563a0-3002-2000-4228-88767054a55e
+http	tls,last.http.head.x1dscollectorurl,https://mobile.events.data.microsoft.com/OneCollector/1.0/
+http	tls,last.http.head.xariacollectorurl,https://browser.pipe.aria.microsoft.com/Collector/3.0/
+http	tls,last.http.head.xaspnetversion,4.0.30319
+http	tls,last.http.head.xdataboundary,None
+http	tls,last.http.head.xmsinvokeapp,1; RequireReadOnly
+http	tls,last.http.head.xsharepointhealthscore,1
+http	tls,http.head.xcachehits,19
+http	tls,http.head.xgeocountry,US
+http	tls,last.http.head.age,35721	35805
+http	tls,last.http.head.xahenvironment,dev
+http	tls,last.http.head.xgeocountry,US
+http	tls,http.head.xkurogodevice,small-computer-chrome
+http	tls,http.head.xkurogorequestid,1cca5dbfae8ab2638727dffd6eb75181	7e6bb39931aff6772447d519096a5178	c162e4526b0eaaf23f809efe82bc6a4f
+http	tls,http.head.xkurogoversion,2.13.65
+http	tls,last.http.head.xkurogodevice,small-computer-chrome
+http	tls,last.http.head.xkurogopagecommand,index
+http	tls,last.http.head.xkurogopageetagcontainsloginhash,0
+http	tls,last.http.head.xkurogopageloginhash,d751713988987e9331980363e24189ce
+http	tls,last.http.head.xkurogopagemodule,site_selector
+http	tls,last.http.head.xkurogopagenavigationgroup,site_selector
+http	tls,last.http.head.xkurogopagenavigationmenuapihash,5f6f874cdc0bd3fde16a81fe8adcf98b
+http	tls,last.http.head.xkurogopagepulltorefresh,1
+http	tls,last.http.head.xkurogopagerefreshonreturn,1
+http	tls,last.http.head.xkurogopagesiteconfigapihash,b331054b11a0f0594c424e7eedb7df4c
+http	tls,last.http.head.xkurogopagestatehash,1e325ac3871c94f9492f11e3dceb87ef
+http	tls,last.http.head.xkurogopagetitle,Select%20a%20Site
+http	tls,last.http.head.xkurogopageunreadmessagecount,0
+http	tls,last.http.head.xkurogopageusermenuapihash,6c49ea4cbc11382b8366b44214028278
+http	tls,last.http.head.xkurogorequestid,286d5ae76c201dfcd03f41e3fe83b8ea	cb165f2301451165dc109a3545895f2d	e052435bcecce290c6df56bd9cda338f
+http	tls,last.http.head.xkurogoversion,2.13.65
+http	tls,tls.requiresClientCertificate,true
+http	tls,http.head.xalbcode,404000
+http	tls,http.head.xrouterstatus,MISS : cant find any router from cache or remote
+http	tls,http.head.retryAfter,60
+http	tls,last.http.head.retryAfter,3600
+http	tls,http.head.encryption,0
+http	tls,http.head.cfCacheStatus,MISS
+http	tls,http.head.cfRay,7478d307a80078d9-EWR
+http	tls,http.head.featurePolicy,camera 'none';microphone 'none';geolocation 'none';encrypted-media 'none';payment 'none';speaker 'none';usb 'none';
+http	tls,http.head.xruntime,0.005913
+http	tls,http.head.xahenvironment,prod
+http	tls,http.head.xaspnetversion,4.0.30319
+http	tls,http.head.permissionsPolicy,"accelerometer=(), autoplay=(), camera=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), sync-xhr=(), usb=(), xr-spatial-tracking=()"
+http	tls,http.head.xpermittedcrossdomainpolicies,none
+http	tls,http.head.xqtestrequestid,3905b7633c00596634cc0d48
+http	tls,http.head.xconfluenceclusternode,3a94065c	3a9406d8
+http	tls,http.head.xconfluenceclusternodename,dev-node5	dev-node6
+http	tls,http.head.xconfluencerequesttime,1662652003774	1662652015629
+http	tls,last.http.head.xenvoyupstreampodname,ce06aws/mmap-nginx-cache-5577bf5f46-wm8vh -> ce06aws/mmap-nginx-cache-5577bf5f46-wm8vh
+http	tls,http.head.xenvoyupstreampodname,ce06aws/mmap-nginx-cache-5577bf5f46-plh72 -> ce06aws/mmap-nginx-cache-5577bf5f46-wm8vh	xe06aws/mmap-nginx-cache-7b98b57667-6c2hn -> xe06aws/mmap-nginx-cache-7b98b57667-6c2hn	xe06aws/mmap-nginx-cache-7b98b57667-6c2hn -> xe06aws/mmap-nginx-cache-7b98b57667-jjnlc
+http	tls,http.head.processtime,0.000
+http	tls,last.http.head.processtime,0.000
+http	tls,http.head.xcontentsecuritypolicy,allow self
+http	tls,http.head.xwebkitcsp,script-src 'self' 'unsafe-inline' 'unsafe-eval'
+http	tls,last.http.head.xwebkitcsp,script-src 'self' 'unsafe-inline' 'unsafe-eval'
+http	tls,http.head.cloudservicediscount,CDN
+http	tls,http.head.xccdncachettl,0
+http	tls,http.head.xccdnorigintime,955	976
+http	tls,http.head.xhcsproxytype,0
+http	tls,http.head.xreserved,"amazon, aws and amazon web services are trademarks or registered trademarks of Amazon Technologies, Inc"
+http	tls,http.head.xreservedindicator,372
+http	tls,last.http.head.xccdncachettl,0
+http	tls,last.http.head.xccdnorigintime,947	963	967
+http	tls,last.http.head.xhcsproxytype,0
+http	tls,last.http.head.cloudservicediscount,CDN
+http	tls,last.http.head.xreserved,"amazon, aws and amazon web services are trademarks or registered trademarks of Amazon Technologies, Inc"
+http	tls,last.http.head.xreservedindicator,372
+http	tls,json.msg,API not exist or not published in the environment
+http	tls,last.http.head.accessControlMaxAge,2592000
+http	tls,last.http.head.xalbcode,404000
+http	tls,last.http.head.xrouterstatus,MISS : cant find any router from cache or remote
+http	tls,last.http.head.featurePolicy,camera 'none';microphone 'none';geolocation 'none';encrypted-media 'none';payment 'none';speaker 'none';usb 'none';
+http	tls,last.http.head.xpermittedcrossdomainpolicies,none
+http	tls,last.http.head.xhirotraceerrcode,200002
+http	tls,last.http.head.xtraceenable,false
+http	tls,http.head.xwsrequestid,631a2712_PSygldLON2ew56_16270-40774
+http	tls,http.head.xdsrequestid,25b10a9d-65d1-4832-b9df-fdd0c3666814	5186324c-621b-4fc1-9dcd-95b922f89ab7	c5760c3f-b86b-4a6b-81ab-2432be1555ec
+http	tls,last.http.head.xdsrequestid,335490ac-8018-4986-a383-e2c47f525175
+http	tls,last.http.head.xvia,"1.1 PSrbJP1al65:6 (Cdn Cache Server V2.0), 1.1 PSygldLON2hl59:5 (Cdn Cache Server V2.0)"
+http	tls,last.http.head.xwsrequestid,631a26c3_PS-LHR-01q9k95_3478-28701
+http	tls,http.head.xmsserverfqdn,ALPSFBEDG03.e2k.ad.ge.com
+http	tls,apache.info,(Red Hat Enterprise Linux) OpenSSL/1.0.2k-fips
+http	tls,http.head.xcacheremote,TCP_MISS from a23-40-16-78.deploy.akamaitechnologies.com (AkamaiGHost/10.9.3-43949849) (-)
+http	tls,last.http.head.upgrade,"h2,h2c"
+http	tls,http.head.eagleid,dde7519916626526145466207e	dde7519a16626526479171864e	dde751a316626526358858055e
+http	tls,http.head.timingAllowOrigin,*
+http	tls,http.head.xxxxxlog,connType=-&&firstByteServed=1&&lastByteServed=1&&hostHeader=gspe72-cn-ssl.ls.apple.com&&servedFromCache=0&&storeFront=-&&itspod=-&&TrPod=-&&turnAroundTime=0&&maps-tile-x=-&&maps-tile-y=-&&maps-tile-z=-&&maps-auth-token=-&&maps-tile-style=-&&eTag=-&&ifNoneMatch=-
+NONE,icmp.addrs,221.231.81.248
+NONE,icmp.code,0
+NONE,icmp.id,9612
+NONE,icmp.rtts,213449053
+NONE,icmp.seq,58762
+NONE,icmp.sum,26742
+NONE,icmp.type,0
+NONE,icmp.typeCode,EchoReply
+NONE,ip.id,35962
+NONE,ip.tos,0
+NONE,ip.ttl,47
+NONE,service.address,221.231.81.248
+NONE,service.id,a7b681c6-0a1a-4f72-bd42-ddc7d31ba110
+NONE,service.port,0
+NONE,service.transport,icmp
+NONE,ts,1662651817
+NONE,ip.flags,DF
+NONE,service.vhost,PEPSICOMAIL47.PEPSICO.COM
+NONE,source,syn
+NONE,syn.rtt,238945355
+NONE,tcp.flags,"syn,ack"
+NONE,tcp.options,MSS:059c
+NONE,tcp.ts,2221013064
+NONE,tcp.urg,0
+NONE,tcp.win,4380
+NONE,vhost,pepsicomail47.pepsico.com
+NONE,banner,
+NONE,unknownBanner,AAASBAAAAAAAAAMAAACAAAQAAQAAAAUA////AAAECAAAAAAAf/8AAAAACAcAAAAAAAAAAAAAAAAB
+NONE,unknownResponse,AAASBAAAAAAAAAMAAACAAAQAAQAAAAUA////AAAECAAAAAAAf/8AAAAACAcAAAAAAAAAAAAAAAAB
+NONE,tcp.skipped,port
+dns,ip.flags,DF
+dns,ip.id,0
+dns,ip.tos,0
+dns,ip.ttl,60
+dns,protocol,dns
+dns,service.address,221.231.81.248
+dns,service.id,d538a664-28bd-4a3e-8784-88ca17aee891
+dns,service.port,53
+dns,service.transport,udp
+dns,source,syn
+dns,syn.rtt,1472978
+dns,tcp.flags,"syn,ack"
+dns,tcp.options,MSS:05b4
+dns,tcp.ts,3010730406
+dns,tcp.urg,0
+dns,tcp.win,14480
+dns,ts,1662651896
+dns,dns.addrs,204.26.57.1
+dns,dns.replies,"www.google.com=A,108.160.166.142	www.google.com=A,202.160.128.40"
+dns,dns.resolvers,172.253.9.3
+dns,dns.rtts,1502404	1505633
+dns,dns.hostname.bind,5.lga.pch
+dns,dns.version.bind,UltraDNS Resolver
+dns,fp.certainty,0.85
+dns,product,Neustar:Resolver:
+ssh,banner,SSH-2.0-OpenSSH_6.6.1
+ssh,ip.flags,DF
+ssh,ip.id,0
+ssh,ip.tos,0
+ssh,ip.ttl,54
+ssh,protocol,ssh
+ssh,service.address,89.253.228.145
+ssh,service.id,a3b45618-f062-4a7e-9004-87c21396a858
+ssh,service.port,22
+ssh,service.transport,tcp
+ssh,source,syn
+ssh,ssh.authMethods,password	publickey
+ssh,ssh.authPublicKey,true
+ssh,ssh.hostKey.data,AAAAB3NzaC1yc2EAAAADAQABAAABAQC7yz1aC20hGCtzGzuVhlO1BFpVyqWIO3toaJkczjOfUbR0p3HWRXmjehW0SAAhwSvtk+PLKlgHuGjrL3QZ63I4+QrKJFC4wzRh1TBBFtcegPMhEzsUmlhwksG4yO6yKM+TwUXvpH3e7TvXT+4fGukpp8shnY/vtMEAbeTPyvgSxzSIUYcF6YhAFfgv1yTjBK3lsIJfpRUtTr/DoR9p3I2Yuy8COi5Ic2RxaSP3KsingC6bKAqIBuSA3myPz8PYNNdS3hf6mcW4UYwFZsEbxaRWLn4cWdXu7mpoLK65t+XailVP2wVh+PBd7t6Ea5GFOFMF/efxbujE4B3P5woRK8zL
+ssh,ssh.hostKey.md5,bf:cf:4c:ff:81:61:08:5b:3c:52:56:9f:7c:95:5c:e3
+ssh,ssh.hostKey.sha256,SHA256:E5b0qTToK0g60Auc2ABZv92KdOjpogcd2qYQ2a4hPbM
+ssh,ssh.hostKey.type,ssh-rsa
+ssh,ssh.hostKeyAlgorithms,ecdsa-sha2-nistp256	ssh-ed25519	ssh-rsa
+ssh,ssh.kexAlgorithms,curve25519-sha256@libssh.org	diffie-hellman-group-exchange-sha1	diffie-hellman-group-exchange-sha256	diffie-hellman-group1-sha1	diffie-hellman-group14-sha1	ecdh-sha2-nistp256	ecdh-sha2-nistp384	ecdh-sha2-nistp521
+ssh,ssh.kexCookie,64729768171406c802bea49dfa4f3bdf
+ssh,ssh.kexPadding,10
+ssh,ssh.toClientCiphers,3des-cbc	aes128-cbc	aes128-ctr	aes128-gcm@openssh.com	aes192-cbc	aes192-ctr	aes256-cbc	aes256-ctr	aes256-gcm@openssh.com	arcfour	arcfour128	arcfour256	blowfish-cbc	cast128-cbc	chacha20-poly1305@openssh.com	rijndael-cbc@lysator.liu.se
+ssh,ssh.toClientCompression,none	zlib@openssh.com
+ssh,ssh.toClientMACs,hmac-md5	hmac-md5-96	hmac-md5-96-etm@openssh.com	hmac-md5-etm@openssh.com	hmac-ripemd160	hmac-ripemd160-etm@openssh.com	hmac-ripemd160@openssh.com	hmac-sha1	hmac-sha1-96	hmac-sha1-96-etm@openssh.com	hmac-sha1-etm@openssh.com	hmac-sha2-256	hmac-sha2-256-etm@openssh.com	hmac-sha2-512	hmac-sha2-512-etm@openssh.com	umac-128-etm@openssh.com	umac-128@openssh.com	umac-64-etm@openssh.com	umac-64@openssh.com
+ssh,ssh.toServerCiphers,3des-cbc	aes128-cbc	aes128-ctr	aes128-gcm@openssh.com	aes192-cbc	aes192-ctr	aes256-cbc	aes256-ctr	aes256-gcm@openssh.com	arcfour	arcfour128	arcfour256	blowfish-cbc	cast128-cbc	chacha20-poly1305@openssh.com	rijndael-cbc@lysator.liu.se
+ssh,ssh.toServerCompression,none	zlib@openssh.com
+ssh,ssh.toServerMACs,hmac-md5	hmac-md5-96	hmac-md5-96-etm@openssh.com	hmac-md5-etm@openssh.com	hmac-ripemd160	hmac-ripemd160-etm@openssh.com	hmac-ripemd160@openssh.com	hmac-sha1	hmac-sha1-96	hmac-sha1-96-etm@openssh.com	hmac-sha1-etm@openssh.com	hmac-sha2-256	hmac-sha2-256-etm@openssh.com	hmac-sha2-512	hmac-sha2-512-etm@openssh.com	umac-128-etm@openssh.com	umac-128@openssh.com	umac-64-etm@openssh.com	umac-64@openssh.com
+ssh,syn.rtt,110575798
+ssh,tcp.flags,"syn,ack"
+ssh,tcp.options,MSS:05b4
+ssh,tcp.ts,3608433702
+ssh,tcp.urg,0
+ssh,tcp.win,28960
+ssh,ts,1662663093
+ssh,fp.certainty,0.85
+ssh,os.cpe23,cpe:/o:canonical:ubuntu_linux:18.04
+ssh,os.family,Linux
+ssh,os.product,Linux
+ssh,os.vendor,Ubuntu
+ssh,product,OpenBSD:OpenSSH:6.6.1
+ssh,ssh.authPassword,true
+ssh,ssh.authInstruction,Enter password for _STATUS_
+ssh,ssh.authInteractive,true
+ssh,ssh.authQuestions,Password:
+ssh,openssh.comment,Ubuntu-4ubuntu0.6
+ssh,os.version,18.04
+smtp,banner,"220 pepsicomail58.pepsico.com ESMTP
+250-pepsicomail58.pepsico.com
+250-8BITMIME
+250-SIZE 52428800
+250 STARTTLS"
+smtp,fp.certainty,0.85
+smtp,ip.flags,DF
+smtp,ip.id,54188
+smtp,ip.tos,0
+smtp,ip.ttl,49
+smtp,protocol,smtp
+smtp,service.address,204.136.98.156
+smtp,service.id,32f039db-3888-48d8-8095-f24e65275b07
+smtp,service.port,25
+smtp,service.transport,tcp
+smtp,source,syn
+smtp,syn.rtt,42348024
+smtp,tcp.flags,"syn,ack"
+smtp,tcp.options,MSS:059c
+smtp,tcp.ts,2099710355
+smtp,tcp.urg,0
+smtp,tcp.win,65535
+smtp,ts,1662658227
+http	ssl3	tls	wsman,banner,"HTTP/1.1 404 Not Found
+Content-Type: text/html; charset=us-ascii
+Server: Microsoft-HTTPAPI/2.0
+Date: Thu, 08 Sep 2022 17:30:46 GMT
+Connection: close
+Content-Length: 315
+
+<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.01//EN""""http://www.w3.org/TR/html4/strict.dtd"">
+<HTML><HEAD><TITLE>Not Found</TITLE>
+<META HTTP-EQUIV=""Content-Type"" Content=""text/html; charset=us-ascii""></HEAD>
+<BODY><h2>Not Found</h2>
+<hr><p>HTTP Error 404. The requested resource is not found.</p>
+</BODY></HTML>"
+http	ssl3	tls	wsman,fp.certainty,0.85
+http	ssl3	tls	wsman,html.title,Not Found
+http	ssl3	tls	wsman,http.body,"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.01//EN""""http://www.w3.org/TR/html4/strict.dtd"">
+<HTML><HEAD><TITLE>Not Found</TITLE>
+<META HTTP-EQUIV=""Content-Type"" Content=""text/html; charset=us-ascii""></HEAD>
+<BODY><h2>Not Found</h2>
+<hr><p>HTTP Error 404. The requested resource is not found.</p>
+</BODY></HTML>"
+http	ssl3	tls	wsman,http.code,404
+http	ssl3	tls	wsman,http.head.contentLength,315
+http	ssl3	tls	wsman,http.head.contentType,text/html; charset=us-ascii
+http	ssl3	tls	wsman,http.head.date,"Thu, 08 Sep 2022 17:30:46 GMT"
+http	ssl3	tls	wsman,http.head.server,Microsoft-HTTPAPI/2.0
+http	ssl3	tls	wsman,http.message,404 Not Found
+http	ssl3	tls	wsman,http.uri,/
+http	ssl3	tls	wsman,http.url,https://13.66.56.75:5986/	https://www.onetouch.pepsico.com:5986/
+http	ssl3	tls	wsman,ip.flags,DF
+http	ssl3	tls	wsman,ip.id,28081
+http	ssl3	tls	wsman,ip.tos,0
+http	ssl3	tls	wsman,ip.ttl,111
+http	ssl3	tls	wsman,os.cpe23,cpe:/o:microsoft:windows:-
+http	ssl3	tls	wsman,os.family,Windows
+http	ssl3	tls	wsman,os.product,Windows
+http	ssl3	tls	wsman,os.vendor,Microsoft
+http	ssl3	tls	wsman,protocol,http	ssl3	tls	wsman
+http	ssl3	tls	wsman,service.address,13.66.56.75
+http	ssl3	tls	wsman,service.id,3f5b39d1-482e-4210-8fd2-913e5b54f090
+http	ssl3	tls	wsman,service.port,5986
+http	ssl3	tls	wsman,service.transport,tcp
+http	ssl3	tls	wsman,service.vhost,WWW.ONETOUCH.PEPSICO.COM
+http	ssl3	tls	wsman,source,syn
+http	ssl3	tls	wsman,syn.rtt,39511121
+http	ssl3	tls	wsman,tcp.flags,"syn,ack"
+http	ssl3	tls	wsman,tcp.options,MSS:05a0
+http	ssl3	tls	wsman,tcp.ts,193988970
+http	ssl3	tls	wsman,tcp.urg,0
+http	ssl3	tls	wsman,tcp.win,8192
+http	ssl3	tls	wsman,tls.certificates,MIICHzCCAYigAwIBAgIQA0kADgAaAA0AGQAFAAMH4DANBgkqhkiG9w0BAQUFADAkMSIwIAYDVQQDExlGTE5BT1RQUk9EVk0uY2xvdWRhcHAubmV0MB4XDTE2MDMyMzEyMDAwMFoXDTI0MDYwOTEyMDAwMFowJDEiMCAGA1UEAxMZRkxOQU9UUFJPRFZNLmNsb3VkYXBwLm5ldDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAmODK3veVEwUTjy35KJkP7Bge2vZ6iuGGZzrzVVV3K6QNKwZRrv3CXyn5ZKfni7QtlbV3vZANhvPdiHjW65jgD/fbm75R39lhrmqMn421SFJERBC8H2bSOldIuXEPUFE+jMSwLrFeiJL4nKu3PRjnbIaEBu6tU8eN2WnDshgDfjUCAwEAAaNSMFAwHQYDVR0OBBYEFODogCOU7y0BmFyZUNkw3YMCjnuNMAsGA1UdDwQEAwIBtjATBgNVHSUEDDAKBggrBgEFBQcDATANBgNVHQoEBjAEAwIHgDANBgkqhkiG9w0BAQUFAAOBgQCR3gBicdRBbsQo0bx7Egjpd0rDFJtbYUdH5GYynxUImQW4CLih59CZxmAReaswiSRSvpGhaQnWFslE33aXBtk+Db7orbhDyIBrMqBsvQVl9HFN48vqAoaqxCgHkAzv9uzEonIDeVZ0k9qgKgwA4l89bFYLN6MkiFm8xGa9iQSiKA==
+http	ssl3	tls	wsman,tls.cipher,0xc014
+http	ssl3	tls	wsman,tls.cipherName,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+http	ssl3	tls	wsman,tls.cn,FLNAOTPRODVM.cloudapp.net
+http	ssl3	tls	wsman,tls.fp.sha1,176f45a7d4fb8330781f80da10a47691a2b04eed
+http	ssl3	tls	wsman,tls.fp.sha256,SHA256:6BEkGryeA3RsLh+v2PuTXXx6BdXBlYrZkYtGC5jW/zE=
+http	ssl3	tls	wsman,tls.issuer,CN=FLNAOTPRODVM.cloudapp.net
+http	ssl3	tls	wsman,tls.names,flnaotprodvm.cloudapp.net
+http	ssl3	tls	wsman,tls.notAfter,2024-06-09T12:00:00Z
+http	ssl3	tls	wsman,tls.notAfterTS,1717934400
+http	ssl3	tls	wsman,tls.notBefore,2016-03-23T12:00:00Z
+http	ssl3	tls	wsman,tls.notBeforeTS,1458734400
+http	ssl3	tls	wsman,tls.selfSigned,serial=349000e001a000d00190005000307e0
+http	ssl3	tls	wsman,tls.serial,349000e001a000d00190005000307e0
+http	ssl3	tls	wsman,tls.signatureAlgorithm,sha1WithRSAEncryption
+http	ssl3	tls	wsman,tls.subject,CN=FLNAOTPRODVM.cloudapp.net
+http	ssl3	tls	wsman,tls.subjectKeyID,e0e8802394ef2d01985c9950d930dd83028e7b8d
+http	ssl3	tls	wsman,tls.supportedVersionNames,SSLv3	TLSv1.0	TLSv1.1	TLSv1.2
+http	ssl3	tls	wsman,tls.supportedVersions,0x0300	0x0301	0x0302	0x0303
+http	ssl3	tls	wsman,tls.version,0x0303
+http	ssl3	tls	wsman,tls.versionName,TLSv1.2
+http	ssl3	tls	wsman,ts,1662658226
+http	ssl3	tls	wsman,vhost,www.onetouch.pepsico.com
+http	ssl3	tls	wsman,wsman.body,"<s:Envelope xmlns:s=""http://www.w3.org/2003/05/soap-envelope""><s:Header/><s:Body><wsmid:IdentifyResponse xmlns:wsmid=""http://schemas.dmtf.org/wbem/wsman/identity/1/wsmanidentity.xsd""><wsmid:ProtocolVersion>http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd</wsmid:ProtocolVersion><wsmid:ProductVendor>Microsoft Corporation</wsmid:ProductVendor><wsmid:ProductVersion>OS: 0.0.0 SP: 0.0 Stack: 3.0</wsmid:ProductVersion></wsmid:IdentifyResponse></s:Body></s:Envelope>"
+http	ssl3	tls	wsman,wsman.productVendor,Microsoft Corporation
+http	ssl3	tls	wsman,wsman.productVersion,OS: 0.0.0 SP: 0.0 Stack: 3.0
+http	ssl3	tls	wsman,wsman.protocolVersion,http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd
+http	ssl3	tls,banner,"HTTP/1.1 302 Redirect
+Location: /prx/000/http/localhost/cookietest
+Connection: Keep-Alive
+Content-Length: 109
+Cache-Control: no-store, no-cache, must-revalidate
+X-Frame-Options: DENY
+Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Security-Policy: allow self
+X-WebKit-CSP: script-src 'self' 'unsafe-inline' 'unsafe-eval'
+Set-Cookie: ANses"
+http	ssl3	tls,cookie,iAccess
+http	ssl3	tls,fp.certainty,0.85
+http	ssl3	tls,http.body,"<html><body><p>Please go <a href=""/prx/000/http/localhost/cookietest"">here</a> to continue.</p></body></html>"
+http	ssl3	tls,http.code,302
+http	ssl3	tls,http.head.cacheControl,"no-store, no-cache, must-revalidate"
+http	ssl3	tls,http.head.connection,Keep-Alive
+http	ssl3	tls,http.head.contentLength,109
+http	ssl3	tls,http.head.contentSecurityPolicy,script-src 'self' 'unsafe-inline' 'unsafe-eval'
+http	ssl3	tls,http.head.location,/prx/000/http/localhost/cookietest
+http	ssl3	tls,http.head.setCookie,ANsession5301755367574710=iAccess; path=/;domain=.iaccess.huawei.com;secure
+http	ssl3	tls,http.head.strictTransportSecurity,max-age=31536000; includeSubDomains
+http	ssl3	tls,http.head.xcontentsecuritypolicy,allow self
+http	ssl3	tls,http.head.xcontenttypeoptions,nosniff
+http	ssl3	tls,http.head.xframeoptions,DENY
+http	ssl3	tls,http.head.xwebkitcsp,script-src 'self' 'unsafe-inline' 'unsafe-eval'
+http	ssl3	tls,http.head.xxssprotection,1; mode=block
+http	ssl3	tls,http.message,302 Redirect
+http	ssl3	tls,http.uri,/
+http	ssl3	tls,http.url,https://220.202.22.136/	https://wuhan03.iaccess.huawei.com/
+http	ssl3	tls,hw.device,VPN
+http	ssl3	tls,ip.flags,DF
+http	ssl3	tls,ip.id,62168
+http	ssl3	tls,ip.tos,0
+http	ssl3	tls,ip.ttl,233
+http	ssl3	tls,last.html.forms,GET:/prx/000/http/localh/welcome
+http	ssl3	tls,last.html.title,error
+http	ssl3	tls,last.http.body,"""' onclick='window.history.back()'></td><td>"");
+}
+if (_AN_nav_get_cookie(4) == 'open') {
+	<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
+<html>
+<head>
+<script>var _AN_withhomebtn = false;
+var _AN_hassession = false;
+var _AN_needlogoutlink = false;
+var _AN_isanonymous = true;
+var _AN_str_title = ""Error - Bad Request"";
+var _AN_str_back = ""Back"";
+var _AN_str_logout = ""Logout"";
+var _AN_str_help = ""Help"";
+var _AN_str_errortitle = ""Unable to process request"";
+var _AN_str_goto = ""Go to Welcome page"";
+var _AN_str_errormsg = ""Internal error - cannot process your request"";
+</script>
+<script>document.title=_AN_str_title;</script>
+<title>error</title>
+<link rel=""stylesheet"" type=""text/css"" href=""/prx/000/http/localh/portal.css?v=Rel_AG_9_3_0_259_38_52"">
+<meta id=""viewport"" name=""viewport"" content=""width=device-width;height=device-height;initial-scale=1.0;maximum-scale=1.0;user-scalable=0;"" />
+<script language=""JavaScript"" src=""/prx/000/http/localh/an_util.js?v=Rel_AG_9_3_0_259_38_52"" charset=""UTF-8""></script>
+<script language=""JavaScript"">
+<!--
+function error_write_form()
+{
+	</script>
+	</td>
+	</td>
+  </tr>
+  <tr>
+    <td class=""redline""></td><td class=""redline""></td>
+  </tr>
+</table>
+</div>
+<div class=""spcontent"">
+<table cellpadding=0 cellspacing=15>
+<tr>
+	</tr></table>
+	<html><body><p>Please go <a href=""/prx/000/http/localhost/cookietest"">here</a> to continue.</p></body></html>	<script>
+	<td class=""error""><script>document.write(_AN_str_errormsg);</script></td>
+</tr>
+
+<tr><td>
+<form onSubmit=""return false;"" action=""/prx/000/http/localh/welcome"" method=""GET"">
+<table cellpadding=0 cellspacing=15>
+<tr><td>
+<script type=""text/javascript"" language=""JavaScript"">
+<!--
+if (_AN_withhomebtn && _AN_hassession && (!_AN_isanonymous)) {
+	<td class=""title""><script>document.write(_AN_str_errortitle);</script></td>
+</tr>
+<tr>
+	<td nowrap align=right valign=bottom>&nbsp;
+	<td width=20% align=right valign=bottom><table cellspacing=0 cellpadding=0 style=""padding-right:35px;""><tr>
+	<td width=80%>&nbsp;</td>
+	<td>&nbsp;</td>
+  </tr>
+  <tr>
+	_AN_show_help('browsing_errors');
+}
+//-->
+</script>
+</head>
+
+<body marginwidth=""0"" marginheight=""0"" leftmargin=""0"" rightmargin=""0"" topmargin=""0"" bottommargin=""0"">
+<div class=""main_box"">
+<div class=""header"">
+<table class=""toptable"" valign=""top"" width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"">
+  <tr>
+    <td><table width=""100%"" border=""0"" cellspacing=""5"" cellpadding=""5"">
+      <tr>
+        <td valign=top><img src=""/prx/000/http/localh/images/lock_logo.gif""></td>
+      </tr>
+    </table></td>
+	_AN_str_logout + ""</a>&nbsp;"");
+	document.write(""<a class=\""loghelp\"" href=\""/prx/000/http/localh/logout\"">"" +
+	document.write(""<input onclick=\""top.location.href='/prx/000/http/localh/welcome'\"" type=\""submit\"" value=\"""" + _AN_str_goto +""\"">"");
+}
+//-->
+</script>
+</td></tr>
+</table>
+</form>
+</td></tr>
+
+</table>
+</div>
+</table>
+</div>
+</body>
+</html>	document.write(""<input width=50 type='submit' value='"" + _AN_str_back +
+	error_write_form();
+	if (_AN_withhomebtn && _AN_hassession && _AN_needlogoutlink) {
+	}"
+http	ssl3	tls,last.http.code,302	400
+http	ssl3	tls,last.http.head.cacheControl,"no-cache	no-store, no-cache, must-revalidate"
+http	ssl3	tls,last.http.head.connection,Keep-Alive
+http	ssl3	tls,last.http.head.contentLanguage,en-us
+http	ssl3	tls,last.http.head.contentLength,109	2993
+http	ssl3	tls,last.http.head.contentSecurityPolicy,script-src 'self' 'unsafe-inline' 'unsafe-eval'
+http	ssl3	tls,last.http.head.contentType,text/html; charset=utf-8
+http	ssl3	tls,last.http.head.location,/prx/000/http/localhost/cookietest
+http	ssl3	tls,last.http.head.setCookie,ANsession5301755367574710=iAccess; path=/;domain=.iaccess.huawei.com;secure
+http	ssl3	tls,last.http.head.strictTransportSecurity,max-age=31536000; includeSubDomains
+http	ssl3	tls,last.http.head.xcontentsecuritypolicy,allow self
+http	ssl3	tls,last.http.head.xcontenttypeoptions,no-sniff	nosniff
+http	ssl3	tls,last.http.head.xframeoptions,DENY	SAMEORIGIN
+http	ssl3	tls,last.http.head.xwebkitcsp,script-src 'self' 'unsafe-inline' 'unsafe-eval'
+http	ssl3	tls,last.http.head.xxssprotection,1; mode=block
+http	ssl3	tls,last.http.message,302 Redirect	400 Bad Request
+http	ssl3	tls,last.http.uri,/prx/000/http/localh/welcome	/prx/000/http/localhost/cookietest
+http	ssl3	tls,last.http.url,https://wuhan03.iaccess.huawei.com/prx/000/http/localh/welcome	https://wuhan03.iaccess.huawei.com/prx/000/http/localhost/cookietest
+http	ssl3	tls,protocol,http	ssl3	tls
+http	ssl3	tls,service.address,220.202.22.136
+http	ssl3	tls,service.id,0ce3e33c-56a6-4aa6-a34e-e2c4027a171a
+http	ssl3	tls,service.port,443
+http	ssl3	tls,service.transport,tcp
+http	ssl3	tls,service.vhost,WUHAN03.IACCESS.HUAWEI.COM
+http	ssl3	tls,source,syn
+http	ssl3	tls,tcp.flags,"syn,ack"
+http	ssl3	tls,tcp.options,MSS:05b4
+http	ssl3	tls,tcp.urg,0
+http	ssl3	tls,tcp.win,17520
+http	ssl3	tls,tls.authorityKeyID,a6b4c72b521fa078b986296b42260d4245e714bb
+http	ssl3	tls,tls.caUnknown,issuer=CN=HWIT Enterprise CA 1
+http	ssl3	tls,tls.certificates,MIIFljCCBH6gAwIBAgIKZTIu7QAAAD+awjANBgkqhkiG9w0BAQsFADAfMR0wGwYDVQQDExRIV0lUIEVudGVycHJpc2UgQ0EgMTAeFw0yMTExMDkwMTI4MzFaFw0yNjExMDgwMTI4MzFaMIHHMQswCQYDVQQGEwJDTjEfMB0GCgmSJomT8ixkARkWD2FwcE5hbWUgaUFjY2VzczEdMBsGCgmSJomT8ixkARkWDWNhTmFtZSBzaGEyNTYxFTATBgNVBAgTDHBraU5vIDM1MzAzNDEPMA0GA1UEChMGSFVBV0VJMQswCQYDVQQLEwJJVDEdMBsGA1UEAwwUaWFjY2Vzcy0qLmh1YXdlaS5jb20xJDAiBgkqhkiG9w0BCQEWFXdhbmhvbmd4aXVAaHVhd2VpLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPewLPTBGknSG5AtTsZ3HWnD4rqZ2wvHzQWR+kHNMcIiKYnqm9PVFFQT31Q2eLNkjnLJAeW9K5uGtZqYebMUQwvoFgRznr/nIi5LqHf+ngVN5vIVWa3WiKjr5OKIUkfMJmedJEu9haQgzBqxb2PIRFOt1rzINCtUxWYf2v6NBBiwYoDHmOtI9wHKpIck9dKgMTueZV0YR/7nmOxK1dRUNCfTPmSvboQR2wiRV4nmZKf1Jo/cj15GwRNMPgAebuiWgy8ip21EeSDHaTyjOXEsaZEVxIxPfy4Nfg6G74tJjyRIMmMa1beqbQK8w2qru3KvUP5YNUyRltIsC1ZX0udwgaUCAwEAAaOCAikwggIlMD4GCSsGAQQBgjcVBwQxMC8GJysGAQQBgjcVCIWHoUqDxpx3hKGfEoXQrhWBnqMngVSCwupLh8j2FwIBZAIBBTA0BgNVHSUELTArBggrBgEFBQcDAgYKKwYBBAGCNwoDAwYJYIZIAYb4QgQBBggrBgEFBQcDATAOBgNVHQ8BAf8EBAMCBaAwQgYJKwYBBAGCNxUKBDUwMzAKBggrBgEFBQcDAjAMBgorBgEEAYI3CgMDMAsGCWCGSAGG+EIEATAKBggrBgEFBQcDATAdBgNVHQ4EFgQUlTaqO59+kueb8w0DOQKRemUHaq0wQwYDVR0RBDwwOoIUaWFjY2Vzcy0qLmh1YXdlaS5jb22CFCouaWFjY2Vzcy5odWF3ZWkuY29tggwqLmh1YXdlaS5jb20wHwYDVR0jBBgwFoAUprTHK1IfoHi5hilrQiYNQkXnFLswTQYDVR0fBEYwRDBCoECgPoY8aHR0cDovL2h3aXRwa2kuaHVhd2VpLmNvbS9jcmwvSFdJVCUyMEVudGVycHJpc2UlMjBDQSUyMDEuY3JsMIGEBggrBgEFBQcBAQR4MHYwSAYIKwYBBQUHMAKGPGh0dHA6Ly9od2l0cGtpLmh1YXdlaS5jb20vYWlhL0hXSVQlMjBFbnRlcnByaXNlJTIwQ0ElMjAxLmNydDAqBggrBgEFBQcwAYYeaHR0cDovL2h3aXRwa2kuaHVhd2VpLmNvbS9vY3NwMA0GCSqGSIb3DQEBCwUAA4IBAQAi9fSDnGAxdMcJJynP9DTJ6sjXXY5a1TqZRWxjZOT+7SEOm51CuE/LtqT6KoESzMiIbTsn+g1bhlsaQrqwHqbdQrDJK7PoOyOYyMohWfSFqcFSfVM+sUTXsCbRXknb76dszAy9et1RLlCnzZCB0Exe4JlvX5l7NGfNYLLBzMI3wRvoPl/QDAAL13RGrnry6esAgig8zGw1xxa1ShuauI4ounk8C6e05TmE404nS85MdCz1dRuEcoohVI4gqwDahGAdIeF2u2EQQ/mjjUveT5w8sS/d4TBnXZyCHN0qEUiMTUeJ1PMektoKPdf4NID86C6cZPTUdXxQO1i3+gbfhetL
+http	ssl3	tls,tls.cipher,0x000a
+http	ssl3	tls,tls.cipherName,TLS_RSA_WITH_3DES_EDE_CBC_SHA
+http	ssl3	tls,tls.cn,iaccess-*.huawei.com
+http	ssl3	tls,tls.crl,http://hwitpki.huawei.com/crl/HWIT%20Enterprise%20CA%201.crl
+http	ssl3	tls,tls.fp.sha1,82ea0741b77b9de446253d25800008ed3dc9a820
+http	ssl3	tls,tls.fp.sha256,SHA256:I/e0ElHtTAKFeZCxuddOs4wak87k41QT/VW8D0HxYC8=
+http	ssl3	tls,tls.issuer,CN=HWIT Enterprise CA 1
+http	ssl3	tls,tls.issuingURL,http://hwitpki.huawei.com/aia/HWIT%20Enterprise%20CA%201.crt
+http	ssl3	tls,tls.names,*.huawei.com	*.iaccess.huawei.com	iaccess-*.huawei.com
+http	ssl3	tls,tls.notAfter,2026-11-08T01:28:31Z
+http	ssl3	tls,tls.notAfterTS,1794101311
+http	ssl3	tls,tls.notBefore,2021-11-09T01:28:31Z
+http	ssl3	tls,tls.notBeforeTS,1636421311
+http	ssl3	tls,tls.oscp,http://hwitpki.huawei.com/ocsp
+http	ssl3	tls,tls.serial,65322eed0000003f9ac2
+http	ssl3	tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+http	ssl3	tls,tls.subject,"CN=iaccess-*.huawei.com,OU=IT,O=HUAWEI,ST=pkiNo 353034,C=CN,1.2.840.113549.1.9.1=#0c1577616e686f6e67786975406875617765692e636f6d,0.9.2342.19200300.100.1.25=#130d63614e616d6520736861323536,0.9.2342.19200300.100.1.25=#130f6170704e616d652069416363657373"
+http	ssl3	tls,tls.subjectKeyID,9536aa3b9f7e92e79bf30d033902917a65076aad
+http	ssl3	tls,tls.supportedVersionNames,SSLv3	TLSv1.0	TLSv1.2
+http	ssl3	tls,tls.supportedVersions,0x0300	0x0301	0x0303
+http	ssl3	tls,tls.version,0x0303
+http	ssl3	tls,tls.versionName,TLSv1.2
+http	ssl3	tls,ts,1662658212
+http	ssl3	tls,vhost,wuhan03.iaccess.huawei.com
+http	ssl3	tls,html.title,403 Forbidden
+http	ssl3	tls,http.head.contentType,text/html
+http	ssl3	tls,http.head.date,"Thu, 08 Sep 2022 17:30:22 GMT	Thu, 08 Sep 2022 17:30:55 GMT	Thu, 08 Sep 2022 17:31:01 GMT"
+http	ssl3	tls,http.head.server,PAAS-WEB
+http	ssl3	tls,os.cpe23,cpe:/o:microsoft:windows:-
+http	ssl3	tls,os.family,Windows
+http	ssl3	tls,os.product,Windows
+http	ssl3	tls,os.vendor,Microsoft
+http	ssl3	tls,syn.rtt,201736242
+http	ssl3	tls,tcp.ts,1375874810
+http	ssl3	tls,tls.expired,serial=8e978f2110ab1c960000000050ede2dc
+http	ssl3	tls,tls.fp.caSha1,bad74f4d7ab128a49460692416540b5aeaa6b46a	f373b387065a28848af2f34ace192bddc78e9cac
+http	ssl3	tls,product,nginx:nginx:
+http	ssl3	tls,html.copyright,International Business Machines Corporation 1999 -->
+http	ssl3	tls,http.head.acceptRanges,bytes
+http	ssl3	tls,http.head.etag,"""602de3d4-18b"""
+http	ssl3	tls,http.head.lastModified,"Thu, 18 Feb 2021 03:49:40 GMT"
+http	ssl3	tls,http.head.processtime,0.001	0.002
+http	ssl3	tls,screenshot.image.key,b7a7cb95-7680-4e24-b4d5-42c240a12093/5c56e728-df83-48e5-be57-15846fd807eb/3232bd5f-e391-40e0-a926-52fb5756e625/119.8.242.213/443/tcp/APP-HK.HUAWEI.COM/screenshot.image-df43a6ef9c95c24a592e37736cca3193.png
+http	ssl3	tls,screenshot.image.md5,df43a6ef9c95c24a592e37736cca3193
+http	ssl3	tls,screenshot.image.size,404563
+tls,ip.flags,DF
+tls,ip.id,0
+tls,ip.tos,0
+tls,ip.ttl,47
+tls,protocol,tls
+tls,service.address,221.231.81.242
+tls,service.id,c084984f-58f5-4f49-8f39-7d9521fc854e
+tls,service.port,443
+tls,service.transport,tcp
+tls,service.vhost,GSPE72-CN-SSL.LS.APPLE.COM
+tls,source,syn
+tls,tcp.flags,"syn,ack"
+tls,tcp.options,MSS:05b4
+tls,tcp.urg,0
+tls,tcp.win,42340
+tls,tls.authorityKeyID,1e5c1791055702fc775ce37043ec6bfdddd2d869
+tls,tls.certificates,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
+tls,tls.cipher,0x1302
+tls,tls.cipherName,TLS_AES_256_GCM_SHA384
+tls,tls.cn,gspe19-cn-test-ssl.ls.apple.com
+tls,tls.crl,http://crl.apple.com/apsrsa12g1.crl
+tls,tls.fp.caSha1,0040a5e5da9c1808f8f18cdaf1fc20ba1564f6aa
+tls,tls.fp.sha1,09c2de123cebe444c419ef3b9a31d59a82b9e79f
+tls,tls.fp.sha256,SHA256:ilWHPCY23Tt+RdFPg4wi5nSTCXRnan2SZ+F1zoo97Fk=
+tls,tls.issuer,"CN=Apple Public Server RSA CA 12 - G1,O=Apple Inc.,ST=California,C=US"
+tls,tls.issuingURL,http://certs.apple.com/apsrsa12g1.der
+tls,tls.names,gspe19-cn-test-ssl.ls.apple.com
+tls,tls.notAfter,2023-04-13T16:38:06Z
+tls,tls.notAfterTS,1681403886
+tls,tls.notBefore,2022-03-14T16:38:07Z
+tls,tls.notBeforeTS,1647275887
+tls,tls.oscp,http://ocsp.apple.com/ocsp03-apsrsa12g101
+tls,tls.serial,70aadf76599a164ae1f3ac45de7e3cdf
+tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+tls,tls.subject,"CN=gspe19-cn-test-ssl.ls.apple.com,OU=management:idms.group.5707239,O=Apple Inc.,ST=California,C=US"
+tls,tls.subjectKeyID,5d2af4bb0d41e35e8a1cf268bed227784f737ab4
+tls,tls.supportedVersionNames,TLSv1.3
+tls,tls.supportedVersions,0x0304
+tls,tls.version,0x0304
+tls,tls.versionName,TLSv1.3
+tls,ts,1662652598
+tls,vhost,gspe72-cn-ssl.ls.apple.com
+tls,syn.rtt,369720578
+tls,tcp.ts,4030867771
+tls,banner,@@
+tls,unknownBanner,AAAYBAAAAAAAAAEAABAAAAMAAAABAAUAAEAAAAYAAB9A
+tls,tls.selfSigned,serial=788cdd3542001b8ff63a2fddb4ab2b8be0bb2547
+tls,tls.caUnknown,"issuer=CN=Huawei Enterprise Network Product CA,O=Huawei,C=CN"
+tls,tls.expired,serial=bdccef30c38347f70f7cc0f502a76ca
+dtls,dtls.verify,16feff00000000000000000023030000170000000000000017feff14719fc2c5f1d64023b55b99d60667102eee789b19
+dtls,protocol,dtls
+dtls,service.address,199.65.26.13
+dtls,service.id,84c02ac3-ae13-4e77-8184-bd025ad03cc9
+dtls,service.port,443
+dtls,service.transport,udp
+dtls,ts,1662651914
+ike,ike.reply,77fe58ceed88e11841c5e41cd0bf2aab0110020000000000000000680d00003400000001000000010000002801010001000000200101000080010005800200028004000280030001800b0001800c7080000000184048b7d56ebce88525e7de7f00d6c2d3c0000000
+ike,protocol,ike
+ike,service.address,165.197.221.15
+ike,service.id,6196df56-7b4d-4e2b-b2f7-895304b4a242
+ike,service.port,500
+ike,service.transport,udp
+ike,ts,1662658186
+zookeeper,banner,"Environment:
+zookeeper.version=3.4.13-2d71af4dbe22557fda74f9a9b4309b15a7487f03, built on 06/29/2018 04:05 GMT
+host.name=a55410974949
+java.version=1.7.0_65
+java.vendor=Oracle Corporation
+java.home=/usr/lib/jvm/java-7-openjdk-amd64/jre
+java.class.path=/opt/zookeeper-3.4.13/bin/../build/classes:/opt/zookeeper-3.4.13/bin/../build/lib/*.jar:/opt/zookeeper-3.4.13/bin/../lib/slf4j-log4j12-1.7.25.jar:/opt/zookeeper-3.4.13/bin/../lib/slf4j-api-1.7.25.jar:/opt/zookeeper-3.4.13/bin/../lib/netty-3.10.6.Final.jar:/opt/zookeeper-3.4.13/bin/../lib/log4j-1.2.17.jar:/opt/zookeeper-3.4.13/bin/../lib/jline-0.9.94.jar:/opt/zookeeper-3.4.13/bin/../lib/audience-annotations-0.5.0.jar:/opt/zookeeper-3.4.13/bin/../zookeeper-3.4.13.jar:/opt/zookeeper-3.4.13/bin/../src/java/lib/*.jar:/opt/zookeeper-3.4.13/bin/../conf:
+java.library.path=/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib
+java.io.tmpdir=/tmp
+java.compiler=<NA>
+os.name=Linux
+os.arch=amd64
+os.version=4.15.0-177-generic
+user.name=root
+user.home=/root
+user.dir=/opt/zookeeper-3.4.13"
+zookeeper,ip.flags,DF
+zookeeper,ip.id,0
+zookeeper,ip.tos,0
+zookeeper,ip.ttl,52
+zookeeper,protocol,zookeeper
+zookeeper,service.address,31.41.155.252
+zookeeper,service.id,3e012204-f84a-4ea8-8962-fe360b87462a
+zookeeper,service.port,2181
+zookeeper,service.transport,tcp
+zookeeper,source,syn
+zookeeper,syn.rtt,99852024
+zookeeper,tcp.flags,"syn,ack"
+zookeeper,tcp.options,MSS:05b4
+zookeeper,tcp.ts,2778355226
+zookeeper,tcp.urg,0
+zookeeper,tcp.win,43440
+zookeeper,ts,1662663090
+zookeeper,zk.access,allowed
+zookeeper,zk.host.name,a55410974949
+zookeeper,zk.java.class.path,/opt/zookeeper-3.4.13/bin/../build/classes:/opt/zookeeper-3.4.13/bin/../build/lib/*.jar:/opt/zookeeper-3.4.13/bin/../lib/slf4j-log4j12-1.7.25.jar:/opt/zookeeper-3.4.13/bin/../lib/slf4j-api-1.7.25.jar:/opt/zookeeper-3.4.13/bin/../lib/netty-3.10.6.Final.jar:/opt/zookeeper-3.4.13/bin/../lib/log4j-1.2.17.jar:/opt/zookeeper-3.4.13/bin/../lib/jline-0.9.94.jar:/opt/zookeeper-3.4.13/bin/../lib/audience-annotations-0.5.0.jar:/opt/zookeeper-3.4.13/bin/../zookeeper-3.4.13.jar:/opt/zookeeper-3.4.13/bin/../src/java/lib/*.jar:/opt/zookeeper-3.4.13/bin/../conf:
+zookeeper,zk.java.compiler,<NA>
+zookeeper,zk.java.home,/usr/lib/jvm/java-7-openjdk-amd64/jre
+zookeeper,zk.java.io.tmpdir,/tmp
+zookeeper,zk.java.library.path,/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib
+zookeeper,zk.java.vendor,Oracle Corporation
+zookeeper,zk.java.version,1.7.0_65
+zookeeper,zk.os.arch,amd64
+zookeeper,zk.os.name,Linux
+zookeeper,zk.os.version,4.15.0-177-generic
+zookeeper,zk.user.dir,/opt/zookeeper-3.4.13
+zookeeper,zk.user.home,/root
+zookeeper,zk.user.name,root
+zookeeper,zk.zookeeper.version,"3.4.13-2d71af4dbe22557fda74f9a9b4309b15a7487f03, built on 06/29/2018 04:05 GMT"
+amqp,banner,AMQP	
+amqp,ip.flags,DF
+amqp,ip.id,0
+amqp,ip.tos,0
+amqp,ip.ttl,51
+amqp,protocol,amqp
+amqp,service.address,31.41.155.252
+amqp,service.id,c894b51f-a685-4bf6-8950-84cef2f99e85
+amqp,service.port,5672
+amqp,service.transport,tcp
+amqp,service.vhost,ADMIN-STAGE.RANDEWOO.RU
+amqp,source,syn
+amqp,syn.rtt,103883645
+amqp,tcp.flags,"syn,ack"
+amqp,tcp.options,MSS:05b4
+amqp,tcp.ts,3901250788
+amqp,tcp.urg,0
+amqp,tcp.win,43440
+amqp,ts,1662663090
+amqp,vhost,admin-stage.randewoo.ru
+ftp,banner,"220 Service ready for new user.
+530 Access denied."
+ftp,fp.certainty,0.85
+ftp,ip.flags,DF
+ftp,ip.id,0
+ftp,ip.tos,0
+ftp,ip.ttl,42
+ftp,product,ProFTPD Project:ProFTPD:
+ftp,protocol,ftp
+ftp,service.address,90.84.245.96
+ftp,service.id,ef5a0f88-886f-4c30-81d3-61d6e3a92c31
+ftp,service.port,2121
+ftp,service.transport,tcp
+ftp,source,syn
+ftp,syn.rtt,114147765
+ftp,tcp.flags,"syn,ack"
+ftp,tcp.options,MSS:05b4
+ftp,tcp.ts,3608430689
+ftp,tcp.urg,0
+ftp,tcp.win,29200
+ftp,ts,1662658179
+openvpn,openvpn.reply,407f41c84507f9e39b0000000000	407f41c84507f9e39b0100000000394e7074d50d0e4900000000
+openvpn,protocol,openvpn
+openvpn,service.address,52.207.88.188
+openvpn,service.id,47d27a20-4078-43e4-aac4-824c71c2b9f6
+openvpn,service.port,1194
+openvpn,service.transport,udp
+openvpn,ts,1662651852
+pop3,banner,+OK Hello there. <17382.1662663191@localhost.localdomain>
+pop3,ip.flags,DF
+pop3,ip.id,0
+pop3,ip.tos,0
+pop3,ip.ttl,54
+pop3,protocol,pop3
+pop3,service.address,89.253.228.145
+pop3,service.id,ecf84c2c-fc89-4491-8bb4-8ed7e27c683b
+pop3,service.port,110
+pop3,service.transport,tcp
+pop3,source,syn
+pop3,syn.rtt,113785576
+pop3,tcp.flags,"syn,ack"
+pop3,tcp.options,MSS:05b4
+pop3,tcp.ts,3608430682
+pop3,tcp.urg,0
+pop3,tcp.win,28960
+pop3,ts,1662663090
+pop3,fp.certainty,0.85
+imap,banner,"* OK [CAPABILITY IMAP4rev1 UIDPLUS CHILDREN NAMESPACE THREAD=ORDEREDSUBJECT THREAD=REFERENCES SORT QUOTA AUTH=CRAM-MD5 AUTH=CRAM-SHA1 AUTH=CRAM-SHA256 AUTH=PLAIN IDLE ACL ACL2=UNION STARTTLS ENABLE UTF8=ACCEPT] Courier-IMAP ready. Copyright 1998-2021 Double Precision, Inc.  See COPYING for distribution information."
+imap,ip.flags,DF
+imap,ip.id,0
+imap,ip.tos,0
+imap,ip.ttl,54
+imap,protocol,imap
+imap,service.address,89.253.228.145
+imap,service.id,c2e0a316-9320-4bc9-9b7d-e358abed82c5
+imap,service.port,143
+imap,service.transport,tcp
+imap,source,syn
+imap,syn.rtt,110825850
+imap,tcp.flags,"syn,ack"
+imap,tcp.options,MSS:05b4
+imap,tcp.ts,3608430680
+imap,tcp.urg,0
+imap,tcp.win,28960
+imap,ts,1662663090
+mysql,fp.certainty,0.85
+mysql,ip.flags,DF
+mysql,ip.id,0
+mysql,ip.tos,0
+mysql,ip.ttl,54
+mysql,mysql.version,5.5.5-10.2.32-MariaDB
+mysql,product,MariaDB:MariaDB:10.2.32
+mysql,protocol,mysql
+mysql,service.address,89.253.228.145
+mysql,service.id,5592b9c8-8e42-4480-9e21-10c344ecd244
+mysql,service.port,3306
+mysql,service.transport,tcp
+mysql,source,syn
+mysql,syn.rtt,110892733
+mysql,tcp.flags,"syn,ack"
+mysql,tcp.options,MSS:05b4
+mysql,tcp.ts,3608430681
+mysql,tcp.urg,0
+mysql,tcp.win,28960
+mysql,ts,1662663090
+smtp	tls,banner,"220 vps-1061557-21772.host4g.ru ESMTP Postfix
+250-vps-1061557-21772.host4g.ru
+250-PIPELINING
+250-SIZE 10240000
+250-ETRN
+250-AUTH DIGEST-MD5 CRAM-MD5 PLAIN LOGIN
+250-ENHANCEDSTATUSCODES
+250-8BITMIME
+250-DSN
+250 CHUNKING"
+smtp	tls,fp.certainty,0.85
+smtp	tls,ip.flags,DF
+smtp	tls,ip.id,0
+smtp	tls,ip.tos,0
+smtp	tls,ip.ttl,54
+smtp	tls,protocol,smtp	tls
+smtp	tls,service.address,89.253.228.145
+smtp	tls,service.id,de55e872-d029-4664-bd4b-79921ed381dc
+smtp	tls,service.port,465
+smtp	tls,service.transport,tcp
+smtp	tls,service.vhost,PARTNER.RANDEWOO.RU
+smtp	tls,source,syn
+smtp	tls,syn.rtt,99555848
+smtp	tls,tcp.flags,"syn,ack"
+smtp	tls,tcp.options,MSS:05b4
+smtp	tls,tcp.ts,4076179464
+smtp	tls,tcp.urg,0
+smtp	tls,tcp.win,65160
+smtp	tls,tls.authorityKeyID,8d8c5ec454ad8ae177e99bf99b05e1b8018d61e1
+smtp	tls,tls.certificates,MIIDfTCCAmUCBFxpDeIwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMQ0wCwYDVQQKEwRPZGluMQ4wDAYDVQQLEwVQbGVzazEOMAwGA1UEAxMFUGxlc2sxHTAbBgkqhkiG9w0BCQEWDmluZm9AcGxlc2suY29tMB4XDTE5MDIxNzA3MzE0NloXDTIwMDIxNzA3MzE0NlowgYIxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMQ0wCwYDVQQKEwRPZGluMQ4wDAYDVQQLEwVQbGVzazEOMAwGA1UEAxMFUGxlc2sxHTAbBgkqhkiG9w0BCQEWDmluZm9AcGxlc2suY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqRwBxm3e9B7Oqjfwvd2V5ZI4CdK/oGsuPrFrcmzTBLBc+T76t1O0Igf1BQuCL3wMCBBfc69gLBh/A2leaOXRkiZ3hjuomaBQ433iDQ8yQi8jNY9xkq7zzCOVnxmgSadDBMRtZmlItTJOPUg8PNRZU5oJ0MytVvqEw1JSKkkLpkpNjMybnUOaefs5X/TLTqSIsEju3EOROLA1Pu3df2S00y4hfqaH6A9C6ubf8pPF2f0QsOLZZhcTKilrxcXUt18iAHG0nsj6OSzZd8LIb+rf5bKce2APrq/f6c3nx2adWkJFUUmNPB0ljVl0XRsVCraTaaZpBQmkCU0ZVqUSzF9hbQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCNQh3fioCupM7JEW1MfZ27n58eAXiIZ/bIjXs5zFYkfLxaHawPPeQ63xdP5hfwq9ngBSM2u9HU/5jqJCyPJahgj4FIleA23wke9wr1bwa+o6fWXpC5lox7Gn24LTXU1j360F2IRwhVMNcgnaUKJ4zdhgGFvUDtQS0xk9dLnf7Z2Hv4USX9vHU/A8kpEeiW3nn3Q4VqOBZwQji+SMRTAyL8QzKRMjXmHyfR3V90pCakN8tdk4raIMkK9rO3hAOs4eXfWoFfbjpKVzJBNXkOTSxKjRRnScUP6F+oDGJ5K4Ne2D18Jm/IT4cVIYbVpAkdV9ZBBqYEJUs7ZZZsz+mFGUSj
+smtp	tls,tls.cipher,0xc02f
+smtp	tls,tls.cipherName,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+smtp	tls,tls.cn,Plesk
+smtp	tls,tls.fp.caSha1,33e4e80807204c2b6182a3a14b591acd25b5f0db	d89e3bd43d5d909b47a18977aa9d5ce36cee184c
+smtp	tls,tls.fp.sha1,ca0ffb75d9f2558628e1078d0d30e2edfd3dfc8e
+smtp	tls,tls.fp.sha256,SHA256:F+XP5qwvYEqq2uydk/6BOe+e87hsEmc93uo/BRYZi3Q=
+smtp	tls,tls.issuer,"CN=Plesk,OU=Plesk,O=Odin,L=Seattle,ST=Washington,C=US,1.2.840.113549.1.9.1=#0c0e696e666f40706c65736b2e636f6d"
+smtp	tls,tls.issuingURL,http://crt.sectigo.com/SectigoRSADomainValidationSecureServerCA.crt
+smtp	tls,tls.names,plesk
+smtp	tls,tls.notAfter,2020-02-17T07:31:46Z
+smtp	tls,tls.notAfterTS,1581924706
+smtp	tls,tls.notBefore,2019-02-17T07:31:46Z
+smtp	tls,tls.notBeforeTS,1550388706
+smtp	tls,tls.oscp,http://ocsp.sectigo.com
+smtp	tls,tls.serial,5c690de2
+smtp	tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+smtp	tls,tls.subject,"CN=Plesk,OU=Plesk,O=Odin,L=Seattle,ST=Washington,C=US,1.2.840.113549.1.9.1=#0c0e696e666f40706c65736b2e636f6d"
+smtp	tls,tls.subjectKeyID,2ce82491be70e6093fe42f733e2b05cf3f9c3620
+smtp	tls,tls.supportedVersionNames,TLSv1.0	TLSv1.1	TLSv1.2
+smtp	tls,tls.supportedVersions,0x0301	0x0302	0x0303
+smtp	tls,tls.version,0x0303
+smtp	tls,tls.versionName,TLSv1.2
+smtp	tls,ts,1662663093
+smtp	tls,vhost,partner.randewoo.ru
+smtp	tls,product,Postfix:Postfix:
+smtp	tls,tls.expired,serial=5c690de2
+smtp	tls,tls.selfSigned,serial=5c690de2
+imap	tls,banner,"* OK [CAPABILITY IMAP4rev1 UIDPLUS CHILDREN NAMESPACE THREAD=ORDEREDSUBJECT THREAD=REFERENCES SORT QUOTA AUTH=CRAM-MD5 AUTH=CRAM-SHA1 AUTH=CRAM-SHA256 AUTH=PLAIN IDLE ACL ACL2=UNION ENABLE UTF8=ACCEPT] Courier-IMAP ready. Copyright 1998-2021 Double Precision, Inc.  See COPYING for distribution information."
+imap	tls,ip.flags,DF
+imap	tls,ip.id,0
+imap	tls,ip.tos,0
+imap	tls,ip.ttl,54
+imap	tls,protocol,imap	tls
+imap	tls,service.address,89.253.228.145
+imap	tls,service.id,006548da-90a9-46fa-8c3f-fe98a85caa26
+imap	tls,service.port,993
+imap	tls,service.transport,tcp
+imap	tls,service.vhost,PARTNER.RANDEWOO.RU
+imap	tls,source,syn
+imap	tls,syn.rtt,113835078
+imap	tls,tcp.flags,"syn,ack"
+imap	tls,tcp.options,MSS:05b4
+imap	tls,tcp.ts,3608430674
+imap	tls,tcp.urg,0
+imap	tls,tcp.win,28960
+imap	tls,tls.authorityKeyID,8d8c5ec454ad8ae177e99bf99b05e1b8018d61e1
+imap	tls,tls.certificates,MIIDfTCCAmUCBFxpDeIwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMQ0wCwYDVQQKEwRPZGluMQ4wDAYDVQQLEwVQbGVzazEOMAwGA1UEAxMFUGxlc2sxHTAbBgkqhkiG9w0BCQEWDmluZm9AcGxlc2suY29tMB4XDTE5MDIxNzA3MzE0NloXDTIwMDIxNzA3MzE0NlowgYIxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMQ0wCwYDVQQKEwRPZGluMQ4wDAYDVQQLEwVQbGVzazEOMAwGA1UEAxMFUGxlc2sxHTAbBgkqhkiG9w0BCQEWDmluZm9AcGxlc2suY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqRwBxm3e9B7Oqjfwvd2V5ZI4CdK/oGsuPrFrcmzTBLBc+T76t1O0Igf1BQuCL3wMCBBfc69gLBh/A2leaOXRkiZ3hjuomaBQ433iDQ8yQi8jNY9xkq7zzCOVnxmgSadDBMRtZmlItTJOPUg8PNRZU5oJ0MytVvqEw1JSKkkLpkpNjMybnUOaefs5X/TLTqSIsEju3EOROLA1Pu3df2S00y4hfqaH6A9C6ubf8pPF2f0QsOLZZhcTKilrxcXUt18iAHG0nsj6OSzZd8LIb+rf5bKce2APrq/f6c3nx2adWkJFUUmNPB0ljVl0XRsVCraTaaZpBQmkCU0ZVqUSzF9hbQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCNQh3fioCupM7JEW1MfZ27n58eAXiIZ/bIjXs5zFYkfLxaHawPPeQ63xdP5hfwq9ngBSM2u9HU/5jqJCyPJahgj4FIleA23wke9wr1bwa+o6fWXpC5lox7Gn24LTXU1j360F2IRwhVMNcgnaUKJ4zdhgGFvUDtQS0xk9dLnf7Z2Hv4USX9vHU/A8kpEeiW3nn3Q4VqOBZwQji+SMRTAyL8QzKRMjXmHyfR3V90pCakN8tdk4raIMkK9rO3hAOs4eXfWoFfbjpKVzJBNXkOTSxKjRRnScUP6F+oDGJ5K4Ne2D18Jm/IT4cVIYbVpAkdV9ZBBqYEJUs7ZZZsz+mFGUSj
+imap	tls,tls.cipher,0xc02f
+imap	tls,tls.cipherName,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+imap	tls,tls.cn,Plesk
+imap	tls,tls.fp.caSha1,33e4e80807204c2b6182a3a14b591acd25b5f0db	d89e3bd43d5d909b47a18977aa9d5ce36cee184c
+imap	tls,tls.fp.sha1,ca0ffb75d9f2558628e1078d0d30e2edfd3dfc8e
+imap	tls,tls.fp.sha256,SHA256:F+XP5qwvYEqq2uydk/6BOe+e87hsEmc93uo/BRYZi3Q=
+imap	tls,tls.issuer,"CN=Plesk,OU=Plesk,O=Odin,L=Seattle,ST=Washington,C=US,1.2.840.113549.1.9.1=#0c0e696e666f40706c65736b2e636f6d"
+imap	tls,tls.issuingURL,http://crt.sectigo.com/SectigoRSADomainValidationSecureServerCA.crt
+imap	tls,tls.names,plesk
+imap	tls,tls.notAfter,2020-02-17T07:31:46Z
+imap	tls,tls.notAfterTS,1581924706
+imap	tls,tls.notBefore,2019-02-17T07:31:46Z
+imap	tls,tls.notBeforeTS,1550388706
+imap	tls,tls.oscp,http://ocsp.sectigo.com
+imap	tls,tls.serial,5c690de2
+imap	tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+imap	tls,tls.subject,"CN=Plesk,OU=Plesk,O=Odin,L=Seattle,ST=Washington,C=US,1.2.840.113549.1.9.1=#0c0e696e666f40706c65736b2e636f6d"
+imap	tls,tls.subjectKeyID,2ce82491be70e6093fe42f733e2b05cf3f9c3620
+imap	tls,tls.supportedVersionNames,TLSv1.0	TLSv1.1	TLSv1.2
+imap	tls,tls.supportedVersions,0x0301	0x0302	0x0303
+imap	tls,tls.version,0x0303
+imap	tls,tls.versionName,TLSv1.2
+imap	tls,ts,1662663090
+imap	tls,vhost,partner.randewoo.ru
+imap	tls,tls.expired,serial=5c690de2
+imap	tls,tls.selfSigned,serial=5c690de2
+pop3	tls,banner,+OK Hello there. <17413.1662663207@localhost.localdomain>
+pop3	tls,ip.flags,DF
+pop3	tls,ip.id,0
+pop3	tls,ip.tos,0
+pop3	tls,ip.ttl,54
+pop3	tls,protocol,pop3	tls
+pop3	tls,service.address,89.253.228.145
+pop3	tls,service.id,364a1fae-40bc-4e2e-86b2-1c41e020923b
+pop3	tls,service.port,995
+pop3	tls,service.transport,tcp
+pop3	tls,service.vhost,PARTNER.RANDEWOO.RU
+pop3	tls,source,syn
+pop3	tls,syn.rtt,98985172
+pop3	tls,tcp.flags,"syn,ack"
+pop3	tls,tcp.options,MSS:05b4
+pop3	tls,tcp.ts,4076191409
+pop3	tls,tcp.urg,0
+pop3	tls,tcp.win,65160
+pop3	tls,tls.authorityKeyID,8d8c5ec454ad8ae177e99bf99b05e1b8018d61e1
+pop3	tls,tls.certificates,MIIDfTCCAmUCBFxpDeIwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMQ0wCwYDVQQKEwRPZGluMQ4wDAYDVQQLEwVQbGVzazEOMAwGA1UEAxMFUGxlc2sxHTAbBgkqhkiG9w0BCQEWDmluZm9AcGxlc2suY29tMB4XDTE5MDIxNzA3MzE0NloXDTIwMDIxNzA3MzE0NlowgYIxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMQ0wCwYDVQQKEwRPZGluMQ4wDAYDVQQLEwVQbGVzazEOMAwGA1UEAxMFUGxlc2sxHTAbBgkqhkiG9w0BCQEWDmluZm9AcGxlc2suY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqRwBxm3e9B7Oqjfwvd2V5ZI4CdK/oGsuPrFrcmzTBLBc+T76t1O0Igf1BQuCL3wMCBBfc69gLBh/A2leaOXRkiZ3hjuomaBQ433iDQ8yQi8jNY9xkq7zzCOVnxmgSadDBMRtZmlItTJOPUg8PNRZU5oJ0MytVvqEw1JSKkkLpkpNjMybnUOaefs5X/TLTqSIsEju3EOROLA1Pu3df2S00y4hfqaH6A9C6ubf8pPF2f0QsOLZZhcTKilrxcXUt18iAHG0nsj6OSzZd8LIb+rf5bKce2APrq/f6c3nx2adWkJFUUmNPB0ljVl0XRsVCraTaaZpBQmkCU0ZVqUSzF9hbQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCNQh3fioCupM7JEW1MfZ27n58eAXiIZ/bIjXs5zFYkfLxaHawPPeQ63xdP5hfwq9ngBSM2u9HU/5jqJCyPJahgj4FIleA23wke9wr1bwa+o6fWXpC5lox7Gn24LTXU1j360F2IRwhVMNcgnaUKJ4zdhgGFvUDtQS0xk9dLnf7Z2Hv4USX9vHU/A8kpEeiW3nn3Q4VqOBZwQji+SMRTAyL8QzKRMjXmHyfR3V90pCakN8tdk4raIMkK9rO3hAOs4eXfWoFfbjpKVzJBNXkOTSxKjRRnScUP6F+oDGJ5K4Ne2D18Jm/IT4cVIYbVpAkdV9ZBBqYEJUs7ZZZsz+mFGUSj
+pop3	tls,tls.cipher,0xc02f
+pop3	tls,tls.cipherName,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+pop3	tls,tls.cn,Plesk
+pop3	tls,tls.fp.caSha1,33e4e80807204c2b6182a3a14b591acd25b5f0db	d89e3bd43d5d909b47a18977aa9d5ce36cee184c
+pop3	tls,tls.fp.sha1,ca0ffb75d9f2558628e1078d0d30e2edfd3dfc8e
+pop3	tls,tls.fp.sha256,SHA256:F+XP5qwvYEqq2uydk/6BOe+e87hsEmc93uo/BRYZi3Q=
+pop3	tls,tls.issuer,"CN=Plesk,OU=Plesk,O=Odin,L=Seattle,ST=Washington,C=US,1.2.840.113549.1.9.1=#0c0e696e666f40706c65736b2e636f6d"
+pop3	tls,tls.issuingURL,http://crt.sectigo.com/SectigoRSADomainValidationSecureServerCA.crt
+pop3	tls,tls.names,plesk
+pop3	tls,tls.notAfter,2020-02-17T07:31:46Z
+pop3	tls,tls.notAfterTS,1581924706
+pop3	tls,tls.notBefore,2019-02-17T07:31:46Z
+pop3	tls,tls.notBeforeTS,1550388706
+pop3	tls,tls.oscp,http://ocsp.sectigo.com
+pop3	tls,tls.serial,5c690de2
+pop3	tls,tls.signatureAlgorithm,sha256WithRSAEncryption
+pop3	tls,tls.subject,"CN=Plesk,OU=Plesk,O=Odin,L=Seattle,ST=Washington,C=US,1.2.840.113549.1.9.1=#0c0e696e666f40706c65736b2e636f6d"
+pop3	tls,tls.subjectKeyID,2ce82491be70e6093fe42f733e2b05cf3f9c3620
+pop3	tls,tls.supportedVersionNames,TLSv1.0	TLSv1.1	TLSv1.2
+pop3	tls,tls.supportedVersions,0x0301	0x0302	0x0303
+pop3	tls,tls.version,0x0303
+pop3	tls,tls.versionName,TLSv1.2
+pop3	tls,ts,1662663090
+pop3	tls,vhost,partner.randewoo.ru
+pop3	tls,fp.certainty,0.85
+pop3	tls,tls.expired,serial=5c690de2
+pop3	tls,tls.selfSigned,serial=5c690de2
+ntp,ntp.interval,16
+ntp,ntp.referenceID,10.230.52.35
+ntp,ntp.skewMS,1012
+ntp,ntp.stratum,3
+ntp,ntp.timestamp,2022-09-08 17:28:30.111372476 +0000 UTC
+ntp,ntp.version,4
+ntp,protocol,ntp
+ntp,service.address,159.138.94.92
+ntp,service.id,2835a692-beb6-4d00-b324-ffaa1058422a
+ntp,service.port,123
+ntp,service.transport,udp
+ntp,ts,1662658109
