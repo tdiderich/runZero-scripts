@@ -6,7 +6,7 @@ You could also add your own searches based on your requirements. To do this, jus
 
 # Output
 
-This results will output 3 CSVs: 
+This results will output 3 CSVs per Organization with an Export Token created (each will have it's own folder): 
 
 1. Executive Report - report showing the counts of assets for each search 
 2. Action Report (Assets) - breakout of all the searches that match for each asset 
