@@ -3,7 +3,7 @@ import os
 import csv
 import json
 
-# auth
+# auth - navigate here to create an account token: https://console.runzero.com/account
 RUNZERO_ACCOUNT_TOKEN = os.environ['RUNZERO_ACCOUNT_TOKEN']
 HEADERS = {'Authorization': f'Bearer {RUNZERO_ACCOUNT_TOKEN}'}
 BASE_URL = 'https://console.runZero.com/api/v1.0'
