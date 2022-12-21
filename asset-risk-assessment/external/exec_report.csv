@@ -1,0 +1,6 @@
+org_name,search_name,search_description,search_type,severity,count
+external,Authenticated Web Services,Locates web services with form-based or header-based authentication.,services,info,18
+external,Unidentified Assets With Open Ports,"No matching OS, Type, or HW with at least one responsive port.",assets,info,7
+external,Windows with vulnerable HTTP Trailer Support logic,"Modern Windows versions may contain a HTTP protocol stack with vulnerability CVE-2022-21907. Considered “low complexity” to exploit, successful exploitation does not require authentication and can yield remote code execution to an attacker. This query will surface potentially vulnerable assets.",assets,high,2
+external,Computing assets without CrowdStrike,Finds laptops/desktops/servers which are missing CrowdStrike agents.,assets,info,2
+external,Assets that haven't been scanned in 3 days,,assets,info,2

@@ -1,0 +1,11 @@
+org_name,search_name,search_description,search_type,severity,count
+customer_success_playground,Authenticated Web Services,Locates web services with form-based or header-based authentication.,services,info,2
+customer_success_playground,Public & Private Network Connections,Assets that connect to both public and private networks can serve as entry points for internet attacks.,assets,medium,29
+customer_success_playground,Unidentified Assets With Open Ports,"No matching OS, Type, or HW with at least one responsive port.",assets,info,11
+customer_success_playground,Open Wireless Networks,Identifies wireless access points without authentication.,wireless,medium,4
+customer_success_playground,Services with Expired TLS Certificates,TLS certificates with an expiration date in the past.,services,medium,6
+customer_success_playground,Services with Soon to Expire TLS Certificates,TLS certificates expiring in the next six weeks.,services,medium,24
+customer_success_playground,DNSMasq DNS Servers,Identifies DNS services running the dnsmasq software,services,info,2
+customer_success_playground,Linux instances vulnerable to PwnKit,Identifies assets running Linux distributions that were affected by PwnKit (CVE-2021-4034).,assets,high,2
+customer_success_playground,Computing assets without CrowdStrike,Finds laptops/desktops/servers which are missing CrowdStrike agents.,assets,info,12
+customer_success_playground,Assets that haven't been scanned in 3 days,,assets,info,10

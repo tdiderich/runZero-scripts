@@ -1,0 +1,17 @@
+org_name,search_name,search_description,search_type,severity,count
+demo_organization,SMB Signing Not Required,SMB signing should be both enabled and required when exposed to the network.,services,low,4
+demo_organization,Authenticated Web Services,Locates web services with form-based or header-based authentication.,services,info,2
+demo_organization,Public & Private Network Connections,Assets that connect to both public and private networks can serve as entry points for internet attacks.,assets,medium,2
+demo_organization,Open Wireless Networks,Identifies wireless access points without authentication.,wireless,medium,3
+demo_organization,Services with Expired TLS Certificates,TLS certificates with an expiration date in the past.,services,medium,16
+demo_organization,Database Services Exposed to the Network,Identifies any database services exposed to the network. This query is sped up by first filtering on the asset-level protocols field before filtering on the service-level protocol field.,services,low,2
+demo_organization,Services with Soon to Expire TLS Certificates,TLS certificates expiring in the next six weeks.,services,medium,16
+demo_organization,Ubiquiti Devices,Finds equipment manufactured by Ubiquiti Networks.,assets,info,6
+demo_organization,Asset OS past EOL,Finds assets running an OS with an expired end-of-life date,assets,medium,5
+demo_organization,SMB Protocol In Use,,services,info,5
+demo_organization,Authenticated Web Services with no encryption,,services,info,1
+demo_organization,NTP Services With Skewed Clocks,Systems running the NTP daemon with a clock skew greater than one second.,services,low,2
+demo_organization,Windows with vulnerable HTTP Trailer Support logic,"Modern Windows versions may contain a HTTP protocol stack with vulnerability CVE-2022-21907. Considered “low complexity” to exploit, successful exploitation does not require authentication and can yield remote code execution to an attacker. This query will surface potentially vulnerable assets.",assets,high,3
+demo_organization,Linux instances vulnerable to PwnKit,Identifies assets running Linux distributions that were affected by PwnKit (CVE-2021-4034).,assets,high,8
+demo_organization,Computing assets without CrowdStrike,Finds laptops/desktops/servers which are missing CrowdStrike agents.,assets,info,12
+demo_organization,Assets that haven't been scanned in 3 days,,assets,info,52

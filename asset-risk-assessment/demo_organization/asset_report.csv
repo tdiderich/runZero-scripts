@@ -1,0 +1,82 @@
+id,addresses,addresses_extra,names,risks,risk_count
+14e4c9f9-810b-4f4d-9d58-98f37fe62423,['192.168.0.40'],['10.100.100.40'],['SURVEILLANCE'],"['SMB Signing Not Required', 'SMB Protocol In Use']",2
+2250795a-1295-43c3-8fc8-9f17d56275fb,['192.168.0.253'],['169.254.130.221'],['WINAUDITSRV'],"['SMB Signing Not Required', 'SMB Protocol In Use']",2
+401ebf73-c54d-4c32-be31-6ad53c3e9bde,['192.168.0.220'],[],['LABDC01'],"['SMB Signing Not Required', 'SMB Protocol In Use']",2
+70f64b40-5fdd-401e-891d-ee0b50595555,['192.168.0.251'],[],"['DESKTOP-DFC6JIQ', 'PRODUCTAGENT-FOR-WINDOWS']","['SMB Signing Not Required', 'SMB Protocol In Use']",2
+3a77cba3-d7ac-4bbe-82f9-4d2844e2b585,['192.168.50.65'],[],['ND0115050063214'],"['Authenticated Web Services', 'Authenticated Web Services with no encryption']",2
+edccfbeb-a42b-41d9-80a5-f61ce99d13fc,['192.168.0.8'],[],"['ACCESS-CONTROL', 'INTERNAL.RUMBLE.RUN']","['Authenticated Web Services', 'Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",3
+adfff7e2-abc7-43bf-b907-e903bbd5d159,['192.168.0.41'],"['10.100.100.41', '101.10.15.2', '192.168.0.40']",['DATASETS'],"['Public & Private Network Connections', ""Assets that haven't been scanned in 3 days""]",2
+43822a67-9a78-41c9-81bc-77f165c5b104,"['192.168.30.1', '192.168.40.1', '192.168.50.1']","['101.10.15.1', '192.168.0.1']",['ROUTER'],"['Public & Private Network Connections', 'Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",4
+8d8a33df-adf1-4ee1-9d9e-7295c314caa0,,,,['Open Wireless Networks'],1
+975345c3-d3e3-48d0-8452-bcd406690cd5,,,,['Open Wireless Networks'],1
+98053388-96a8-418c-995c-ba5ff0de4be8,,,,['Open Wireless Networks'],1
+9ba2b18a-bd56-4bbe-b635-ec99e26ed854,['192.168.30.128'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+135d4b1d-6f70-433f-ab2e-6fbcbec1cf8b,['192.168.30.221'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+95576eef-75e4-47ae-bbc1-eaf41908f785,['192.168.30.126'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+83d48a28-2fdd-476f-8d37-d35c3e767037,['192.168.30.152'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+d295b2d0-0402-4c8b-be6e-174cc8af1e37,['192.168.30.198'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+d6fa3209-bee8-4903-bd85-b082097f57c6,['192.168.30.198'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+bd231df8-a4ca-442d-8d8e-775a9c0e31aa,['192.168.0.2'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+bf67672c-40e0-41eb-9720-cebf2ce7ba4b,['192.168.0.2'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+37f75f16-62fe-4f4d-82a6-e72e0367303e,['192.168.0.30'],[],['M4300-DC'],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+588f8793-f786-408a-82b2-71b914769713,['192.168.0.220'],[],['LABDC01'],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+4af936df-5870-4dad-89b4-a592aebf361d,['192.168.0.21'],[],['S3300-28X'],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+9e0f70ec-cec3-468b-ad7e-7fb7ffc2f8e1,['192.168.0.253'],['169.254.130.221'],['WINAUDITSRV'],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+9a2f4c2d-1e43-49ef-a9c1-6a0137130b09,['192.168.0.238'],[],['IPMI'],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+79822be4-f453-4b7c-ab54-19a62084e71b,['192.168.30.190'],[],[],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+784a095d-83a6-4616-aafc-7e66424822b2,['192.168.0.244'],[],['IPMI'],"['Services with Expired TLS Certificates', 'Services with Soon to Expire TLS Certificates']",2
+505574a2-0df9-4161-b809-b87e6c256cca,['192.168.0.220'],[],['LABDC01'],['Database Services Exposed to the Network'],1
+f93b1974-480c-44bb-8041-5f393ff81792,['192.168.0.220'],[],['LABDC01'],['Database Services Exposed to the Network'],1
+232a1c44-1e91-4e76-b6c9-963f7a32460b,['192.168.0.2'],[],[],"['Ubiquiti Devices', 'Asset OS past EOL', 'Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",5
+518714c7-a3c3-46f4-9b03-d9c4b1761867,['192.168.30.47'],[],['BREAKROOM'],"['Ubiquiti Devices', ""Assets that haven't been scanned in 3 days""]",2
+1205245d-60fd-48f8-b159-f0ea7f829a72,['192.168.30.115'],[],['OFFICE'],"['Ubiquiti Devices', ""Assets that haven't been scanned in 3 days""]",2
+1eef52f1-cea9-482f-8c8c-9665ca3401ba,['192.168.30.116'],[],['DOWNSTAIRSCONFERENCE'],"['Ubiquiti Devices', ""Assets that haven't been scanned in 3 days""]",2
+ca3e7998-2073-4baf-b7c1-27540f9ee3de,['192.168.30.117'],[],['DATACENTER'],"['Ubiquiti Devices', ""Assets that haven't been scanned in 3 days""]",2
+f730f566-5f9e-4b87-8f90-e9202002d245,['192.168.30.118'],[],['UPSTAIRSCONFERENCE'],"['Ubiquiti Devices', ""Assets that haven't been scanned in 3 days""]",2
+7f872d4b-4f60-4f35-b7f2-2dcfa0f7d808,['192.168.0.19'],[],['APCFD796D'],"['Asset OS past EOL', ""Assets that haven't been scanned in 3 days""]",2
+152fd6c2-615d-4a6a-aba2-a17bfdece60d,['192.168.0.220'],[],['LABDC01'],"['Asset OS past EOL', 'Windows with vulnerable HTTP Trailer Support logic', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",4
+182ef67a-efb1-443a-bb03-6ae83a125a33,['192.168.0.251'],[],"['DESKTOP-DFC6JIQ', 'PRODUCTAGENT-FOR-WINDOWS']","['Asset OS past EOL', 'Windows with vulnerable HTTP Trailer Support logic', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",4
+71d2596d-d2d0-497c-b47f-46ea1a21f7fb,['192.168.0.253'],['169.254.130.221'],['WINAUDITSRV'],"['Asset OS past EOL', 'Windows with vulnerable HTTP Trailer Support logic', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",4
+459d655a-f159-40bc-a276-788332437565,['192.168.0.5'],"['192.168.100.5', 'fe80::45a:d05c:b29a:25c1']","['DEVELOPERS-MAC-MINI.LOCAL', 'MACMINI-EE7C7B', 'DEVELOPERS-MAC-MINI']",['SMB Protocol In Use'],1
+15032f29-6ce6-4084-b1ae-bdfaeaffc279,['192.168.0.244'],[],['IPMI'],['NTP Services With Skewed Clocks'],1
+2eb78034-a0df-46f1-b829-9a184f81cc89,['192.168.0.40'],['10.100.100.40'],['SURVEILLANCE'],['NTP Services With Skewed Clocks'],1
+3277935d-be33-463d-be7f-691af7a1d6bc,['192.168.0.1'],[],['ROUTER'],"['Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",3
+14fd101a-2573-4384-9513-b33601bef63d,['192.168.0.3'],[],['VSCAN'],"['Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",3
+b27308d3-4ced-438d-a615-d1f233a69622,['192.168.0.4'],[],[],"['Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",3
+d0b7fe93-5a49-47a8-b20e-c37d78518592,['192.168.0.8'],[],"['ACCESS-CONTROL', 'INTERNAL.RUMBLE.RUN']","['Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",3
+b3aee047-cbe8-4901-a05d-859363084b45,['192.168.0.197'],[],['RPI4-SENSOR'],"['Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",3
+d2fbe514-e28f-4b91-80be-861052fe3dc9,['192.168.40.20'],[],[],"['Linux instances vulnerable to PwnKit', 'Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",3
+14a53487-8231-4c1f-93c9-fbe01d66a9f1,['192.168.0.5'],"['192.168.100.5', 'fe80::45a:d05c:b29a:25c1']","['DEVELOPERS-MAC-MINI.LOCAL', 'MACMINI-EE7C7B', 'DEVELOPERS-MAC-MINI']","['Computing assets without CrowdStrike', ""Assets that haven't been scanned in 3 days""]",2
+3fdb1d32-ad35-4c5a-80b7-8faf9bf93d2f,['192.168.0.21'],[],['S3300-28X'],"[""Assets that haven't been scanned in 3 days""]",1
+d1e08f71-1e7e-4761-84e8-e7d7a1563298,['192.168.0.30'],[],['M4300-DC'],"[""Assets that haven't been scanned in 3 days""]",1
+bd882fa4-20f8-475b-adde-3286d59e178a,['192.168.0.31'],[],['M4300-OFFICE'],"[""Assets that haven't been scanned in 3 days""]",1
+7d7c4240-66a7-4b48-b9e4-ab157acdde95,['192.168.0.32'],[],['M4300-WORKBENCH'],"[""Assets that haven't been scanned in 3 days""]",1
+68af77fb-c89b-4190-ba4e-528d4bfb4eaf,['192.168.0.40'],['10.100.100.40'],['SURVEILLANCE'],"[""Assets that haven't been scanned in 3 days""]",1
+98e54404-54d7-463f-be44-f630b0ae1f9c,['192.168.0.238'],[],['IPMI'],"[""Assets that haven't been scanned in 3 days""]",1
+8ec1be39-bc6c-4cf2-bd66-0dd293ebe9f8,['192.168.0.244'],[],['IPMI'],"[""Assets that haven't been scanned in 3 days""]",1
+3482161a-16eb-4e91-b3fc-461ba3d084fb,['192.168.30.34'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+cfb8b39e-f214-48ce-bd2f-57102a2ee36a,['192.168.30.38'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+05f9708e-ed2d-4c60-a335-84ea519a1406,['192.168.30.126'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+a9d8d82d-2698-4d8e-a43a-a850d5065ab6,['192.168.30.128'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+1826a97d-e0a5-4ce6-85d0-16d854c58ecf,['192.168.30.138'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+19bdeb37-b39e-4037-8ffe-78e25afd25f5,['192.168.30.152'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+33d1a8b0-53ea-4f6a-abac-5f91f5a83c45,['192.168.30.184'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+100d1ef5-1262-433a-96f9-cff67d4ad91a,['192.168.30.189'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+6104810b-4790-4e52-809d-97bf354fb2d5,['192.168.30.190'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+982f5ac5-a14d-4440-9f6e-bc4c6a6b66e0,['192.168.30.198'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+3375f452-58ad-4103-969e-68818592ee5f,['192.168.30.202'],[],"['BRN3C2AF4ABE1C6', 'BRN3C2AF4ABE1C6.LOCAL']","[""Assets that haven't been scanned in 3 days""]",1
+2c1ef2b8-f9bf-4b99-8a8d-b15f917ae830,['192.168.30.206'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+ae6cf016-b4c1-41b7-bae9-23a2e5ff33d2,['192.168.30.213'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+51c4eb2f-23d7-4a64-8284-11533277a55d,['192.168.30.221'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+55b9a510-b45d-4cd5-adee-5a5e0750564c,['192.168.50.26'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+9531e21f-7958-419e-9555-696aef53509c,['192.168.50.61'],['fe80::3e8c:f8ff:fea1:b2c'],['TV-IP310PI20161108CCWR863632539'],"[""Assets that haven't been scanned in 3 days""]",1
+1a3d9fa5-3177-4431-899a-1fc005f74f5c,['192.168.50.62'],['fe80::3e8c:f8ff:fea1:480'],['TV-IP310PI20161101CCWR863630783'],"[""Assets that haven't been scanned in 3 days""]",1
+d5e52952-7e9e-4191-8fe0-18b5f8b3dc07,['192.168.50.64'],['fe80::3e8c:f8ff:fea1:3e83'],['TV-IP310PI20161208CCWR863645767'],"[""Assets that haven't been scanned in 3 days""]",1
+108e5661-ba93-4e5f-b705-b79125d5bce1,['192.168.50.65'],[],['ND0115050063214'],"[""Assets that haven't been scanned in 3 days""]",1
+37a21085-e1e9-4357-b07a-0f4faa5f0411,['192.168.100.41'],[],['SPORTSLOUNGE'],"[""Assets that haven't been scanned in 3 days""]",1
+ba430a93-e75a-4209-9cdf-9b3ef0f083b0,['192.168.100.69'],[],['AS-P_11THFLOOR'],"[""Assets that haven't been scanned in 3 days""]",1
+60d840f7-5113-4740-8460-cfdf9e38090e,['192.168.100.70'],[],['AS-P_18THFLOOR'],"[""Assets that haven't been scanned in 3 days""]",1
+d0dba983-7d93-4627-91be-12cae541116d,['192.168.100.71'],[],['AS-P_21STFLOOR'],"[""Assets that haven't been scanned in 3 days""]",1
+d0fd7f93-a3e7-4472-980e-48934bec31b0,['192.168.100.89'],[],[],"[""Assets that haven't been scanned in 3 days""]",1
+940ec5e5-7c99-416c-9631-dfc4bdec5c59,['192.168.100.117'],[],['DCC1_2_3000'],"[""Assets that haven't been scanned in 3 days""]",1
+ab36f67e-566e-4d96-9ca6-e36de3944a32,['192.168.100.185'],[],"['KCC-BOILER-PLANT', 'RTCS']","[""Assets that haven't been scanned in 3 days""]",1
