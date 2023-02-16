@@ -1,6 +1,9 @@
 import json
 import csv
 
+TASK_LIST = ['task1', 'task2']
+COMPARE_LIST = []
+
 
 def write_to_csv(output: dict, filename: str, fieldnames: list):
     file = open(filename, 'w')
@@ -13,7 +16,7 @@ def write_to_csv(output: dict, filename: str, fieldnames: list):
     file.close()
 
 
-def main(file):
+def main(file, filename):
     errors = {}
     csv_output = []
     for line in file:
@@ -34,7 +37,7 @@ def main(file):
 
     write_to_csv(
         output=csv_output,
-        filename='errors.csv',
+        filename=f'{filename.strip(".json")}_errors.csv',
         fieldnames=[
             'error',
             'count'
@@ -42,5 +45,6 @@ def main(file):
 
 
 if __name__ == "__main__":
-    f = open('task.log')
-    main(file=f)
+    for f in TASK_LIST:
+        file = open(f)
+        main(file=file, filename=f)
