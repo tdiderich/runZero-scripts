@@ -1,10 +1,15 @@
 import json
 import csv
 import os
+import re
 
-TASK_LIST = ['task3', 'task4', 'task1']
+TASK_LIST = ['task1', 'task2']
 RESULTS_SUMMARY = []
 RESULTS_SUMMARY_FULL = []
+CHECK_IP_PORT = re.compile(
+    r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(\d+)(:)?$')
+CHECK_IP = re.compile(
+    r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$')
 
 
 def write_to_csv(output: dict, filename: str, fieldnames: list):
@@ -24,6 +29,7 @@ def main(file, filename):
 
     errors = {}
     errors_csv_output = []
+    errors_csv_output_reduced = []
     results = {}
     results_csv_output = []
     for line in file:
@@ -124,15 +130,37 @@ def main(file, filename):
     })
 
     # create CSV writeable list for errors
+    errors_reduced_temp = {}
     for k in errors.keys():
         errors_csv_output.append({
             'error': k,
             'count': errors[k]
         })
 
-    # sort based on error count before writing to CSV for errors
-    errors_csv_output = sorted(
-        errors_csv_output, key=lambda d: d['count'], reverse=True)
+        # reduce the errors into high level groups
+        # reconnects = packet loss
+        if 'reconnected' in k.split():
+            ips = list(filter(CHECK_IP_PORT.search, k.split()))
+            if 'reconnected' in errors_reduced_temp:
+                errors_reduced_temp['reconnected']['hosts'] = errors_reduced_temp['reconnected']['hosts'] + ips
+                errors_reduced_temp['reconnected']['count'] += errors[k]
+            else:
+                errors_reduced_temp['reconnected'] = {
+                    'count': errors[k],
+                    'hosts': ips
+
+                }
+
+        if 'snmp' in k.split():
+            ips = list(filter(CHECK_IP_PORT.search, k.split()))
+            if 'snmp' in errors_reduced_temp:
+                errors_reduced_temp['snmp']['hosts'] = errors_reduced_temp['snmp']['hosts'] + ips
+                errors_reduced_temp['snmp']['count'] += errors[k]
+            else:
+                errors_reduced_temp['snmp'] = {
+                    'count': errors[k],
+                    'hosts': ips
+                }
 
     # write errors to CSV
     write_to_csv(
@@ -141,6 +169,29 @@ def main(file, filename):
         fieldnames=[
             'error',
             'count'
+        ])
+
+    # create CSV writeable for list of reduced errors
+    for k in errors_reduced_temp.keys():
+        errors_csv_output_reduced.append({
+            'error': k,
+            'hosts': errors_reduced_temp[k]['hosts'],
+            'count': errors_reduced_temp[k]['count']
+        })
+
+    # sort based on error count before writing to CSV for errors
+    errors_csv_output_reduced = sorted(
+        errors_csv_output_reduced, key=lambda d: d['count'], reverse=True)
+
+    # write errors reduced to CSV
+    write_to_csv(
+        output=errors_csv_output_reduced,
+        filename=f'{filename.strip(".json")}-out/errors_reduced.csv',
+        fieldnames=[
+            'error',
+            'count',
+            'hosts'
+
         ])
 
 

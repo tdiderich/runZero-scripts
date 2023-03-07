@@ -1,0 +1,98 @@
+error,count
+invalid target 127.0.0.1/32: ipv4 loopback is not supported,2
+"serverinfo probe failed for http://157.185.170.20:88/server-info: Get ""http://157.185.170.20:88/server-info"": read tcp 157.245.213.52:45896->157.185.170.20:88: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.163.113:88/server-info: Get ""http://157.185.163.113:88/server-info"": read tcp 157.245.213.52:53910->157.185.163.113:88: read: connection reset by peer",1
+http/1 probe failed to connect to 157.185.163.113:88 - https://hicampus.e.huawei.com:88/: http/1 probe failed to tls handshake https://hicampus.e.huawei.com:88/: tls: first record does not look like a TLS handshake,1
+"serverinfo probe failed for http://157.185.175.105:88/server-info: Get ""http://157.185.175.105:88/server-info"": read tcp 157.245.213.52:44762->157.185.175.105:88: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.163.113:1433/server-info: Get ""http://157.185.163.113:1433/server-info"": read tcp 157.245.213.52:54454->157.185.163.113:1433: read: connection reset by peer",1
+http/1 probe failed to read data for 157.185.163.113:1433 - http://hicampus.e.huawei.com:1433/: read tcp 157.245.213.52:54458->157.185.163.113:1433: read: connection reset by peer,1
+"serverinfo probe failed for http://163.171.129.134:88/server-info: Get ""http://163.171.129.134:88/server-info"": read tcp 157.245.213.52:56148->163.171.129.134:88: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.175.105:1433/server-info: Get ""http://157.185.175.105:1433/server-info"": read tcp 157.245.213.52:33600->157.185.175.105:1433: read: connection reset by peer",1
+http/1 probe failed to connect to 157.185.175.105:88 - https://software.huawei.com:88/: http/1 probe failed to tls handshake https://software.huawei.com:88/: tls: first record does not look like a TLS handshake,1
+http/1 probe failed to read data for 157.185.175.105:1433 - http://software.huawei.com:1433/: read tcp 157.245.213.52:33604->157.185.175.105:1433: read: connection reset by peer,1
+http/1 probe failed to connect to 163.171.129.134:88 - https://en.e-learning.huawei.com:88/: http/1 probe failed to tls handshake https://en.e-learning.huawei.com:88/: tls: first record does not look like a TLS handshake,1
+http/1 probe skipping redirect to same URL: 157.185.170.20:443 - https://download.hissoho.huawei.com:443/cloudlogin/,13
+"serverinfo probe failed for http://157.185.170.20:8000/server-info: Get ""http://157.185.170.20:8000/server-info"": read tcp 157.245.213.52:44166->157.185.170.20:8000: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:8080/server-info: Get ""http://157.185.170.20:8080/server-info"": read tcp 157.245.213.52:50366->157.185.170.20:8080: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.163.113:8080/server-info: Get ""http://157.185.163.113:8080/server-info"": read tcp 157.245.213.52:48150->157.185.163.113:8080: read: connection reset by peer",1
+http/1 probe failed to connect to 157.185.163.113:8080 - https://hicampus.e.huawei.com:8080/: http/1 probe failed to tls handshake https://hicampus.e.huawei.com:8080/: tls: first record does not look like a TLS handshake,1
+"serverinfo probe failed for http://157.185.175.105:8080/server-info: Get ""http://157.185.175.105:8080/server-info"": read tcp 157.245.213.52:47022->157.185.175.105:8080: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:8880/server-info: Get ""http://157.185.170.20:8880/server-info"": read tcp 157.245.213.52:34194->157.185.170.20:8880: read: connection reset by peer",1
+"serverinfo probe failed for http://163.171.129.134:8080/server-info: Get ""http://163.171.129.134:8080/server-info"": read tcp 157.245.213.52:60716->163.171.129.134:8080: read: connection reset by peer",1
+http/1 probe failed to connect to 157.185.175.105:8080 - https://software.huawei.com:8080/: http/1 probe failed to tls handshake https://software.huawei.com:8080/: tls: first record does not look like a TLS handshake,1
+http/1 probe failed to connect to 163.171.129.134:8080 - https://en.e-learning.huawei.com:8080/: http/1 probe failed to tls handshake https://en.e-learning.huawei.com:8080/: tls: first record does not look like a TLS handshake,1
+"serverinfo probe failed for http://157.185.170.20:8787/server-info: Get ""http://157.185.170.20:8787/server-info"": read tcp 157.245.213.52:39422->157.185.170.20:8787: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:8088/server-info: Get ""http://157.185.170.20:8088/server-info"": read tcp 157.245.213.52:51996->157.185.170.20:8088: read: connection reset by peer",1
+"serverinfo probe failed for https://157.185.163.113:9443/server-info: Get ""https://157.185.163.113:9443/server-info"": read tcp 157.245.213.52:44156->157.185.163.113:9443: read: connection reset by peer",1
+"serverinfo probe failed for https://157.185.175.105:9443/server-info: Get ""https://157.185.175.105:9443/server-info"": read tcp 157.245.213.52:40720->157.185.175.105:9443: read: connection reset by peer",1
+"serverinfo probe failed for https://163.171.129.134:9443/server-info: Get ""https://163.171.129.134:9443/server-info"": read tcp 157.245.213.52:37010->163.171.129.134:9443: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:10080/server-info: Get ""http://157.185.170.20:10080/server-info"": read tcp 157.245.213.52:44804->157.185.170.20:10080: read: connection reset by peer",1
+"serverinfo probe failed for https://157.185.163.113:443/server-info: Get ""https://157.185.163.113:443/server-info"": read tcp 157.245.213.52:54072->157.185.163.113:443: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:80/server-info: Get ""http://157.185.170.20:80/server-info"": read tcp 157.245.213.52:46270->157.185.170.20:80: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.163.113:80/server-info: Get ""http://157.185.163.113:80/server-info"": read tcp 157.245.213.52:34708->157.185.163.113:80: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.175.105:80/server-info: Get ""http://157.185.175.105:80/server-info"": read tcp 157.245.213.52:53560->157.185.175.105:80: read: connection reset by peer",1
+http/1 probe failed to read data for 157.185.163.113:9443 - https://hicampus.e.huawei.com:9443/: read tcp 157.245.213.52:44206->157.185.163.113:9443: read: connection reset by peer,1
+"serverinfo probe failed for http://163.171.129.134:80/server-info: Get ""http://163.171.129.134:80/server-info"": read tcp 157.245.213.52:54048->163.171.129.134:80: read: connection reset by peer",1
+http/1 probe failed to read data for 157.185.175.105:9443 - https://software.huawei.com:9443/: read tcp 157.245.213.52:40788->157.185.175.105:9443: read: connection reset by peer,1
+http/1 probe failed to read data for 163.171.129.134:9443 - https://en.e-learning.huawei.com:9443/: read tcp 157.245.213.52:37102->163.171.129.134:9443: read: connection reset by peer,1
+"serverinfo probe failed for https://157.185.175.105:443/server-info: Get ""https://157.185.175.105:443/server-info"": read tcp 157.245.213.52:45494->157.185.175.105:443: read: connection reset by peer",1
+"serverinfo probe failed for https://52.84.174.12:443/server-info: Get ""https://52.84.174.12:443/server-info"": remote error: tls: handshake failure",1
+"serverinfo probe failed for https://52.84.174.66:443/server-info: Get ""https://52.84.174.66:443/server-info"": remote error: tls: handshake failure",1
+"serverinfo probe failed for https://52.84.174.2:443/server-info: Get ""https://52.84.174.2:443/server-info"": remote error: tls: handshake failure",1
+"serverinfo probe failed for https://52.84.174.34:443/server-info: Get ""https://52.84.174.34:443/server-info"": remote error: tls: handshake failure",1
+"serverinfo probe failed for https://163.171.129.134:443/server-info: Get ""https://163.171.129.134:443/server-info"": read tcp 157.245.213.52:56700->163.171.129.134:443: read: connection reset by peer",1
+"serverinfo probe failed for https://122.96.104.247:443/server-info: Get ""https://122.96.104.247:443/server-info"": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",1
+"serverinfo probe failed for https://157.185.170.20:8443/server-info: Get ""https://157.185.170.20:8443/server-info"": read tcp 157.245.213.52:42704->157.185.170.20:8443: read: connection reset by peer",1
+http/1 probe skipping redirect to same URL: 119.8.89.196:443 - https://digitalpower.huawei.com:443/,2
+"serverinfo probe failed for https://163.171.129.134:8443/server-info: Get ""https://163.171.129.134:8443/server-info"": read tcp 157.245.213.52:40986->163.171.129.134:8443: read: connection reset by peer",1
+"serverinfo probe failed for https://157.185.163.113:8443/server-info: Get ""https://157.185.163.113:8443/server-info"": read tcp 157.245.213.52:33336->157.185.163.113:8443: read: connection reset by peer",1
+http/1 probe failed to connect to 52.84.174.12:443 - https://dra.video.cloud.huawei.com/: http/1 probe failed to tls handshake https://dra.video.cloud.huawei.com/: remote error: tls: handshake failure,1
+http/1 probe failed to connect to 52.84.174.66:443 - https://dra.video.cloud.huawei.com/: http/1 probe failed to tls handshake https://dra.video.cloud.huawei.com/: remote error: tls: handshake failure,1
+http/1 probe failed to connect to 52.84.174.2:443 - https://dra.video.cloud.huawei.com/: http/1 probe failed to tls handshake https://dra.video.cloud.huawei.com/: remote error: tls: handshake failure,1
+"serverinfo probe failed for https://157.185.175.105:8443/server-info: Get ""https://157.185.175.105:8443/server-info"": read tcp 157.245.213.52:51176->157.185.175.105:8443: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.163.113:8087/server-info: Get ""http://157.185.163.113:8087/server-info"": read tcp 157.245.213.52:45444->157.185.163.113:8087: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:9080/server-info: Get ""http://157.185.170.20:9080/server-info"": read tcp 157.245.213.52:53240->157.185.170.20:9080: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.175.105:8087/server-info: Get ""http://157.185.175.105:8087/server-info"": read tcp 157.245.213.52:42008->157.185.175.105:8087: read: connection reset by peer",1
+http/1 probe failed to connect to 52.84.174.34:443 - https://dra.video.cloud.huawei.com/: http/1 probe failed to tls handshake https://dra.video.cloud.huawei.com/: remote error: tls: handshake failure,1
+"serverinfo probe failed for http://163.171.129.134:8087/server-info: Get ""http://163.171.129.134:8087/server-info"": read tcp 157.245.213.52:33238->163.171.129.134:8087: read: connection reset by peer",1
+http/1 probe max redirects for 14.137.139.12:443 - https://gercloud1.iaccess.huawei.com:443/prx/000/http/localh/welcome: skipping https://gercloud1.iaccess.huawei.com:443/prx/000/http/localhost/cookietest,1
+http/1 probe max redirects for 119.13.72.30:443 - https://iaccess-r-ger.huawei.com:443/prx/000/http/localh/welcome: skipping https://iaccess-r-ger.huawei.com:443/prx/000/http/localhost/cookietest,1
+http/1 probe skipping redirect to same URL: 121.37.49.12:443 - https://huawei.com:443/,2
+http/1 probe failed to read data for 124.70.125.159:80 - https://gray.qiankun-saas.huawei.com/: no response,1
+http/1 probe failed to read data for 124.70.126.172:80 - https://gray.qiankun-saas.huawei.com/: no response,1
+http/1 probe failed to read data for 124.70.125.132:80 - https://gray.qiankun-saas.huawei.com/: no response,1
+http/1 probe max redirects for 14.137.173.198:443 - https://nigclould1.iaccess.huawei.com:443/prx/000/http/localh/welcome: skipping https://nigclould1.iaccess.huawei.com:443/prx/000/http/localhost/cookietest,1
+http/1 probe max redirects for 121.36.119.100:443 - https://portal-drcn.video.cloud.huawei.com:443/camp/v2/1355106435595240320/000111?shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal: skipping https://portal-drcn.video.cloud.huawei.com:443/camp/v2/1355106435595240320/000111?shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal,1
+http/1 probe max redirects for 49.4.37.219:443 - https://portal-drcn.video.cloud.huawei.com:443/camp/v2/1355106435595240320/000111?shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal: skipping https://portal-drcn.video.cloud.huawei.com:443/camp/v2/1355106435595240320/000111?shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal,1
+http/1 probe failed to read data for 116.205.146.186:80 - https://huaweisymbol.rnd.huawei.com/: no response,1
+http/1 probe failed to read data for 122.96.104.247:80 - https://clouduat.welink.huawei.com/: no response,1
+http/1 probe max redirects for 118.194.33.133:443 - https://portal-drcn.video.cloud.huawei.com:443/camp/v2/1355106435595240320/000111?shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal: skipping https://portal-drcn.video.cloud.huawei.com:443/camp/v2/1355106435595240320/000111?shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal&shared=true&appsafearguments=true&fixedfontsize=normal,1
+http/1 probe failed to read data for 139.159.208.174:80 - https://huaweisymbol.rnd.huawei.com/: no response,1
+http/1 probe failed to read data for 116.205.146.168:80 - https://protopie.rnd.huawei.com/: no response,1
+http/1 probe max redirects for 125.17.168.17:443 - https://ind4.iaccess.huawei.com:443/prx/000/http/localh/welcome: skipping https://ind4.iaccess.huawei.com:443/prx/000/http/localhost/cookietest,1
+http/1 probe failed to read data for 123.60.238.185:80 - https://protopie.rnd.huawei.com/: no response,1
+http/1 probe failed to read data for 123.60.238.197:80 - https://huaweisymbol.rnd.huawei.com/: no response,1
+http/1 probe failed to read data for 139.159.208.173:80 - https://protopie.rnd.huawei.com/: no response,1
+http/1 probe failed to read data for 123.60.238.204:80 - https://huaweisymbol.rnd.huawei.com/: no response,1
+http/1 probe failed to read data for 123.60.238.203:80 - https://protopie.rnd.huawei.com/: no response,1
+http/1 probe max redirects for 220.202.22.136:443 - https://wuhan03.iaccess.huawei.com:443/prx/000/http/localh/welcome: skipping https://wuhan03.iaccess.huawei.com:443/prx/000/http/localhost/cookietest,1
+failed to screenshot https://hicampus.e.huawei.com:443: screenshot timeout,1
+"serverinfo probe failed for http://157.185.170.20:9090/server-info: Get ""http://157.185.170.20:9090/server-info"": read tcp 157.245.213.52:42706->157.185.170.20:9090: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.170.20:9081/server-info: Get ""http://157.185.170.20:9081/server-info"": read tcp 157.245.213.52:52842->157.185.170.20:9081: read: connection reset by peer",1
+failed to screenshot https://petalengine.cloud.huawei.com:443: screenshot timeout,2
+"serverinfo probe failed for http://157.185.163.113:1723/server-info: Get ""http://157.185.163.113:1723/server-info"": read tcp 157.245.213.52:55726->157.185.163.113:1723: read: connection reset by peer",1
+"serverinfo probe failed for http://157.185.175.105:1723/server-info: Get ""http://157.185.175.105:1723/server-info"": read tcp 157.245.213.52:36652->157.185.175.105:1723: read: connection reset by peer",1
+"serverinfo probe failed for http://163.171.129.134:1723/server-info: Get ""http://163.171.129.134:1723/server-info"": read tcp 157.245.213.52:58586->163.171.129.134:1723: read: connection reset by peer",1
+http/1 probe failed to read data for 122.96.104.247:443 - https://clouduat.welink.huawei.com/: no response,1
+http/1 probe failed to read data for 116.205.146.166:80 - http://alpha.simulator-ensp-ng.huawei.com/: no response,1
+http/1 probe skipping redirect to same URL: 119.8.242.213:80 - http://app-hk.huawei.com:80,2
+http/1 probe failed to read data for 157.185.163.113:8087 - http://hicampus.e.huawei.com:8087/: read tcp 157.245.213.52:45568->157.185.163.113:8087: read: connection reset by peer,1
+http/1 probe failed to read data for 157.185.175.105:8087 - http://software.huawei.com:8087/: read tcp 157.245.213.52:42146->157.185.175.105:8087: read: connection reset by peer,1
+http/1 probe failed to read data for 163.171.129.134:8087 - http://en.e-learning.huawei.com:8087/: read tcp 157.245.213.52:33294->163.171.129.134:8087: read: connection reset by peer,1
+http/1 probe failed to read data for 157.185.163.113:1723 - http://hicampus.e.huawei.com:1723/: read tcp 157.245.213.52:55756->157.185.163.113:1723: read: connection reset by peer,1
+http/1 probe failed to read data for 157.185.175.105:1723 - http://software.huawei.com:1723/: read tcp 157.245.213.52:36682->157.185.175.105:1723: read: connection reset by peer,1
+http/1 probe failed to read data for 163.171.129.134:1723 - http://en.e-learning.huawei.com:1723/: read tcp 157.245.213.52:58644->163.171.129.134:1723: read: connection reset by peer,1
+failed to screenshot https://sit.shixizhi.huawei.com:443: screenshot timeout,1
+http/1 probe failed to connect to 120.52.95.234:9080 - http://devicepartner.huawei.com:9080/: dial tcp 120.52.95.234:9080: i/o timeout,1
+reconnected to 120.52.95.234:7443 after 9 attempts,1
+failed to screenshot https://xuanwu.qiankun-saas.huawei.com:443: screenshot timeout,1
