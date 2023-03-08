@@ -3,7 +3,7 @@ import csv
 import os
 import re
 
-TASK_LIST = ['task1', 'task2']
+TASK_LIST = ['backhaul']
 RESULTS_SUMMARY = []
 RESULTS_SUMMARY_FULL = []
 CHECK_IP_PORT = re.compile(
@@ -24,9 +24,12 @@ def write_to_csv(output: dict, filename: str, fieldnames: list):
 
 
 def main(file, filename):
+
+    # make output directory for each task
     if not os.path.exists(f'{filename.strip(".json")}-out'):
         os.mkdir(f'{filename.strip(".json")}-out')
 
+    # handle task data and save key results for later processing
     errors = {}
     errors_csv_output = []
     errors_csv_output_reduced = []
@@ -56,7 +59,18 @@ def main(file, filename):
             else:
                 errors[jline['msg']] = 1
 
-    # temp
+        # handle SNMP auth errors
+
+        if jline.get('info', '') and jline.get('info', '').get('snmp.failedAuth', ''):
+            host = jline.get('host', '')
+            failure = jline.get('info', '').get('snmp.failedAuth', '')
+            error = f'snmp auth error: {host}:161 {failure}'
+            if error in errors:
+                errors[error] += 1
+            else:
+                errors[error] = 1
+
+    # temporary dic for results
     results_summary = {
         'total_hosts': 0,
         'total_hosts_list': [],
@@ -65,6 +79,7 @@ def main(file, filename):
         'unique_ports_count': 0,
     }
 
+    # handle results + write to CSVs
     # create CSV writeable list for results
     for k in results.keys():
         results_csv_output.append({
@@ -87,6 +102,7 @@ def main(file, filename):
         # add host to list of hosts
         results_summary['total_hosts_list'].append(k)
 
+    # sort results by unique port count
     results_summary['unique_ports'] = sorted(results_summary['unique_ports'])
     results_summary['unique_ports_count'] = len(
         results_summary['unique_ports'])
@@ -129,6 +145,7 @@ def main(file, filename):
         'total_ports': results_summary['unique_ports_count'],
     })
 
+    # handle errors and write to CSVs
     # create CSV writeable list for errors
     errors_reduced_temp = {}
     for k in errors.keys():
@@ -151,6 +168,7 @@ def main(file, filename):
 
                 }
 
+        # snmp = timeout or credential does not work
         if 'snmp' in k.split():
             ips = list(filter(CHECK_IP_PORT.search, k.split()))
             if 'snmp' in errors_reduced_temp:
