@@ -24,8 +24,6 @@ RUNZERO_CLIENT_ID = os.environ['RUNZERO_CLIENT_ID']
 RUNZERO_CLIENT_SECRET = os.environ['RUNZERO_CLIENT_SECRET']
 
 # FortiThings
-# Console: https://fortixdrnfrconnectna.console.ensilo.com/
-# DOCS: https://fortixdrnfrconnectna.console.ensilo.com/rest-ui#operation/list-collectors
 FORTI_KEY = os.environ['FORTI_KEY']
 FORTI_HEADERS = {'Authorization': f'Basic {FORTI_KEY}'}
 FORTI_BASE_URL = 'https://fortixdrnfrconnectna.console.ensilo.com'

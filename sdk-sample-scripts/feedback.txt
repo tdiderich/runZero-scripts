@@ -1,0 +1,5 @@
+1. Swagger API docs
+2. Examples showing how to use the org api key
+3. This example should show how to determine which org to post the assets to - https://github.com/runZeroInc/runzero-sdk-py/blob/main/examples/create_assets_from_json.py
+4. Using a string for JSON is odd (why can't I just pass the list of JSON objects?) - https://github.com/runZeroInc/runzero-sdk-py/blob/main/examples/create_assets_from_json.py#L11-L15
+5. We should have a different icon for custom sources - they currently show the runZero logo (the search works properly though)
