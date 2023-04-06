@@ -3,7 +3,7 @@ import csv
 import os
 import re
 
-TASK_LIST = ['backhaul']
+TASK_LIST = ['homenet']
 RESULTS_SUMMARY = []
 RESULTS_SUMMARY_FULL = []
 CHECK_IP_PORT = re.compile(

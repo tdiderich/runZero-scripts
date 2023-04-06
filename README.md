@@ -42,7 +42,7 @@ cp .env_sample .env
 - Install dependancies
 
 ```
-pipenv install
+pipenv install -r requirements.txt
 ```
 
 - Enter pipenv
