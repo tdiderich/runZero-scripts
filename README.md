@@ -37,12 +37,7 @@ git clone https://github.com/tdiderich/runZero.git
 cp .env_sample .env
 ```
 
-- Update all of the secrets needed based on the script you'd like to run (NOTE: you need to rerun pipenv shell anytime you update these values to reload them)
-- Create pip environment
-
-```
-pipenv --three
-```
+- Update all of the secrets in the `.env` needed based on the script you'd like to run (NOTE: you need to rerun pipenv shell anytime you update these values to reload them)
 
 - Install dependancies
 
