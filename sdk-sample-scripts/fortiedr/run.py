@@ -6,7 +6,7 @@ from ipaddress import ip_address
 from typing import Any, Dict, List
 import runzero
 from runzero.client import AuthError
-from runzero.api import CustomAssets, CustomSourcesAdmin, Sites
+from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites, Tasks
 from runzero.types import (
     CustomAttribute,
     ImportAsset,
@@ -28,7 +28,7 @@ FORTI_KEY = os.environ['FORTI_KEY']
 FORTI_HEADERS = {'Authorization': f'Basic {FORTI_KEY}'}
 FORTI_BASE_URL = 'https://fortixdrnfrconnectna.console.ensilo.com'
 
-
+# will need to change on a per integration basis to align wtih JSON object keys
 def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset]:
     '''
     This is an example function to highlight how to handle converting data from an API into the ImportAsset format that
@@ -75,7 +75,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
         )
     return assets
 
-
+# should not need to change on a per integraton basis 
 def build_network_interface(ips: List[str], mac: str = None) -> NetworkInterface:
     '''
     This function converts a mac and a list of strings in either ipv4 or ipv6 format and creates a NetworkInterface that
@@ -120,7 +120,7 @@ def import_data_to_runzero(assets: List[ImportAsset]):
         return
 
     # get or create the custom source manager and create a new custom source
-    custom_source_mgr = CustomSourcesAdmin(c)
+    custom_source_mgr = CustomIntegrationsAdmin(c)
     my_asset_source = custom_source_mgr.get(name='fortiedr')
     if my_asset_source:
         source_id = my_asset_source.id
@@ -131,7 +131,7 @@ def import_data_to_runzero(assets: List[ImportAsset]):
     # create the import manager to upload custom assets
     import_mgr = CustomAssets(c)
     import_task = import_mgr.upload_assets(
-        org_id=RUNZERO_ORG_ID, site_id=site.id, source_id=source_id, assets=assets, task_info=ImportTask(name='FortiEDR Sync')
+        org_id=RUNZERO_ORG_ID, site_id=site.id, custom_integration_id=source_id, assets=assets, task_info=ImportTask(name='FortiEDR Sync')
         )
 
     if import_task:
@@ -140,13 +140,16 @@ def import_data_to_runzero(assets: List[ImportAsset]):
 
 
 def main():
+    # Get assets from FortiEDR 
     url = f'{FORTI_BASE_URL}/management-rest/inventory/list-collectors'
     assets = requests.get(url, headers=FORTI_HEADERS)
     assets_json = assets.json()
+    # Flatten JSON
     for a in assets_json:
         for k in a.keys():
             if isinstance(a[k], dict):
                 a[k] = flatten(a[k])
+    # Imort to runZero 
     import_assets = build_assets_from_json(assets_json)
     import_data_to_runzero(assets=import_assets)
 
