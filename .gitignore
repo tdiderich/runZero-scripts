@@ -1,1 +1,4 @@
 .env
+terraform/self-hosted-install/gcp-key.json
+terraform/gcp-self-hosted-install/gcp-key.json
+terraform/gcp-self-hosted-install/terraform.tfstate
