@@ -77,8 +77,8 @@ resource "google_compute_instance" "rz-self-hosted" {
   }
 
   # NOTE: this takes 5-10 minutes so feel free to grab a cup of coffee
-  # Once this is done, you can run cat /tmp/password.txt to get your password
-  metadata_startup_script = "curl -f -o runzero-platform.bin ${var.self_hosted_download_url} && chmod u+x runzero-platform.bin && sudo ./runzero-platform.bin install && sudo ufw allow https/tcp && rumblectl initial ${var.initial_user_email} && rumblectl user reset ${var.initial_user_email} >> /tmp/password.txt"
+  # Once this is done, you can run cat /root/password.txt to get your password
+  metadata_startup_script = "curl -f -o runzero-platform.bin ${var.self_hosted_download_url} && chmod u+x runzero-platform.bin && sudo ./runzero-platform.bin install && sudo ufw allow https/tcp && rumblectl initial ${var.initial_user_email} && rumblectl user reset ${var.initial_user_email} >> /root/password.txt"
 
   scheduling {
     automatic_restart   = true
