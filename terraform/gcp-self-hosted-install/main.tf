@@ -41,7 +41,7 @@ resource "google_compute_instance" "rz-self-hosted" {
     device_name = "rz-self-hosted"
 
     initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20230418"
+      image = "projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20230302"
       size  = 100
       type  = "pd-ssd"
     }
