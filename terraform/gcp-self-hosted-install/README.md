@@ -27,7 +27,7 @@
 - `rumblectl generate-certificate && rumblectl restart`
 8. You are ready to log in 
 - Navigate to `https://{IP ADDRESS OR HOSTNAME}:443` in your browser 
-- Your password can be obtained using this command `cat /tmp/password.txt`
+- Your password can be obtained using this command `cat /root/password.txt`
 
 ## GUI
 1. Reserve static IP: https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#reserve_new_static
