@@ -8,6 +8,7 @@ BASE_URL = "https://console.runZero.com/api/v1.0"
 MAC = "A0:5C:D5:E7:C1:11"
 IP = "192.168.86.250"
 NAME = "TYLERS-PHONE"
+SEARCH = "alive:t"
 
 def main():
     url = BASE_URL + '/export/org/assets.json'
@@ -28,6 +29,9 @@ def main():
         "search": f"alive:t name:{NAME}"})
     print(f"Found {len(name_results.json())} assets with the name {NAME}")
 
+    search_results = requests.get(url, headers=HEADERS, params={
+        "search": SEARCH})
+    print(f"Found {len(search_results.json())} assets with the search {SEARCH}")
 
 if __name__ == "__main__":
     main()
