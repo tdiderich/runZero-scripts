@@ -58,4 +58,5 @@ _NOTE_: You can update the fields to include more if you need more of the data, 
 
 ## Demo in Power BI
 
-<div style="position: relative; padding-bottom: calc(66.66666666666666% + 41px); height: 0; width: 100%"><iframe src="https://demo.arcade.software/4x6aKDfCpf0bZrJhm6MR?embed" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;color-scheme: light;" title="runZero Export to Power BI"></iframe></div>
+![runZero Export to Power BI](https://github.com/tdiderich/runZero-scripts/assets/15862572/f93ef89c-a26c-45d0-9680-af19706b31c3)
+
