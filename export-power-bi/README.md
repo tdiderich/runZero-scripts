@@ -55,3 +55,7 @@ service_port
 3. Run the script
 
 _NOTE_: You can update the fields to include more if you need more of the data, but you will need to update those in Power BI first. Power BI only supports Text, Number, and DateTime types for fields.
+
+## Demo in Power BI
+
+<div style="position: relative; padding-bottom: calc(66.66666666666666% + 41px); height: 0; width: 100%"><iframe src="https://demo.arcade.software/4x6aKDfCpf0bZrJhm6MR?embed" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;color-scheme: light;" title="runZero Export to Power BI"></iframe></div>
