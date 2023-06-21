@@ -21,7 +21,7 @@ alive,criticality,hw,hw_product,hw_vendor,hw_version,id,os,os_product,os_vendor,
 6. Add these fields for the schema values with type `Number` for each
 
 ```text
-alive,criticality,hw,hw_product,hw_vendor,hw_version,id,os,os_product,os_vendor,os_version,risk
+service_count,service_count_arp,service_count_icmp,service_count_tcp,service_count_udp,software_count,vulnerability_count
 ```
 
 7. Enable `Historical data analysis`
