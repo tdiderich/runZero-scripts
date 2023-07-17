@@ -24,7 +24,7 @@ def write_to_csv(output: dict, filename: str, fieldnames: list):
 def get_tasks():
     url = BASE_URL + '/org/tasks'
     tasks = requests.get(
-        url, headers=HEADERS, params={'search': 'type:scan status:processed'}
+        url, headers=HEADERS, params={'search': 'type:scan status:processed created_at:<7days'}
     )
     return tasks.json()
 
