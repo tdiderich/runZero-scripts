@@ -64,7 +64,14 @@ def main():
             'tls.hostTime', 
             'tls.rzfp0', 
             'tls.hostTimeTS', 
-            'tls.requiresClientCertificate'
+            'tls.requiresClientCertificate',
+            'tls.crl', 
+            'tls.authorityKeyID', 
+            'tls.stack', 
+            'tls.ocsp', 
+            'tls.issuingURL', 
+            'tls.subjectKeyID',
+            'tls.caUnknown'
         ])
     writer.writeheader()
     writer.writerows(output)
