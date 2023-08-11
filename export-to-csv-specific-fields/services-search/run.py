@@ -20,7 +20,7 @@ def main():
                             "search": SEARCHES[k]})
         services = data.json()
         output = []
-        fields = ['id', 'names', 'service_address', 'service_port']
+        fields = ['id', 'names', 'service_address', 'service_port', 'created_at', 'updated_at']
 
         for s in services:
             print(json.dumps(s, indent=4))
@@ -29,8 +29,8 @@ def main():
             for attribute in s['service_data'].keys():
                 if attribute.__contains__('tls'):
                     service_row[attribute] = s['service_data'][attribute]
-                if attribute not in fields:
-                    fields.append(attribute)
+                    if attribute not in fields:
+                        fields.append(attribute)
                     
             output.append(service_row)
 
