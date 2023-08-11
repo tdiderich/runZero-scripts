@@ -24,8 +24,9 @@ def main():
 
         for s in services:
             print(json.dumps(s, indent=4))
-            service_row = {'id': s.get('id', ''), 'names': s.get(
-                'names', ''), 'service_address': s.get('service_address', ''), 'service_port': s.get('service_port', '')}
+            service_row = {}
+            for field in fields:
+                service_row[field] = s.get(field, '')
             for attribute in s['service_data'].keys():
                 if attribute.__contains__('tls'):
                     service_row[attribute] = s['service_data'][attribute]
