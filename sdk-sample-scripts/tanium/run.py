@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-from gql_query_builder import GqlQuery
 
 TANIUM_URL = os.environ["TANIUM_URL"]
 TANIUM_TOKEN = os.environ["TANIUM_TOKEN"]
