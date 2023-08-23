@@ -109,12 +109,13 @@ def build_network_interface(ips: List[str], mac: str = None) -> NetworkInterface
                 ip6s.append(ip_addr)
             else:
                 continue
-            if mac is None:
-                return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
-            else:
-                return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
         except:
             continue
+
+    if mac is None:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+    else:
+        return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
 
 
 def import_data_to_runzero(assets: List[ImportAsset]):
