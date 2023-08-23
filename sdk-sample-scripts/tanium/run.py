@@ -87,6 +87,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             )
         )
 
+    print(assets)
     return assets
 
 # should not need to change on a per integraton basis
@@ -100,17 +101,20 @@ def build_network_interface(ips: List[str], mac: str = None) -> NetworkInterface
     ip4s: List[IPv4Address] = []
     ip6s: List[IPv6Address] = []
     for ip in ips[:99]:
-        ip_addr = ip_address(ip)
-        if ip_addr.version == 4:
-            ip4s.append(ip_addr)
-        elif ip_addr.version == 6:
-            ip6s.append(ip_addr)
-        else:
+        try:
+            ip_addr = ip_address(ip)
+            if ip_addr.version == 4:
+                ip4s.append(ip_addr)
+            elif ip_addr.version == 6:
+                ip6s.append(ip_addr)
+            else:
+                continue
+            if mac is None:
+                return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+            else:
+                return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+        except:
             continue
-    if mac is None:
-        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
-    else:
-        return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
 
 
 def import_data_to_runzero(assets: List[ImportAsset]):
