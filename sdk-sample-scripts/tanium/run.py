@@ -52,8 +52,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                 network = build_network_interface(ips=[ip], mac=mac)
                 networks.append(network)
         else:
-            network = build_network_interface(ips=[ip], mac=mac)
-            networks.append(network)
+            networks = build_network_interface(ips=[ip], mac=None)
 
         # handle any additional values and insert into custom_attrs
         custom_attrs: Dict[str, CustomAttribute] = {}
