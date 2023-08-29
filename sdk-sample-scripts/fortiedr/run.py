@@ -1,3 +1,4 @@
+import json
 import requests
 import os
 import uuid
@@ -29,6 +30,8 @@ FORTI_HEADERS = {'Authorization': f'Basic {FORTI_KEY}'}
 FORTI_BASE_URL = 'https://fortixdrnfrconnectna.console.ensilo.com'
 
 # will need to change on a per integration basis to align wtih JSON object keys
+
+
 def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset]:
     '''
     This is an example function to highlight how to handle converting data from an API into the ImportAsset format that
@@ -46,36 +49,47 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
         macs = item.get('macAddresses', [])
         ip = item.get('ipAddress', '')
 
+        # create network interfaces
+        networks = []
         if len(macs) > 0:
-            mac = macs[0].replace('-', ':')
+            for mac in macs:
+                network = build_network_interface(ips=[ip], mac=mac)
+                networks.append(network)
         else:
-            mac = None
-
-        # create the network interface
-        network = build_network_interface(ips=[ip], mac=mac)
+            networks = build_network_interface(ips=[ip], mac=None)
 
         # handle any additional values and insert into custom_attrs
         custom_attrs: Dict[str, CustomAttribute] = {}
-        
+
+        root_keys_to_ignore = []
         for key, value in item.items():
-            if isinstance(value, dict):
-                for k, v in value.items():
-                    custom_attrs[k] = CustomAttribute(str(v)[:1023])
-            else:
-                custom_attrs[key] = CustomAttribute(str(value))
+            if not isinstance(value, dict):
+                root_keys_to_ignore.append(key)
+
+        flattened_items = flatten(nested_dict=item,
+                                  root_keys_to_ignore=root_keys_to_ignore)
+
+        item = flattened_items | item
+
+        for key, value in item.items():
+            if not isinstance(value, dict):
+                custom_attrs[key] = CustomAttribute(str(value)[:1023])
 
         assets.append(
             ImportAsset(
                 id=asset_id,
-                networkInterfaces=[network],
+                networkInterfaces=networks,
                 os=os,
                 hostnames=[name],
                 customAttributes=custom_attrs,
             )
         )
+
     return assets
 
-# should not need to change on a per integraton basis 
+# should not need to change on a per integraton basis
+
+
 def build_network_interface(ips: List[str], mac: str = None) -> NetworkInterface:
     '''
     This function converts a mac and a list of strings in either ipv4 or ipv6 format and creates a NetworkInterface that
@@ -121,18 +135,19 @@ def import_data_to_runzero(assets: List[ImportAsset]):
 
     # get or create the custom source manager and create a new custom source
     custom_source_mgr = CustomIntegrationsAdmin(c)
-    my_asset_source = custom_source_mgr.get(name='fortiedr')
+    my_asset_source = custom_source_mgr.get(name='FortiEDR')
     if my_asset_source:
         source_id = my_asset_source.id
     else:
-        my_asset_source = custom_source_mgr.create(name='fortiedr')
+        my_asset_source = custom_source_mgr.create(name='FortiEDR')
         source_id = my_asset_source.id
 
     # create the import manager to upload custom assets
     import_mgr = CustomAssets(c)
     import_task = import_mgr.upload_assets(
-        org_id=RUNZERO_ORG_ID, site_id=site.id, custom_integration_id=source_id, assets=assets, task_info=ImportTask(name='FortiEDR Sync')
-        )
+        org_id=RUNZERO_ORG_ID, site_id=site.id, custom_integration_id=source_id, assets=assets, task_info=ImportTask(
+            name='FortiEDR Sync')
+    )
 
     if import_task:
         print(
@@ -140,17 +155,25 @@ def import_data_to_runzero(assets: List[ImportAsset]):
 
 
 def main():
-    # Get assets from FortiEDR 
+    # Get assets from FortiEDR
+    page = 0
     url = f'{FORTI_BASE_URL}/management-rest/inventory/list-collectors'
-    assets = requests.get(url, headers=FORTI_HEADERS)
-    assets_json = assets.json()
-    # Flatten JSON
-    for a in assets_json:
-        for k in a.keys():
-            if isinstance(a[k], dict):
-                a[k] = flatten(a[k])
-    # Imort to runZero 
-    import_assets = build_assets_from_json(assets_json)
+    go = True
+    endpoints = []
+    while go:
+        # get endpoints from FortiEDR
+        assets = requests.get(url, headers=FORTI_HEADERS,
+                              params={"itemsPerPage": 1000, "pageNumber": page})
+        endpoints_json = assets.json()
+
+        if len(endpoints_json) > 0:
+            endpoints.extend(endpoints_json)
+            page += 1
+        else:
+            go = False
+
+    # Imort to runZero
+    import_assets = build_assets_from_json(endpoints)
     import_data_to_runzero(assets=import_assets)
 
 
