@@ -44,7 +44,8 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
     for item in json_input:
         # grab known API attributes from the json dict that are always present
         asset_id = item.get('id', uuid.uuid4)
-        name = item.get('name', '')
+        # I know this looks odd but formats the hostname how you'd normally see it
+        name = item.get('name', '').replace(" ", "-").replace("’", "").upper()
         os = item.get('operatingSystem', '')
         macs = item.get('macAddresses', [])
         ip = item.get('ipAddress', '')
