@@ -8,9 +8,9 @@
 
 ## Steps
 
-1. runZero Configuration
+### runZero Configuration
 
-Update these values in the code:
+1. Update these values in the code:
 
 - `RUNZERO_BASE_URL` - update if not using SaaS, link you use to login to runZero
 - `RUNZERO_ORG_ID` - from the [runZero Organizations page](https://console.runzero.com/organizations)
@@ -18,17 +18,17 @@ Update these values in the code:
 - `RUNZERO_CLIENT_ID` - superusers can create API clients on the [API clients page](https://console.runzero.com/account/api/clients)
 - `RUNZERO_CLIENT_SECRET` - superusers can create API clients on the [API clients page](https://console.runzero.com/account/api/clients)
 
-2. JumpCloud configuration
+### JumpCloud configuration
 
-Get your JumpCloud API Key:
+1. Get your JumpCloud API Key:
 
 - Documented [here](https://docs.jumpcloud.com/api/1.0/index.html#section/API-Key)
 
-Update this value in the code:
+2. Update this value in the code:
 
 - `JUMPCLOUD_TOKEN` - API key captured in the steps above
 
-3. Running the script with then do a few things...
+### Running the script with then do a few things...
 
 - Pulls the systems from JumpCloud
 - Transforms the system data to the proper format for runZero
