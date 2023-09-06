@@ -4,7 +4,7 @@ import requests
 import os
 import json
 
-# UPDATE 'ADD ME' if you aren't using the .env file
+# UPDATE "ADD ME" if you aren"t using the .env file
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"] or "ADD ME"
 
 # ADD ME
@@ -103,10 +103,12 @@ def main(subnets: dict):
         for subnet in task["params"]["targets"].split(" "):
             task_subnets.append(subnet)
 
-    site_tracker = check_for_subnets(subnets=subnets, runZero_subnets=site_subnets)
+    site_tracker = check_for_subnets(
+        subnets=subnets, runZero_subnets=site_subnets)
     handle_missing_subnets(tracker=site_tracker)
 
-    task_tracker = check_for_subnets(subnets=subnets, runZero_subnets=task_subnets)
+    task_tracker = check_for_subnets(
+        subnets=subnets, runZero_subnets=task_subnets)
     handle_missing_tasks(tracker=task_tracker)
 
 

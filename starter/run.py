@@ -36,8 +36,8 @@ def main():
     sites = get_sites()
     tasks = get_tasks()
 
-    print(f'ORG creator - {org["created_by"]}')
-    print(f'ORG ID - {org["id"]}')
+    print(f"ORG creator - {org['created_by']}")
+    print(f"ORG ID - {org['id']}")
     print(f"Agent count - {len(agents)}")
     print(f"Site count - {len(sites)}")
     print(f"Task count - {len(tasks)}")

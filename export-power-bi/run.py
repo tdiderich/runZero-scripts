@@ -13,16 +13,16 @@ services_power_bi_endpoint = "ADD ME"
 # INT = Number and STR = Text
 asset_int_fields = "service_count,service_count_arp,service_count_icmp,service_count_tcp,service_count_udp,software_count,vulnerability_count"
 asset_str_fields = "alive,criticality,hw,hw_product,hw_vendor,hw_version,id,os,os_product,os_vendor,os_version,risk"
-asset_fields = asset_int_fields + ',' + asset_str_fields
+asset_fields = asset_int_fields + "," + asset_str_fields
 
 service_int_fields = "service_port"
 service_str_fields = "alive,service_id,service_asset_id,service_organization_id,service_address,service_transport,service_vhost,service_summary,id,organization_id,site_id,detected_by,type"
-service_fields = service_int_fields + ',' + service_str_fields
+service_fields = service_int_fields + "," + service_str_fields
 
 
 def main():
     # get and post assets
-    assets_url = BASE_URL + '/export/org/assets.json'
+    assets_url = BASE_URL + "/export/org/assets.json"
     assets_request = requests.get(assets_url, headers=HEADERS, params={
         "fields": asset_fields})
     assets = assets_request.json()

@@ -20,23 +20,24 @@ def main():
                             "search": SEARCHES[k]})
         services = data.json()
         output = []
-        fields = ['id', 'names', 'service_address', 'service_port', 'created_at', 'updated_at']
+        fields = ["id", "names", "service_address",
+                  "service_port", "created_at", "updated_at"]
 
         for s in services:
             print(json.dumps(s, indent=4))
             service_row = {}
             for field in fields:
-                service_row[field] = s.get(field, '')
-            for attribute in s['service_data'].keys():
-                if attribute.__contains__('tls'):
-                    service_row[attribute] = s['service_data'][attribute]
+                service_row[field] = s.get(field, "")
+            for attribute in s["service_data"].keys():
+                if attribute.__contains__("tls"):
+                    service_row[attribute] = s["service_data"][attribute]
                     if attribute not in fields:
                         fields.append(attribute)
-                    
+
             output.append(service_row)
 
-        fname = f'{k}.csv'
-        tls_csv = open(fname, 'w')
+        fname = f"{k}.csv"
+        tls_csv = open(fname, "w")
         writer = csv.DictWriter(
             tls_csv,
             fieldnames=fields)
@@ -44,7 +45,7 @@ def main():
         writer.writerows(output)
         tls_csv.close()
 
-        print(f'Successfully loaded the data to {fname}')
+        print(f"Successfully loaded the data to {fname}")
 
 
 if __name__ == "__main__":

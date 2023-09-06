@@ -4,7 +4,7 @@ import requests
 import os
 import json
 
-# UPDATE 'ADD ME' if you aren't using the .env file
+# UPDATE "ADD ME" if you aren"t using the .env file
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"] or "ADD ME"
 
 # ADD ME
@@ -19,6 +19,8 @@ HEADERS = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
 BASE_URL = "https://console.runZero.com/api/v1.0"
 
 # takes existing site and adds missing subnets
+
+
 def handle_site_update(site: dict, subnets: dict):
     for s in subnets:
         cidr = s["cidr"]
@@ -44,13 +46,14 @@ def main(subnets: dict):
         updated_site = handle_site_update(site=site, subnets=subnets)
         r = requests.put(url=url, headers=HEADERS, json=updated_site)
         id = r.json()["id"]
-    # can't do anything if we don't have the site info
+    # can"t do anything if we don"t have the site info
     else:
         print("Please add or update a SITE_ID or SITE_NAME to run this script")
         return
 
     if r.status_code == 200:
-        print(f"SUCCESS! View site here: https://console.runZero.com/sites/{id}/edit")
+        print(
+            f"SUCCESS! View site here: https://console.runZero.com/sites/{id}/edit")
     else:
         print(f"SOMETHING WENT WRONG: {r.status_code}")
 

@@ -12,7 +12,7 @@ BASE_URL = "https://console.runZero.com/api/v1.0"
 # UPDATE
 IP_EXISTS = "ADD ME"  # using an IP that exsits to verify the search works
 IP_MISSING = (
-    "ADD ME"  # using an IP that doesn't exist to verify the scan + search works
+    "ADD ME"  # using an IP that doesn"t exist to verify the scan + search works
 )
 SITE_ID = "ADD UUID"  # site you want the asset associated with (UUID)
 EXPLORER_ID = "ADD UUID"  # explorer you want to run the scan if needed
@@ -60,7 +60,8 @@ def handle_missing_ip(ip: str):
 
 def search_ip(ip: str):
     url = BASE_URL + "/export/org/assets.json?"
-    data = requests.get(url, headers=EXPORT_HEADERS, params={"search": f"address:{ip}"})
+    data = requests.get(url, headers=EXPORT_HEADERS,
+                        params={"search": f"address:{ip}"})
     if len(data.json()) > 0:
         return data.json()
     else:
@@ -72,7 +73,7 @@ def search_ip(ip: str):
 
 
 def main():
-    # did a known IP in the inventory + an IP that wasn't in the inventory to verify everything works
+    # did a known IP in the inventory + an IP that wasn"t in the inventory to verify everything works
     for ip in [IP_EXISTS, IP_MISSING]:
         ip_data = search_ip(ip)
         if len(ip_data) > 0:
@@ -81,7 +82,7 @@ def main():
             print(
                 f"Scanned {ip} and found no data. Either the IP is not in use or the explorer can not route to this IP address."
             )
-    # if cloned, you can just pass whatever IP you want to lookup to the search_ip() function like this code below that's commented out
+    # if cloned, you can just pass whatever IP you want to lookup to the search_ip() function like this code below that"s commented out
     # ip_data = search_ip(ip)
     # if len(ip_data) > 0:
     #     print(ip_data)

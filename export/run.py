@@ -10,21 +10,22 @@ IP = "192.168.86.250"
 NAME = "TYLERS-PHONE"
 SEARCH = "alive:t"
 
+
 def main():
-    url = BASE_URL + '/export/org/assets.json'
-    
+    url = BASE_URL + "/export/org/assets.json"
+
     everything = requests.get(url, headers=HEADERS, params={
         "search": "alive:t"})
     print(f"Found {len(everything.json())} total assets alive")
-    
+
     mac_results = requests.get(url, headers=HEADERS, params={
-                        "search": f"alive:t mac:{MAC}"})
+        "search": f"alive:t mac:{MAC}"})
     print(f"Found {len(mac_results.json())} assets with the MAC address {MAC}")
-    
+
     ip_results = requests.get(url, headers=HEADERS, params={
         "search": f"alive:t address:{IP}"})
     print(f"Found {len(ip_results.json())} assets with the IP address {IP}")
-    
+
     name_results = requests.get(url, headers=HEADERS, params={
         "search": f"alive:t name:{NAME}"})
     print(f"Found {len(name_results.json())} assets with the name {NAME}")
@@ -32,6 +33,7 @@ def main():
     search_results = requests.get(url, headers=HEADERS, params={
         "search": SEARCH})
     print(f"Found {len(search_results.json())} assets with the search {SEARCH}")
+
 
 if __name__ == "__main__":
     main()
