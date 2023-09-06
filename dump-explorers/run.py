@@ -8,6 +8,10 @@ RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
 HEADERS = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
 BASE_URL = "https://console.runZero.com/api/v1.0"
 
+# Fields to exclude
+
+FIELD_EXCLUDE_LIST = ["npcap_version"]
+
 
 def write_to_csv(output: dict, filename: str, fieldnames: list):
     file = open(filename, "w")
@@ -34,12 +38,11 @@ def main():
     if len(explorers) > 0:
         for e in explorers:
             explorer_row = {}
-            for field in fields:
-                explorer_row[field] = e.get(field, "")
             for attribute in e.keys():
-                explorer_row[attribute] = e[attribute]
-                if attribute not in fields:
-                    fields.append(attribute)
+                if attribute not in FIELD_EXCLUDE_LIST:
+                    explorer_row[attribute] = e[attribute]
+                    if attribute not in fields:
+                        fields.append(attribute)
 
             csv_out.append(explorer_row)
 
