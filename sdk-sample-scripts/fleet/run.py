@@ -84,7 +84,6 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             )
         )
 
-    print(assets)
     return assets
 
 # should not need to change on a per integraton basis
@@ -180,13 +179,18 @@ def get_hosts():
     while has_next_page:
 
         host_response = requests.get(
-            FLEET_URL + "/api/v1/fleet/hosts", headers=fleet_headers, params={"page": page, "per_page": per_page, "order_key": "id", "after": after}
+            FLEET_URL + "/api/v1/fleet/hosts", headers=fleet_headers, params={"page": page, "per_page": per_page, "order_key": "hostname", "after": after}
         )
+
         hosts = host_response.json()["hosts"]
         hosts_list.extend(hosts)
+        last_host_id = hosts[-1]["id"]
+
+        if after == last_host_id:
+            has_next_page = False
 
         if len(hosts) >= per_page:
-            after = hosts[-1]["id"]
+            after = last_host_id
         else:
             has_next_page = False
 
