@@ -6,8 +6,8 @@ RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
 HEADERS = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
 BASE_URL = "https://console.runZero.com/api/v1.0"
 
-PAUSE_SEARCH = "status:active recur:t not source:passive"
-START_SEARCH = "status:paused recur:t not source:passive"
+PAUSE_SEARCH = "status:active recur:t"
+START_SEARCH = "status:paused recur:t"
 
 
 def get_tasks(search: str or None):
@@ -25,6 +25,7 @@ def pause_task(id: str):
     if pause.status_code == 200:
         return True
     else:
+        print(f"Error pausing task {id}: ", pause.json())
         return False
 
 
@@ -34,6 +35,7 @@ def start_task(id: str):
     if pause.status_code == 200:
         return True
     else:
+        print(f"Error starting task {id}: ", pause.json())
         return False
 
 
@@ -47,7 +49,7 @@ def main():
             if success:
                 print(f"Paused: {id}")
             else:
-                print(f"Failed to pause: {id}")
+                print(f"Failed to pause: {str(t)}")
     else:
         print("No tasks to pause")
 
