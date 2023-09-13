@@ -4,7 +4,6 @@ import os
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
 HEADERS = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
 BASE_URL = "https://console.runZero.com/api/v1.0"
-RUNZERO_ORG_ID = os.environ["RUNZERO_ORG_ID"]
 
 SEARCH = "(source:aws or source:gcp or source:azure) and last_seen:>2days"
 
