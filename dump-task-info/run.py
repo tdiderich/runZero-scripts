@@ -47,8 +47,9 @@ def get_templates():
     url = BASE_URL + "/account/tasks/templates"
     templates = requests.get(url, headers=ACCOUNT_HEADERS)
     template_names = {}
-    for t in templates.json():
-        template_names[t["id"]] = t["name"]
+    if templates.status_code == 200:
+        for t in templates.json():
+            template_names[t["id"]] = t["name"]
     return template_names
 
 
@@ -72,7 +73,8 @@ def main():
         for t in tasks:
             t["explorer_name"] = explorers.get(t["agent_id"], "")
             t["site_name"] = sites.get(t["site_id"], "")
-            t["template_name"] = templates.get(t["template_id"], "")
+            t["template_name"] = templates.get(
+                t["template_id"], "NOT FOUND - CHECK ACCOUNT API TOKEN")
             finished = t["updated_at"]
             started = t["start_time"]
             t["time_taken_seconds"] = finished - started
