@@ -46,10 +46,10 @@ def get_explorers():
 def get_templates():
     url = BASE_URL + "/account/tasks/templates"
     templates = requests.get(url, headers=ACCOUNT_HEADERS)
-    temaplate_names = {}
+    template_names = {}
     for t in templates.json():
-        temaplate_names[t["id"]] = t["name"]
-    return temaplate_names
+        template_names[t["id"]] = t["name"]
+    return template_names
 
 
 def get_tasks():
@@ -71,8 +71,8 @@ def main():
     if len(tasks) > 0:
         for t in tasks:
             t["explorer_name"] = explorers.get(t["agent_id"], "")
-            t["site_id"] = sites.get(t["site_id"], "")
-            t["template_id"] = templates.get(t["template_id"], "")
+            t["site_name"] = sites.get(t["site_id"], "")
+            t["template_name"] = templates.get(t["template_id"], "")
             finished = t["updated_at"]
             started = t["start_time"]
             t["time_taken_seconds"] = finished - started
