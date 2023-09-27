@@ -158,7 +158,7 @@ def import_data_to_runzero(assets: List[ImportAsset]):
 
 
 def get_hosts():
-    # login
+    # TODO: can't get this to work - need a real tenant to test again
     # login_data = {
     #     "email": FLEET_EMAIL,
     #     "password": FLEET_PASSWORD
@@ -174,23 +174,17 @@ def get_hosts():
     has_next_page = True
     page = 0
     per_page = 100
-    after = None
     hosts_list = []
     while has_next_page:
 
         host_response = requests.get(
-            FLEET_URL + "/api/v1/fleet/hosts", headers=fleet_headers, params={"page": page, "per_page": per_page, "order_key": "hostname", "after": after}
+            FLEET_URL + "/api/v1/fleet/hosts", headers=fleet_headers, params={"page": page, "per_page": per_page}
         )
+        hosts = host_response.json().get(hosts, [])
 
-        hosts = host_response.json()["hosts"]
-        hosts_list.extend(hosts)
-        last_host_id = hosts[-1]["id"]
-
-        if after == last_host_id:
-            has_next_page = False
-
-        if len(hosts) >= per_page:
-            after = last_host_id
+        if len(hosts) > 0:
+            hosts_list.extend(hosts)
+            page += 1
         else:
             has_next_page = False
 
