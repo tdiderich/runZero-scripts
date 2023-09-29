@@ -23,12 +23,7 @@
 1. Create a API Role and Client in JAMF:
 
 - Documented [here](https://learn.jamf.com/bundle/jamf-pro-documentation-current/page/API_Roles_and_Clients.html)
-- Role permissions to add
-  - Read Computer Inventory Collection
-  - Read Computer Inventory Collection Settings
-  - Read Computer Security
-  - Read Computers
-  - Read Computer PreStage Enrollments
+- Role permission required is `Read Computers`
 
 2. Update this value in the code:
 
