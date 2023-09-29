@@ -193,6 +193,8 @@ def get_endpoints():
             else:
                 hasNextPage = False
 
+        # TODO: likely needs rate limiting in a real environment
+        # Needed to get extra info related to fingerprinting and networking information
         endpoints_final = []
         for e in endpoints:
             uid = e.get("id", "")
