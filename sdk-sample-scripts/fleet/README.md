@@ -25,7 +25,7 @@
 - Fleet recommends creating an API user to make API calls
 - This is documented [here](https://fleetdm.com/docs/using-fleet/fleetctl-cli#create-an-api-only-user)
 
-2. Update this value in the code:
+2. Update these values in the code:
 
 - `FLEET_URL` - URL used to login to fleet
 - `FLEETDM_EMAIL` - Email for API user account

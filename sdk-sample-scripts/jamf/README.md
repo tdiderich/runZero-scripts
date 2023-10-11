@@ -25,7 +25,7 @@
 - Documented [here](https://learn.jamf.com/bundle/jamf-pro-documentation-current/page/API_Roles_and_Clients.html)
 - Role permission required is `Read Computers`
 
-2. Update this value in the code:
+2. Update these values in the code:
 
 - `JAMF_ID` - Client ID created above
 - `JAMF_SECRET` - Client Secret created above
