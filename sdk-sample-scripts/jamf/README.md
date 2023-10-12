@@ -18,7 +18,7 @@
 - `RUNZERO_CLIENT_ID` - superusers can create API clients on the [API clients page](https://console.runzero.com/account/api/clients)
 - `RUNZERO_CLIENT_SECRET` - superusers can create API clients on the [API clients page](https://console.runzero.com/account/api/clients)
 
-### JumpCloud configuration
+### JAMF configuration
 
 1. Create a API Role and Client in JAMF:
 

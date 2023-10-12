@@ -153,11 +153,11 @@ def import_data_to_runzero(assets: List[ImportAsset]):
 
     # get or create the custom source manager and create a new custom source
     custom_source_mgr = CustomIntegrationsAdmin(c)
-    my_asset_source = custom_source_mgr.get(name="JAMF")
+    my_asset_source = custom_source_mgr.get(name="jamf")
     if my_asset_source:
         source_id = my_asset_source.id
     else:
-        my_asset_source = custom_source_mgr.create(name="JAMF")
+        my_asset_source = custom_source_mgr.create(name="jamf")
         source_id = my_asset_source.id
 
     # create the import manager to upload custom assets
