@@ -5,3 +5,4 @@ terraform/gcp-self-hosted-install/terraform.tfstate
 terraform/gcp-self-hosted-install/.terraform.lock.hcl
 terraform/gcp-self-hosted-install/terraform.tfstate.backup
 terraform/gcp-self-hosted-install/.terraform/providers/registry.terraform.io/hashicorp/google/4.51.0/darwin_arm64/terraform-provider-google_v4.51.0_x5
+.DS_Store
