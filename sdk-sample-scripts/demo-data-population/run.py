@@ -90,7 +90,7 @@ def create_demo_data(assets=list, sample_attributes=dict):
 
         custom_attrs: Dict[str, CustomAttribute] = {}
         skip = ["computer_name", "ipAddresses", "ipAddress",
-                "hostname", "hostnames", "macAddresses", "macPairs"]
+                "hostname", "hostnames", "macAddresses", "macPairs", "os", "osVersion", "os_version"]
         for key, value in sample_attributes.items():
             if key not in skip:
                 custom_attrs[key] = CustomAttribute(str(value))
