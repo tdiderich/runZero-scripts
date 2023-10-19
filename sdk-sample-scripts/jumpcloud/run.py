@@ -74,7 +74,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
         for key, value in item.items():
             if not isinstance(value, dict):
-                custom_attrs[key] = CustomAttribute(str(value)[:1023])
+                custom_attrs[key] = CustomAttribute(str(value)[:1022])
 
         assets.append(
             ImportAsset(
