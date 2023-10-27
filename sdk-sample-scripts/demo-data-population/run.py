@@ -8,7 +8,6 @@ import runzero
 from runzero.client import AuthError
 from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites, Tasks
 from runzero.types import (
-    CustomAttribute,
     ImportAsset,
     IPv4Address,
     IPv6Address,
@@ -88,20 +87,18 @@ def create_demo_data(assets=list, sample_attributes=dict):
             network = build_network_interface(ips=ips[:255], mac=m)
             networks.append(network)
 
-        custom_attrs: Dict[str, CustomAttribute] = {}
+        custom_attrs: Dict[str] = {}
         skip = ["computer_name", "ipAddresses", "ipAddress",
-                "hostname", "hostnames", "macAddresses", "macPairs", "os", "osVersion", "os_version"]
+                "hostname", "hostnames", "macAddresses", "macPairs", "os", "osVersion", "os_version", "manufacturer", "model", "deviceType"]
         for key, value in sample_attributes.items():
             if key not in skip:
-                custom_attrs[key] = CustomAttribute(str(value))
+                custom_attrs[key] = str(value)
 
         output.append(
             ImportAsset(
                 id=asset_id,
                 networkInterfaces=networks,
                 hostnames=names,
-                os=os,
-                osVersion=os_version,
                 customAttributes=custom_attrs,
             )
         )

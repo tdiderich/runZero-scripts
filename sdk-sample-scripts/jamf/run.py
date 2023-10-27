@@ -1,19 +1,19 @@
 import requests
 import os
-import json
 from flatten_json import flatten
 from ipaddress import ip_address
 from typing import Any, Dict, List
 import runzero
 from runzero.client import AuthError
-from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites, Tasks
+from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites
 from runzero.types import (
     CustomAttribute,
     ImportAsset,
     IPv4Address,
     IPv6Address,
     NetworkInterface,
-    ImportTask
+    ImportTask,
+    Software
 )
 
 # runZero creds
@@ -70,6 +70,30 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             network = build_network_interface(ips=ips, mac=m)
             networks.append(network)
 
+        software = []
+        applications = item.get("applications", [])
+        for app in applications:
+            id = app.get("bundleId", "")
+            installed_size = app.get("sizeMegabytes", "")
+            product = app.get("name", "")
+            version = app.get("version", "")
+            updateAvailable = app.get("updateAvailable", "")
+            externalVersionId = app.get("externalVersionId", "")
+            path = app.get("path", "")
+
+            software.append(Software(
+                id=id,
+                installed_size=installed_size,
+                product=product,
+                version=version,
+                service_address="127.0.0.1",
+                custom_attrs={
+                    "updateAvailable": updateAvailable,
+                    "externalVersionId": externalVersionId,
+                    "path": path
+                }
+            ))
+
         # handle any additional values and insert into custom_attrs
         custom_attrs: Dict[str, CustomAttribute] = {}
 
@@ -85,7 +109,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
         for key, value in item.items():
             if not isinstance(value, dict):
-                custom_attrs[key] = CustomAttribute(str(value)[:1022])
+                custom_attrs[key] = str(value)[:1022]
 
         assets.append(
             ImportAsset(
@@ -95,6 +119,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                 osVersion=os_version,
                 manufacturer=manufacturer,
                 model=model,
+                software=software,
                 customAttributes=custom_attrs,
             )
         )
