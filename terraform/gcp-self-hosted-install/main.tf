@@ -96,4 +96,3 @@ resource "google_compute_instance" "rz-self-hosted" {
   tags = ["http-server", "https-server"]
   zone = "us-west4-b"
 }
-
