@@ -37,6 +37,7 @@ def openai_chat(vulns: list):
     for i, v in enumerate(vulns):
         if i < 4:
             messages.append({"role": "user", "content": f"Vulnerability {i}: {v}"})
+    print(messages)
     completion = openai.chat.completions.create(
         model="gpt-3.5-turbo", messages=messages
     )
@@ -111,7 +112,7 @@ def get_data():
     )
     aggregated_vulnerabilities = {}
     for v in vulnerabilities.json():
-        risk = v.get("risk_rank", 0)
+        risk = v.get("vulnerability_risk_rank", 0)
         if risk > 0:
             vulnerability_asset_id = v.get("vulnerability_asset_id", "")
             key_values = {
@@ -138,7 +139,7 @@ def get_data():
                 aggregated_vulnerabilities[vulnerability_asset_id].append(key_values)
             else:
                 aggregated_vulnerabilities[vulnerability_asset_id] = [key_values]
-
+    print(json.dumps(aggregated_vulnerabilities, indent=4))
     return aggregated_vulnerabilities
 
 
