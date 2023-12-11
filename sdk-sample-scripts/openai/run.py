@@ -9,9 +9,6 @@ from runzero.client import AuthError
 from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites, Tasks
 from runzero.types import (
     ImportAsset,
-    IPv4Address,
-    IPv6Address,
-    NetworkInterface,
     ImportTask,
 )
 
@@ -35,6 +32,8 @@ def openai_chat(vulns: list):
         }
     ]
     for i, v in enumerate(vulns):
+        # this is to avoid sending too large of a message to the model, max size is 4096
+        # you could likely increase this or do a real check on how big it is prior to sending
         if i < 4:
             messages.append({"role": "user", "content": f"Vulnerability {i}: {v}"})
     print(messages)
