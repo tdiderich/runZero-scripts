@@ -13,7 +13,7 @@ from runzero.types import (
     IPv6Address,
     NetworkInterface,
     ImportTask,
-    Software
+    Software,
 )
 
 # runZero creds
@@ -32,10 +32,8 @@ JAMF_URL = os.environ["JAMF_URL"]
 
 
 def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset]:
-
     assets: List[ImportAsset] = []
     for item in json_input:
-
         # id
         asset_id = item.get("udid", "")
 
@@ -81,34 +79,37 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             externalVersionId = app.get("externalVersionId", "")
             path = app.get("path", "")
 
-            software.append(Software(
-                id=id,
-                installed_size=installed_size,
-                product=product,
-                version=version,
-                service_address="127.0.0.1",
-                custom_attrs={
-                    "updateAvailable": updateAvailable,
-                    "externalVersionId": externalVersionId,
-                    "path": path
-                }
-            ))
+            software.append(
+                Software(
+                    id=id,
+                    installed_size=installed_size,
+                    product=product,
+                    version=version,
+                    service_address="127.0.0.1",
+                    custom_attrs={
+                        "updateAvailable": updateAvailable,
+                        "externalVersionId": externalVersionId,
+                        "path": path,
+                    },
+                )
+            )
 
         # handle any additional values and insert into custom_attrs
         custom_attrs: Dict[str, CustomAttribute] = {}
 
         root_keys_to_ignore = []
         for key, value in item.items():
-            if not isinstance(value, dict):
+            if not isinstance(value, dict) and value is not None and value is not None:
                 root_keys_to_ignore.append(key)
 
-        flattened_items = flatten(nested_dict=item,
-                                  root_keys_to_ignore=root_keys_to_ignore)
+        flattened_items = flatten(
+            nested_dict=item, root_keys_to_ignore=root_keys_to_ignore
+        )
 
         item = flattened_items | item
 
         for key, value in item.items():
-            if not isinstance(value, dict):
+            if not isinstance(value, dict) and value is not None:
                 custom_attrs[key] = str(value)[:1022]
 
         assets.append(
@@ -125,6 +126,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
         )
 
     return assets
+
 
 # should not need to change on a per integraton basis
 
@@ -188,18 +190,28 @@ def import_data_to_runzero(assets: List[ImportAsset]):
     # create the import manager to upload custom assets
     import_mgr = CustomAssets(c)
     import_task = import_mgr.upload_assets(
-        org_id=RUNZERO_ORG_ID, site_id=site.id, custom_integration_id=source_id, assets=assets, task_info=ImportTask(
-            name="JAMF Sync")
+        org_id=RUNZERO_ORG_ID,
+        site_id=site.id,
+        custom_integration_id=source_id,
+        assets=assets,
+        task_info=ImportTask(name="JAMF Sync"),
     )
 
     if import_task:
         print(
-            f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}")
+            f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}"
+        )
 
 
 def get_endpoints():
-    get_token = requests.post(JAMF_URL + "/api/oauth/token", params={
-                              "client_id": JAMF_ID, "client_secret": JAMF_SECRET, "grant_type": "client_credentials"})
+    get_token = requests.post(
+        JAMF_URL + "/api/oauth/token",
+        params={
+            "client_id": JAMF_ID,
+            "client_secret": JAMF_SECRET,
+            "grant_type": "client_credentials",
+        },
+    )
     token = get_token.json().get("access_token", "")
     if token:
         hasNextPage = True
@@ -209,8 +221,9 @@ def get_endpoints():
         headers = {"Authorization": f"Bearer {token}"}
         url = JAMF_URL + "/api/v1/computers-inventory"
         while hasNextPage:
-            computers = requests.get(url=url, headers=headers, params={
-                                     "page": page, "page-size": page_size})
+            computers = requests.get(
+                url=url, headers=headers, params={"page": page, "page-size": page_size}
+            )
             results = computers.json().get("results", [])
             if len(results) > 0:
                 endpoints.extend(results)
@@ -232,7 +245,8 @@ def get_endpoints():
         return endpoints_final
     else:
         print(
-            f"Unable to get API token - status code {get_token.status_code} - text {get_token.text}")
+            f"Unable to get API token - status code {get_token.status_code} - text {get_token.text}"
+        )
         return []
 
 
