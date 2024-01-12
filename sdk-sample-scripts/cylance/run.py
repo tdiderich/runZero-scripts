@@ -16,7 +16,7 @@ from runzero.types import (
     IPv4Address,
     IPv6Address,
     NetworkInterface,
-    ImportTask
+    ImportTask,
 )
 
 # runZero creds
@@ -34,16 +34,15 @@ CYLANCE_APP_SECRET = os.environ["CYLANCE_APP_SECRET"]
 
 # mac match check
 mac_match = re.compile(
-    pattern='^([A-Fa-f0-9]{2}: ){5}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{2}: ){7}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{2}-){7}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}$| ^([A-Fa-f0-9]{4}\.){3}[A-Fa-f0-9]{4}$| ^([A-Fa-f0-9]{4} ){3}[A-Fa-f0-9]{4}$')
+    pattern="^([A-Fa-f0-9]{2}: ){5}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{2}: ){7}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{2}-){7}[A-Fa-f0-9]{2}$| ^([A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}$| ^([A-Fa-f0-9]{4}\.){3}[A-Fa-f0-9]{4}$| ^([A-Fa-f0-9]{4} ){3}[A-Fa-f0-9]{4}$"
+)
 
 # Will need to change on a per integration basis to align wtih JSON object keys
 
 
 def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset]:
-
     assets: List[ImportAsset] = []
     for item in json_input:
-
         asset_id = item.get("id", "")
 
         hostnames = []
@@ -69,28 +68,33 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
         root_keys_to_ignore = []
         for key, value in item.items():
-            if not isinstance(value, dict):
+            if not isinstance(value, dict) and value is not None:
                 root_keys_to_ignore.append(key)
 
-        flattened_items = flatten(nested_dict=item,
-                                  root_keys_to_ignore=root_keys_to_ignore)
+        flattened_items = flatten(
+            nested_dict=item, root_keys_to_ignore=root_keys_to_ignore
+        )
 
         item = flattened_items | item
 
         for key, value in item.items():
-            if not isinstance(value, dict):
-                custom_attrs[key] = CustomAttribute(str(value)[:1022])
+            if not isinstance(value, dict) and value is not None:
+                if len(custom_attrs) < 1022:
+                    custom_attrs[key] = CustomAttribute(str(value)[:1022])
 
-        assets.append(ImportAsset(
-            id=asset_id,
-            networkInterfaces=networks,
-            os=os,
-            hostnames=hostnames,
-            customAttributes=custom_attrs,
-            osVersion=os_version
-        ))
+        assets.append(
+            ImportAsset(
+                id=asset_id,
+                networkInterfaces=networks,
+                os=os,
+                hostnames=hostnames,
+                customAttributes=custom_attrs,
+                osVersion=os_version,
+            )
+        )
 
     return assets
+
 
 # should not need to change on a per integraton basis
 
@@ -154,13 +158,17 @@ def import_data_to_runzero(assets: List[ImportAsset]):
     # create the import manager to upload custom assets
     import_mgr = CustomAssets(c)
     import_task = import_mgr.upload_assets(
-        org_id=RUNZERO_ORG_ID, site_id=site.id, custom_integration_id=source_id, assets=assets, task_info=ImportTask(
-            name="cylance Sync")
+        org_id=RUNZERO_ORG_ID,
+        site_id=site.id,
+        custom_integration_id=source_id,
+        assets=assets,
+        task_info=ImportTask(name="cylance Sync"),
     )
 
     if import_task:
         print(
-            f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}")
+            f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}"
+        )
 
 
 def get_hosts():
@@ -168,8 +176,7 @@ def get_hosts():
     now = datetime.utcnow()
     timeout_datetime = now + timedelta(seconds=timeout)
     epoch_time = int((now - datetime(1970, 1, 1)).total_seconds())
-    epoch_timeout = int(
-        (timeout_datetime - datetime(1970, 1, 1)).total_seconds())
+    epoch_timeout = int((timeout_datetime - datetime(1970, 1, 1)).total_seconds())
     jti_val = str(uuid.uuid4())
     claims = {
         "exp": epoch_timeout,
@@ -177,15 +184,14 @@ def get_hosts():
         "iss": "http://cylance.com",
         "sub": CYLANCE_APP_ID,
         "tid": CYLANCE_TENANT_ID,
-        "jti": jti_val
+        "jti": jti_val,
     }
 
-    encoded = jwt.encode(claims, CYLANCE_APP_SECRET, algorithm='HS256')
+    encoded = jwt.encode(claims, CYLANCE_APP_SECRET, algorithm="HS256")
     payload = {"auth_token": encoded}
     headers = {"Content-Type": "application/json; charset=utf-8"}
 
-    token = requests.post(CYLANCE_URL + "/auth/v2/token",
-                          headers=headers, json=payload)
+    token = requests.post(CYLANCE_URL + "/auth/v2/token", headers=headers, json=payload)
 
     access_token = token.json().get("access_token", None)
     endpoints = []
@@ -198,7 +204,10 @@ def get_hosts():
 
         while has_next_page:
             host_response = requests.get(
-                CYLANCE_URL + "/devices/v2/extended", headers=headers, params={"page": page, "page_size": page_size})
+                CYLANCE_URL + "/devices/v2/extended",
+                headers=headers,
+                params={"page": page, "page_size": page_size},
+            )
             hosts = host_response.json().get("page_items", [])
 
             if len(hosts) == 0:

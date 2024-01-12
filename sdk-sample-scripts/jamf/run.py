@@ -99,7 +99,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
         root_keys_to_ignore = []
         for key, value in item.items():
-            if not isinstance(value, dict) and value is not None and value is not None:
+            if not isinstance(value, dict) and value is not None:
                 root_keys_to_ignore.append(key)
 
         flattened_items = flatten(
@@ -110,7 +110,8 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
         for key, value in item.items():
             if not isinstance(value, dict) and value is not None:
-                custom_attrs[key] = str(value)[:1022]
+                if len(custom_attrs) < 1022:
+                    custom_attrs[key] = str(value)[:1022]
 
         assets.append(
             ImportAsset(
@@ -216,7 +217,7 @@ def get_endpoints():
     if token:
         hasNextPage = True
         page = 0
-        page_size = 1
+        page_size = 500
         endpoints = []
         headers = {"Authorization": f"Bearer {token}"}
         url = JAMF_URL + "/api/v1/computers-inventory"

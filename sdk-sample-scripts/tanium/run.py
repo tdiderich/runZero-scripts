@@ -12,7 +12,7 @@ from runzero.types import (
     IPv4Address,
     IPv6Address,
     NetworkInterface,
-    ImportTask
+    ImportTask,
 )
 
 # runZero creds
@@ -30,7 +30,6 @@ TANIUM_TOKEN = os.environ["TANIUM_TOKEN"]
 
 
 def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset]:
-
     assets: List[ImportAsset] = []
     for item in json_input:
         asset_id = item.get("id")
@@ -59,17 +58,19 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
         root_keys_to_ignore = []
         for key, value in item.items():
-            if not isinstance(value, dict):
+            if not isinstance(value, dict) and value is not None:
                 root_keys_to_ignore.append(key)
 
-        flattened_items = flatten(nested_dict=item,
-                                  root_keys_to_ignore=root_keys_to_ignore)
+        flattened_items = flatten(
+            nested_dict=item, root_keys_to_ignore=root_keys_to_ignore
+        )
 
         item = flattened_items | item
 
         for key, value in item.items():
-            if not isinstance(value, dict):
-                custom_attrs[key] = CustomAttribute(str(value)[:1022])
+            if not isinstance(value, dict) and value is not None:
+                if len(custom_attrs) < 1022:
+                    custom_attrs[key] = CustomAttribute(str(value)[:1022])
 
         assets.append(
             ImportAsset(
@@ -89,6 +90,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
 
     print(assets)
     return assets
+
 
 # should not need to change on a per integraton basis
 
@@ -152,13 +154,17 @@ def import_data_to_runzero(assets: List[ImportAsset]):
     # create the import manager to upload custom assets
     import_mgr = CustomAssets(c)
     import_task = import_mgr.upload_assets(
-        org_id=RUNZERO_ORG_ID, site_id=site.id, custom_integration_id=source_id, assets=assets, task_info=ImportTask(
-            name="Tanium Sync")
+        org_id=RUNZERO_ORG_ID,
+        site_id=site.id,
+        custom_integration_id=source_id,
+        assets=assets,
+        task_info=ImportTask(name="Tanium Sync"),
     )
 
     if import_task:
         print(
-            f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}")
+            f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}"
+        )
 
 
 def get_endpoints():
@@ -226,7 +232,6 @@ def get_endpoints():
     hasNextPage = True
     endpoints = []
     while hasNextPage:
-
         # set cursor if it exists (all but the first query)
         if cursor:
             variables = {"first": 100, "after": cursor}
@@ -234,13 +239,15 @@ def get_endpoints():
             variables = {"first": 100}
 
         # get endpoints
-        data = requests.post(TANIUM_URL + "/plugin/products/gateway/graphql",
-                             headers={"Content-Type": "application/json", "session": TANIUM_TOKEN}, json={"query": query, "variables": variables})
+        data = requests.post(
+            TANIUM_URL + "/plugin/products/gateway/graphql",
+            headers={"Content-Type": "application/json", "session": TANIUM_TOKEN},
+            json={"query": query, "variables": variables},
+        )
 
         # grab data from the response
         endpoints.extend(data.json()["data"]["endpoints"]["edges"])
-        hasNextPage = data.json(
-        )["data"]["endpoints"]["pageInfo"]["hasNextPage"]
+        hasNextPage = data.json()["data"]["endpoints"]["pageInfo"]["hasNextPage"]
         cursor = data.json()["data"]["endpoints"]["pageInfo"]["startCursor"]
 
     return endpoints
