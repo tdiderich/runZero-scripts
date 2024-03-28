@@ -24,6 +24,7 @@ def main():
                   "service_port", "created_at", "updated_at"]
 
         for s in services:
+            print(s)
             service_row = {}
             for field in fields:
                 service_row[field] = s.get(field, "")
