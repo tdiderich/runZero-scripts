@@ -11,14 +11,14 @@ HEADERS = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
 
 
 def metrics():
-    # get metrics 
+    # get metrics
     url = RUNZERO_BASE_URL + f"/org/metrics"
     metrics = requests.get(
         url,
         headers=HEADERS,
         params={
             "site": "00000000-0000-0000-0000-000000000000",
-            "start": int(time.time() - (3600 * 90 * 1000)),
+            "start": int(time.time() - (86400 * 365)),
             "end": int(time.time()),
         },
     )
