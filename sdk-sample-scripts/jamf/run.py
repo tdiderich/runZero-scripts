@@ -71,7 +71,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
         software = []
         applications = item.get("applications", [])
         for app in applications:
-            id = app.get("bundleId", "")
+            id = app.get("bundleId", None)
             installed_size = app.get("sizeMegabytes", "")
             product = app.get("name", "")
             version = app.get("version", "")
@@ -79,20 +79,21 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             externalVersionId = app.get("externalVersionId", "")
             path = app.get("path", "")
 
-            software.append(
-                Software(
-                    id=id,
-                    installed_size=installed_size,
-                    product=product,
-                    version=version,
-                    service_address="127.0.0.1",
-                    custom_attrs={
-                        "updateAvailable": updateAvailable,
-                        "externalVersionId": externalVersionId,
-                        "path": path,
-                    },
+            if id:
+                software.append(
+                    Software(
+                        id=id,
+                        installed_size=installed_size,
+                        product=product,
+                        version=version,
+                        service_address="127.0.0.1",
+                        custom_attrs={
+                            "updateAvailable": updateAvailable,
+                            "externalVersionId": externalVersionId,
+                            "path": path,
+                        },
+                    )
                 )
-            )
 
         # handle any additional values and insert into custom_attrs
         custom_attrs: Dict[str, CustomAttribute] = {}
