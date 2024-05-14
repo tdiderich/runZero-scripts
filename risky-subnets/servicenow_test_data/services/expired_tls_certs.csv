@@ -1,0 +1,6 @@
+org_name,subnet,matches,risk,criticality,search
+servicenow_test_data,192.168.40.0/24,15,19,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+servicenow_test_data,192.168.0.0/24,5,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+servicenow_test_data,192.168.50.0/24,2,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+servicenow_test_data,192.168.30.0/24,7,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+servicenow_test_data,192.168.60.0/24,1,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow

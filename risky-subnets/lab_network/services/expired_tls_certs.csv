@@ -1,0 +1,6 @@
+org_name,subnet,matches,risk,criticality,search
+lab_network,192.168.40.0/24,6,19,8,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+lab_network,192.168.0.0/24,7,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+lab_network,192.168.30.0/24,9,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+lab_network,192.168.50.0/24,4,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+lab_network,192.168.60.0/24,2,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow

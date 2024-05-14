@@ -1,0 +1,6 @@
+org_name,subnet,matches,risk,criticality,search
+customer_success_playground,192.168.86.0/24,10,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
+customer_success_playground,68.115.32.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
+customer_success_playground,192.168.1.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
+customer_success_playground,8.8.4.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
+customer_success_playground,8.8.8.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
