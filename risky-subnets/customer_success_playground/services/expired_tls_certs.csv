@@ -1,2 +1,2 @@
 org_name,subnet,matches,risk,criticality,search
-customer_success_playground,192.168.86.0/24,587,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow
+customer_success_playground,192.168.86.0/24,587,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.86.0%2F24

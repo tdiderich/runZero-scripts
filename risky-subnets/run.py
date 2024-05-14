@@ -72,7 +72,7 @@ def handle_search(token: str, org_name: str, search_name: str, search_type: str,
                     search_results[subnet]["matches"] = 0
                     search_results[subnet]["risk"] = risk
                     search_results[subnet]["criticality"] = criticality
-                    safe_search = urllib.parse.quote_plus(search)
+                    safe_search = urllib.parse.quote_plus(f"{search} AND net:{subnet}")
                     search_results[subnet][
                         "search"
                     ] = f"{search_url}{safe_search}"

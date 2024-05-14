@@ -1,5 +1,5 @@
 org_name,subnet,matches,risk,criticality,search
-demo_organization,192.168.0.0/24,10,3,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
-demo_organization,192.168.30.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
-demo_organization,192.168.40.0/24,2,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
-demo_organization,192.168.50.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At
+demo_organization,192.168.0.0/24,10,3,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At+AND+net%3A192.168.0.0%2F24
+demo_organization,192.168.30.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At+AND+net%3A192.168.30.0%2F24
+demo_organization,192.168.40.0/24,2,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At+AND+net%3A192.168.40.0%2F24
+demo_organization,192.168.50.0/24,1,0,0,https://console.runzero.com/inventory?search=source%3Arunzero+not+source%3Acrowdstrike+%28type%3Aserver+OR+type%3Adesktop+OR+type%3Alaptop%29+alive%3At+AND+net%3A192.168.50.0%2F24
