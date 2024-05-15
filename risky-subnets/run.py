@@ -36,8 +36,71 @@ def write_to_csv(output: dict, filename: str, fieldnames: list):
     writer.writerows(output)
     file.close()
 
-def handle_search(token: str, org_name: str, search_name: str, search_type: str, search: str):
+def create_output(assets: list, org_name: str, search_name: str = None, search_type: str = None, search: str = None, search_url: str = None):
+    tracker = {}
+    output = []
 
+    for asset in assets:
+        addresses = asset.get("addresses", [])
+        risk = asset.get("risk_rank", 0)
+        criticality = asset.get("criticality_rank", 0)
+        for address in addresses:
+            ip = ipaddress.ip_address(address)
+            if ip.version == 4:
+                address.split(".")
+                subnet = ".".join(address.split(".")[0:3]) + ".0/24"
+                if subnet not in tracker:
+                    # new subnet
+                    tracker[subnet] = {}
+                    tracker[subnet]["matches"] = 0
+                    tracker[subnet]["risk"] = risk
+                    tracker[subnet]["criticality"] = criticality
+                    safe_search = (
+                        urllib.parse.quote_plus(f"{search} AND net:{subnet}")
+                        if search
+                        else f"net:{subnet}"
+                    )
+                    tracker[subnet]["search"] = f"{search_url}{safe_search}"
+
+                # handle subnets that already exist
+                tracker[subnet]["matches"] += 1
+                tracker[subnet]["risk"] += risk
+                tracker[subnet]["criticality"] += criticality
+
+    for subnet in tracker.keys():
+        output.append(
+            {
+                "org_name": org_name,
+                "subnet": subnet,
+                "matches": tracker[subnet]["matches"],
+                "risk": tracker[subnet]["risk"],
+                "criticality": tracker[subnet]["criticality"],
+                "search": tracker[subnet]["search"],
+            }
+        )
+
+    filename = f"{org_name}/{search_type}/{search_name}.csv" if search_type and search_name else f"{org_name}/risk_by_subnet.csv"
+
+    write_to_csv(
+        output=sorted(output, key=lambda x: x["risk"], reverse=True),
+        filename=filename,
+        fieldnames=[
+            "org_name",
+            "subnet",
+            "matches",
+            "risk",
+            "criticality",
+            "search",
+        ],
+    )
+
+    return output 
+
+def handle_search(token: str, org_name: str, search_name: str, search_type: str, search: str):
+    
+    # ensure search name is good for file creation
+    search_name = search_name.replace(" ", "_").replace("-", "").lower()
+    
     # check for folder or create
     if not os.path.exists(f"{org_name}/{search_type}"):
         os.mkdir(f"{org_name}/{search_type}")
@@ -55,59 +118,8 @@ def handle_search(token: str, org_name: str, search_name: str, search_type: str,
     data = requests.get(url, headers=headers, params={
                                 "search": search, "fields": "addresses, addresses_extra, risk_rank, risk, criticality, criticality_rank"})
     results = data.json()
-    search_results = {}
-
-    for asset in results:
-        addresses = asset.get("addresses", [])
-        risk = asset.get("risk_rank", 0)
-        criticality = asset.get("criticality_rank", 0)
-        for address in addresses:
-            ip = ipaddress.ip_address(address)
-            if ip.version == 4:
-                address.split(".")
-                subnet = ".".join(address.split(".")[0:3]) + ".0/24"
-                if subnet not in search_results:
-                    # new subnet
-                    search_results[subnet] = {}
-                    search_results[subnet]["matches"] = 0
-                    search_results[subnet]["risk"] = risk
-                    search_results[subnet]["criticality"] = criticality
-                    safe_search = urllib.parse.quote_plus(f"{search} AND net:{subnet}")
-                    search_results[subnet][
-                        "search"
-                    ] = f"{search_url}{safe_search}"
-
-                # handle subnets that already exist
-                search_results[subnet]["matches"] += 1
-                search_results[subnet]["risk"] += risk
-                search_results[subnet]["criticality"] += criticality
-
-    search_results_output = []
-    for subnet in search_results.keys():
-        search_results_output.append(
-            {
-                "org_name": org_name,
-                "subnet": subnet,
-                "matches": search_results[subnet]["matches"],
-                "risk": search_results[subnet]["risk"],
-                "criticality": search_results[subnet]["criticality"],
-                "search": search_results[subnet]["search"],
-            }
-        )
-
-
-    write_to_csv(
-        output=sorted(search_results_output, key=lambda x: x["risk"], reverse=True),
-        filename=f"{org_name}/{search_type}/{search_name}.csv",
-        fieldnames=[
-            "org_name",
-            "subnet",
-            "matches",
-            "risk",
-            "criticality",
-            "search",
-        ],
-    )
+    
+    create_output(assets=results, org_name=org_name, search_name=search_name, search_type=search_type, search=search, search_url=search_url)
 
 def handle_org_risk(token: str, name: str):
     print(f"handling {name}...")
@@ -133,56 +145,12 @@ def handle_org_risk(token: str, name: str):
 
     results = data.json()
 
-    for asset in results:
-        addresses = asset.get("addresses", [])
-        risk = asset.get("risk_rank", 0)
-        criticality = asset.get("criticality_rank", 0)
-        for address in addresses:
-            ip = ipaddress.ip_address(address)
-            if ip.version == 4:
-                address.split(".")
-                subnet = ".".join(address.split(".")[0:3]) + ".0/24"
-                if subnet not in risk_by_subnet:
-                    risk_by_subnet[subnet] = {}
-                    risk_by_subnet[subnet]["risk"] = risk
-                    risk_by_subnet[subnet]["criticality"] = criticality
-                    risk_by_subnet[subnet][
-                        "search"
-                    ] = f"https://console.runzero.com/inventory?search=net%3A{subnet}"
-
-                risk_by_subnet[subnet]["risk"] += risk
-                risk_by_subnet[subnet]["criticality"] += criticality
-
-    risk_by_subnet_output = []
-    for subnet in risk_by_subnet.keys():
-        risk_by_subnet_output.append(
-            {
-                "org_name": name,
-                "subnet": subnet,
-                "risk": risk_by_subnet[subnet]["risk"],
-                "criticality": risk_by_subnet[subnet]["criticality"],
-                "search": risk_by_subnet[subnet]["search"],
-            }
-        )
+    risk_by_subnet_output = create_output(assets=results, org_name=name)
     
     GLOBAL_RISK.extend(risk_by_subnet_output)
 
-    write_to_csv(
-        output=sorted(risk_by_subnet_output, key=lambda x: x["risk"], reverse=True),
-        filename=f"{name}/risk_by_subnet.csv",
-        fieldnames=[
-            "org_name",
-            "subnet",
-            "risk",
-            "criticality",
-            "search",
-        ],
-    )
-
-
 def main():
     orgs = requests.get(BASE_URL + "/account/orgs", headers=HEADERS)
-    print(orgs)
     for o in orgs.json():
         token = o.get("export_token", "")
         name = o.get("name").replace(" ", "_").replace("-", "").lower()
