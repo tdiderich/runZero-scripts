@@ -1,6 +1,6 @@
-org_name,subnet,matches,risk,criticality,search
-servicenow_test_data,192.168.40.0/24,15,19,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.40.0%2F24
-servicenow_test_data,192.168.0.0/24,5,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.0.0%2F24
-servicenow_test_data,192.168.50.0/24,2,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.50.0%2F24
-servicenow_test_data,192.168.30.0/24,7,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.30.0%2F24
-servicenow_test_data,192.168.60.0/24,1,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.60.0%2F24
+org_name,asset_count,site_id,subnet,risk,avg_risk,criticality,avg_criticality,search
+servicenow_test_data,15,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.40.0/24,19,1.27,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.40.0%2F24
+servicenow_test_data,5,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.0.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.0.0%2F24
+servicenow_test_data,2,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.50.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.50.0%2F24
+servicenow_test_data,7,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.30.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.30.0%2F24
+servicenow_test_data,1,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.60.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.60.0%2F24

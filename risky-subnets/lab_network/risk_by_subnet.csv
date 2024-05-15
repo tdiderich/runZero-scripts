@@ -1,6 +1,6 @@
-org_name,subnet,matches,risk,criticality,search
-lab_network,192.168.40.0/24,31,34,10,Nonenet:192.168.40.0/24
-lab_network,192.168.0.0/24,21,3,4,Nonenet:192.168.0.0/24
-lab_network,192.168.30.0/24,33,2,0,Nonenet:192.168.30.0/24
-lab_network,192.168.50.0/24,9,0,0,Nonenet:192.168.50.0/24
-lab_network,192.168.60.0/24,3,0,0,Nonenet:192.168.60.0/24
+org_name,asset_count,site_id,subnet,risk,avg_risk,criticality,avg_criticality,search
+lab_network,31,ad67d649-041b-439d-af59-f200053a8805,192.168.40.0/24,34,1.1,10,0.32,https://console.runzero.com/inventory?search=site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.40.0%2F24
+lab_network,21,ad67d649-041b-439d-af59-f200053a8805,192.168.0.0/24,3,0.14,4,0.19,https://console.runzero.com/inventory?search=site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.0.0%2F24
+lab_network,34,ad67d649-041b-439d-af59-f200053a8805,192.168.30.0/24,2,0.06,0,0.0,https://console.runzero.com/inventory?search=site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.30.0%2F24
+lab_network,9,ad67d649-041b-439d-af59-f200053a8805,192.168.50.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.50.0%2F24
+lab_network,3,ad67d649-041b-439d-af59-f200053a8805,192.168.60.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.60.0%2F24

@@ -1,6 +1,6 @@
-org_name,subnet,matches,risk,criticality,search
-demo_organization,192.168.0.0/24,19,4,0,Nonenet:192.168.0.0/24
-demo_organization,192.168.30.0/24,20,0,0,Nonenet:192.168.30.0/24
-demo_organization,192.168.50.0/24,6,0,0,Nonenet:192.168.50.0/24
-demo_organization,192.168.100.0/24,7,0,0,Nonenet:192.168.100.0/24
-demo_organization,192.168.40.0/24,2,0,0,Nonenet:192.168.40.0/24
+org_name,asset_count,site_id,subnet,risk,avg_risk,criticality,avg_criticality,search
+demo_organization,19,b19a58f7-0c91-4c2a-b6dd-05aea73fb772,192.168.0.0/24,4,0.21,0,0.0,https://console.runzero.com/inventory?search=site%3Ab19a58f7-0c91-4c2a-b6dd-05aea73fb772+AND+net%3A192.168.0.0%2F24
+demo_organization,20,b19a58f7-0c91-4c2a-b6dd-05aea73fb772,192.168.30.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Ab19a58f7-0c91-4c2a-b6dd-05aea73fb772+AND+net%3A192.168.30.0%2F24
+demo_organization,6,b19a58f7-0c91-4c2a-b6dd-05aea73fb772,192.168.50.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Ab19a58f7-0c91-4c2a-b6dd-05aea73fb772+AND+net%3A192.168.50.0%2F24
+demo_organization,7,581f910f-edd6-42ad-bbe6-1762707b9c01,192.168.100.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3A581f910f-edd6-42ad-bbe6-1762707b9c01+AND+net%3A192.168.100.0%2F24
+demo_organization,2,b19a58f7-0c91-4c2a-b6dd-05aea73fb772,192.168.40.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Ab19a58f7-0c91-4c2a-b6dd-05aea73fb772+AND+net%3A192.168.40.0%2F24

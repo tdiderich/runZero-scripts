@@ -1,6 +1,6 @@
-org_name,subnet,matches,risk,criticality,search
-servicenow_test_data,192.168.40.0/24,34,19,0,Nonenet:192.168.40.0/24
-servicenow_test_data,192.168.0.0/24,23,2,0,Nonenet:192.168.0.0/24
-servicenow_test_data,192.168.30.0/24,34,0,0,Nonenet:192.168.30.0/24
-servicenow_test_data,192.168.50.0/24,9,0,0,Nonenet:192.168.50.0/24
-servicenow_test_data,192.168.60.0/24,4,0,0,Nonenet:192.168.60.0/24
+org_name,asset_count,site_id,subnet,risk,avg_risk,criticality,avg_criticality,search
+servicenow_test_data,34,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.40.0/24,19,0.56,0,0.0,https://console.runzero.com/inventory?search=site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.40.0%2F24
+servicenow_test_data,23,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.0.0/24,2,0.09,0,0.0,https://console.runzero.com/inventory?search=site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.0.0%2F24
+servicenow_test_data,34,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.30.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.30.0%2F24
+servicenow_test_data,9,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.50.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.50.0%2F24
+servicenow_test_data,4,a44211cc-c401-487b-a0af-c12f08d2e338,192.168.60.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory?search=site%3Aa44211cc-c401-487b-a0af-c12f08d2e338+AND+net%3A192.168.60.0%2F24

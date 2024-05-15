@@ -1,2 +1,3 @@
-org_name,subnet,matches,risk,criticality,search
-customer_success_playground,192.168.86.0/24,586,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.86.0%2F24
+org_name,asset_count,site_id,subnet,risk,avg_risk,criticality,avg_criticality,search
+customer_success_playground,561,a7b2287e-51fa-47fc-bd00-6a68eed0786b,192.168.86.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aa7b2287e-51fa-47fc-bd00-6a68eed0786b+AND+net%3A192.168.86.0%2F24
+customer_success_playground,25,42074d5e-30b6-4fc3-a877-bf3e396afa4b,192.168.86.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3A42074d5e-30b6-4fc3-a877-bf3e396afa4b+AND+net%3A192.168.86.0%2F24

@@ -1,6 +1,6 @@
-org_name,subnet,matches,risk,criticality,search
-lab_network,192.168.40.0/24,6,19,8,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.40.0%2F24
-lab_network,192.168.0.0/24,7,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.0.0%2F24
-lab_network,192.168.30.0/24,9,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.30.0%2F24
-lab_network,192.168.50.0/24,4,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.50.0%2F24
-lab_network,192.168.60.0/24,2,0,0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+net%3A192.168.60.0%2F24
+org_name,asset_count,site_id,subnet,risk,avg_risk,criticality,avg_criticality,search
+lab_network,6,ad67d649-041b-439d-af59-f200053a8805,192.168.40.0/24,19,3.17,8,1.33,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.40.0%2F24
+lab_network,7,ad67d649-041b-439d-af59-f200053a8805,192.168.0.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.0.0%2F24
+lab_network,9,ad67d649-041b-439d-af59-f200053a8805,192.168.30.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.30.0%2F24
+lab_network,4,ad67d649-041b-439d-af59-f200053a8805,192.168.50.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.50.0%2F24
+lab_network,2,ad67d649-041b-439d-af59-f200053a8805,192.168.60.0/24,0,0.0,0,0.0,https://console.runzero.com/inventory/services?search=alive%3At+protocol%3Atls+tls.notAfterTS%3A%3Cnow+AND+site%3Aad67d649-041b-439d-af59-f200053a8805+AND+net%3A192.168.60.0%2F24
