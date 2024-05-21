@@ -1,6 +1,5 @@
 import requests
 import os
-import json
 from flatten_json import flatten
 from ipaddress import ip_address
 from typing import Any, Dict, List
@@ -67,99 +66,108 @@ def import_data_to_runzero(name: str, assets: List[ImportAsset]):
         )
 
 
-def create_upload_assets(assets=list):
+def create_upload_assets(assets: list):
     output = []
-    for a in assets:
-        asset_id = a.get("id", "")
+    for asset_id in assets.keys():
         vulns = []
-        for v in a.get("cve_data", {}).get("vulnerabilities", []):
+        for service in assets[asset_id]:
+            for v in service.get("cve_data", {}).get("vulnerabilities", []):
 
-            cve = v.get("cve", {})
-            metrics_list = cve.get("metrics", {}).get("cvssMetricV30", [])
-            # no metrics = no useful data to upload
-            if len(metrics_list) > 0:
-                metrics = cve.get("metrics", {}).get("cvssMetricV30")[0].get("cvssData", {})
-                exploitability_score = cve.get("metrics", {}).get("cvssMetricV30")[0].get("exploitabilityScore")
+                cve = v.get("cve", {})
 
-                # fudging risk score
-                impact_score = cve.get("metrics", {}).get("cvssMetricV30")[0].get("impactScore")
-                risk_rank = 0
-                if impact_score > 8:
-                    risk_rank = 4
-                elif impact_score > 6:
-                    risk_rank = 3
-                elif impact_score > 4:
-                    risk_rank = 2
-                elif impact_score > 2:
-                    risk_rank = 1
+                # get metrics - this is sort of jank but they seem to change these over time
+                metrics_list = cve.get("metrics", {}).get("cvssMetricV30", None)
+                if metrics_list is None:
+                    metrics_list = cve.get("metrics", {}).get("cvssMetricV31", [])
+                    metrics_data = metrics_list[0]
+                else: 
+                    metrics_data = metrics_list[0]
 
-                # create severity map
-                severity = metrics.get("baseSeverity", "")
-                severity_rank_map = {
-                    "CRITICAL": 4,
-                    "HIGH": 3,
-                    "MEDIUM": 2,
-                    "LOW": 1,
-                }
+                # no metrics = no useful data to upload
+                if metrics_data:
+                    metrics = metrics_data.get("cvssData", None)
+                    exploitability_score = metrics_data.get("exploitabilityScore")
 
-                # get english description
-                descriptions = cve.get("descriptions", [])
-                description_out = ""
-                for d in descriptions:
-                    if d.get("lang", "") == "en":
-                        description_out = d.get("value", "")[0:1023]
+                    # fudging risk score
+                    impact_score = metrics_data.get("impactScore")
+                    risk_rank = 0
+                    if impact_score > 8:
+                        risk_rank = 4
+                    elif impact_score > 6:
+                        risk_rank = 3
+                    elif impact_score > 4:
+                        risk_rank = 2
+                    elif impact_score > 2:
+                        risk_rank = 1
 
-                # pull ID
-                cve_id = cve.get("id", "")
-                cve_format = len(cve_id.split("-")[2])
+                    # create severity map
+                    severity = metrics_data.get("baseSeverity", "")
+                    severity_rank_map = {
+                        "CRITICAL": 4,
+                        "HIGH": 3,
+                        "MEDIUM": 2,
+                        "LOW": 1,
+                    }
 
-                # skip OLD CVEs that use the olf format 
-                if cve_format == 5:
-                    vulns.append(
-                        Vulnerability(
-                            id=cve.get("id", ""),
-                            cve=cve.get("id", ""),
-                            name=cve.get("id", ""),
-                            description=description_out,
-                            severityRank=(
-                                severity_rank_map[severity]
-                                if severity in severity_rank_map
-                                else 0
-                            ),
-                            severityScore=metrics.get("baseScore", 0),
-                            riskRank=risk_rank,
-                            riskScore=impact_score,
-                            exploitable=True if exploitability_score >= 5 else False,
-                            cpe23=a.get("cpe", ""),
-                            # lastDetectedTS=cve.get("lastModified", ""),
-                            customAttributes={
-                                "version": str(metrics.get("version", "")),
-                                "vectorString": str(metrics.get("vectorString", "")),
-                                "attackVector": str(metrics.get("attackVector", "")),
-                                "attackComplexity": str(
-                                    metrics.get("attackComplexity", "")
+                    # get english description
+                    descriptions = cve.get("descriptions", [])
+                    description_out = ""
+                    for d in descriptions:
+                        if d.get("lang", "") == "en":
+                            description_out = d.get("value", "")[0:1023]
+
+                    # pull ID
+                    cve_id = cve.get("id", "")
+                    cve_format = len(cve_id.split("-")[2])
+
+                    # skip OLD CVEs that use the olf format
+                    if cve_format == 5:
+                        vulns.append(
+                            Vulnerability(
+                                id=cve.get("id", ""),
+                                cve=cve.get("id", ""),
+                                name=cve.get("id", ""),
+                                description=description_out,
+                                serviceAddress=service.get("service_address", ""),
+                                servicePort=service.get("service_port", ""),
+                                severityRank=(
+                                    severity_rank_map[severity]
+                                    if severity in severity_rank_map
+                                    else 0
                                 ),
-                                "privilegesRequired": str(
-                                    metrics.get("privilegesRequired", "")
-                                ),
-                                "userInteraction": str(
-                                    metrics.get("userInteraction", "")
-                                ),
-                                "scope": str(metrics.get("scope", "")),
-                                "confidentialityImpact": str(
-                                    metrics.get("confidentialityImpact", "")
-                                ),
-                                "integrityImpact": str(
-                                    metrics.get("integrityImpact", "")
-                                ),
-                                "availabilityImpact": str(
-                                    metrics.get("availabilityImpact", "")
-                                ),
-                                "baseScore": str(metrics.get("baseScore", "")),
-                                "baseSeverity": str(metrics.get("baseSeverity", "")),
-                            },
+                                severityScore=metrics.get("baseScore", 0),
+                                riskRank=risk_rank,
+                                riskScore=impact_score,
+                                exploitable=True if exploitability_score >= 5 else False,
+                                cpe23=service.get("cpe", ""),
+                                customAttributes={
+                                    "version": str(metrics.get("version", "")),
+                                    "vectorString": str(metrics.get("vectorString", "")),
+                                    "attackVector": str(metrics.get("attackVector", "")),
+                                    "attackComplexity": str(
+                                        metrics.get("attackComplexity", "")
+                                    ),
+                                    "privilegesRequired": str(
+                                        metrics.get("privilegesRequired", "")
+                                    ),
+                                    "userInteraction": str(
+                                        metrics.get("userInteraction", "")
+                                    ),
+                                    "scope": str(metrics.get("scope", "")),
+                                    "confidentialityImpact": str(
+                                        metrics.get("confidentialityImpact", "")
+                                    ),
+                                    "integrityImpact": str(
+                                        metrics.get("integrityImpact", "")
+                                    ),
+                                    "availabilityImpact": str(
+                                        metrics.get("availabilityImpact", "")
+                                    ),
+                                    "baseScore": str(metrics.get("baseScore", "")),
+                                    "baseSeverity": str(metrics.get("baseSeverity", "")),
+                                },
+                            )
                         )
-                    )
 
         output.append(
             ImportAsset(id=asset_id, runZeroID=asset_id, vulnerabilities=vulns)
@@ -171,9 +179,10 @@ def create_upload_assets(assets=list):
 def get_nvd_vulnerabilitites(cpe: str):
     url = f"https://services.nvd.nist.gov/rest/json/cves/2.0"
     headers = {"apiKey": NVPD_API_KEY}
+    safe_cpe = cpe.replace("cpe:/", "cpe:2.3:")
 
     critical_response = requests.get(
-        url, headers=headers, params={"cpeName": cpe, "cvssV3Severity": "CRITICAL"}
+        url, headers=headers, params={"cpeName": safe_cpe, "cvssV3Severity": "CRITICAL"}
     )
 
     if critical_response.status_code == 200:
@@ -202,50 +211,89 @@ def get_nvd_vulnerabilitites(cpe: str):
         print(f"failed on: {cpe} - status code: {critical_response.status_code}")
 
 
-def get_assets():
-    url = RUNZERO_BASE_URL + "/export/org/assets.json"
+def get_services():
+    url = RUNZERO_BASE_URL + "/export/org/services.json"
 
-    assets = requests.get(
+    services = requests.get(
         url,
         headers={"Authorization": f"Bearer {RUNZERO_EXPORT_TOKEN}"},
-        params={"search": 'alive:t attribute:"os.cpe23"'},
+        params={"search": 'alive:t attribute:"service.cpe23"'},
     )
 
-    assets_with_cpe = []
+    agg_service_cpes = {}
 
-    for asset in assets.json():
-        cpe = asset.get("attributes", {}).get("os.cpe23", None)
+    for service in services.json():
+        asset_id = service.get("service_asset_id", "")
+        service_id = service.get("service_id", "")
+        service_address = service.get("service_address", "")
+        service_asset_id = service.get("service_asset_id", "")
+        service_port = service.get("service_port", None)
+        cpe = service.get("attributes", {}).get("service.cpe23", None)
         if cpe:
             if "r0_unofficial" in cpe:
                 print(f"skipping r0_unofficial: {cpe}")
+            elif asset_id in agg_service_cpes.keys():
+                if cpe not in agg_service_cpes[asset_id]:
+                    agg_service_cpes[asset_id][cpe].append(
+                        {
+                            "service_id": service_id,
+                            "service_address": service_address,
+                            "service_asset_id": service_asset_id,
+                            "service_port": service_port,
+                        }
+                    )
             else:
-                assets_with_cpe.append(
-                    {
-                        "id": asset.get("id", ""),
-                        "cpe": cpe.replace("cpe:/", "cpe:2.3:"),
-                    }
-                )
+                agg_service_cpes[asset_id] = {}
+                agg_service_cpes[asset_id][cpe] = [{
+                    "service_id": service_id,
+                    "service_address": service_address,
+                    "service_asset_id": service_asset_id,
+                    "service_port": service_port,
+                }]
 
-    return assets_with_cpe
+    return agg_service_cpes
 
+def enrich_services(services: list):
+    enriched_assets = []
+    cpe_cache = {}
+    for asset_id in services.keys():
+        for cpe in services[asset_id].keys():
+            if cpe:
+                for service in services[asset_id][cpe]:
+                    if cpe not in cpe_cache.keys():
+                        cve_data = get_nvd_vulnerabilitites(cpe)
+                        cpe_cache[cpe] = cve_data
+                        enriched_assets.append(
+                            {
+                                "asset_id": asset_id,
+                                "cpe": cpe,
+                                "cve_data": cve_data,
+                                "service_id": service.get("service_id", ""),
+                                "service_address": service.get("service_address", ""),
+                                "service_port": service.get("service_port", ""),
+                            }
+                        )
+                else:
+                    enriched_assets.append(
+                        {
+                            "asset_id": asset_id,
+                            "cpe": cpe,
+                            "cve_data": cpe_cache[cpe],
+                            "service_id": service.get("service_id", ""),
+                            "service_address": service.get("service_address", ""),
+                            "service_port": service.get("service_port", ""),
+                        }
+                    )
+    return enriched_assets
 
 if __name__ == "__main__":
-    assets = get_assets()
-    cpe_cache = {}
-    enriched_assets = []
-    for a in assets:
-        cpe = a.get("cpe")
-        if cpe:
-            if cpe not in cpe_cache.keys():
-                cve_data = get_nvd_vulnerabilitites(cpe)
-                cpe_cache[cpe] = cve_data
-                enriched_assets.append(
-                    {"id": a.get("id", ""), "cpe": cpe, "cve_data": cve_data}
-                )
-            else:
-                enriched_assets.append(
-                    {"id": a.get("id", ""), "cpe": cpe, "cve_data": cpe_cache[cpe]}
-                )
-
-    assets_to_upload = create_upload_assets(assets=enriched_assets)
+    services = get_services()
+    enriched_services = enrich_services(services)
+    consolidated_assets = {}
+    for service in enriched_services:
+        if service["asset_id"] not in consolidated_assets:
+            consolidated_assets[service["asset_id"]] = [service]
+        else:
+            consolidated_assets[service["asset_id"]].append(service)
+    assets_to_upload = create_upload_assets(assets=consolidated_assets)
     import_data_to_runzero(name="nist_nvd", assets=assets_to_upload)
