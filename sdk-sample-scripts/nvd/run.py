@@ -5,10 +5,8 @@ from ipaddress import ip_address
 from typing import Any, Dict, List
 import runzero
 from runzero.client import AuthError
-from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites, Tasks
+from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites
 from runzero.types import ImportAsset, ImportTask, Vulnerability
-
-from openai import OpenAI
 
 RUNZERO_EXPORT_TOKEN = os.environ["RUNZERO_EXPORT_TOKEN"]
 RUNZERO_CLIENT_ID = os.environ["RUNZERO_CLIENT_ID"]
@@ -80,7 +78,7 @@ def create_upload_assets(assets: list):
                 if metrics_list is None:
                     metrics_list = cve.get("metrics", {}).get("cvssMetricV31", [])
                     metrics_data = metrics_list[0]
-                else: 
+                else:
                     metrics_data = metrics_list[0]
 
                 # no metrics = no useful data to upload
@@ -116,58 +114,52 @@ def create_upload_assets(assets: list):
                         if d.get("lang", "") == "en":
                             description_out = d.get("value", "")[0:1023]
 
-                    # pull ID
-                    cve_id = cve.get("id", "")
-                    cve_format = len(cve_id.split("-")[2])
-
-                    # skip OLD CVEs that use the olf format
-                    if cve_format == 5:
-                        vulns.append(
-                            Vulnerability(
-                                id=cve.get("id", ""),
-                                cve=cve.get("id", ""),
-                                name=cve.get("id", ""),
-                                description=description_out,
-                                serviceAddress=service.get("service_address", ""),
-                                servicePort=service.get("service_port", ""),
-                                severityRank=(
-                                    severity_rank_map[severity]
-                                    if severity in severity_rank_map
-                                    else 0
+                    vulns.append(
+                        Vulnerability(
+                            id=cve.get("id", ""),
+                            cve=cve.get("id", ""),
+                            name=cve.get("id", ""),
+                            description=description_out,
+                            serviceAddress=service.get("service_address", ""),
+                            servicePort=service.get("service_port", ""),
+                            severityRank=(
+                                severity_rank_map[severity]
+                                if severity in severity_rank_map
+                                else 0
+                            ),
+                            severityScore=metrics.get("baseScore", 0),
+                            riskRank=risk_rank,
+                            riskScore=impact_score,
+                            exploitable=True if exploitability_score >= 5 else False,
+                            cpe23=service.get("cpe", ""),
+                            customAttributes={
+                                "version": str(metrics.get("version", "")),
+                                "vectorString": str(metrics.get("vectorString", "")),
+                                "attackVector": str(metrics.get("attackVector", "")),
+                                "attackComplexity": str(
+                                    metrics.get("attackComplexity", "")
                                 ),
-                                severityScore=metrics.get("baseScore", 0),
-                                riskRank=risk_rank,
-                                riskScore=impact_score,
-                                exploitable=True if exploitability_score >= 5 else False,
-                                cpe23=service.get("cpe", ""),
-                                customAttributes={
-                                    "version": str(metrics.get("version", "")),
-                                    "vectorString": str(metrics.get("vectorString", "")),
-                                    "attackVector": str(metrics.get("attackVector", "")),
-                                    "attackComplexity": str(
-                                        metrics.get("attackComplexity", "")
-                                    ),
-                                    "privilegesRequired": str(
-                                        metrics.get("privilegesRequired", "")
-                                    ),
-                                    "userInteraction": str(
-                                        metrics.get("userInteraction", "")
-                                    ),
-                                    "scope": str(metrics.get("scope", "")),
-                                    "confidentialityImpact": str(
-                                        metrics.get("confidentialityImpact", "")
-                                    ),
-                                    "integrityImpact": str(
-                                        metrics.get("integrityImpact", "")
-                                    ),
-                                    "availabilityImpact": str(
-                                        metrics.get("availabilityImpact", "")
-                                    ),
-                                    "baseScore": str(metrics.get("baseScore", "")),
-                                    "baseSeverity": str(metrics.get("baseSeverity", "")),
-                                },
-                            )
+                                "privilegesRequired": str(
+                                    metrics.get("privilegesRequired", "")
+                                ),
+                                "userInteraction": str(
+                                    metrics.get("userInteraction", "")
+                                ),
+                                "scope": str(metrics.get("scope", "")),
+                                "confidentialityImpact": str(
+                                    metrics.get("confidentialityImpact", "")
+                                ),
+                                "integrityImpact": str(
+                                    metrics.get("integrityImpact", "")
+                                ),
+                                "availabilityImpact": str(
+                                    metrics.get("availabilityImpact", "")
+                                ),
+                                "baseScore": str(metrics.get("baseScore", "")),
+                                "baseSeverity": str(metrics.get("baseSeverity", "")),
+                            },
                         )
+                    )
 
         output.append(
             ImportAsset(id=asset_id, runZeroID=asset_id, vulnerabilities=vulns)
@@ -244,14 +236,17 @@ def get_services():
                     )
             else:
                 agg_service_cpes[asset_id] = {}
-                agg_service_cpes[asset_id][cpe] = [{
-                    "service_id": service_id,
-                    "service_address": service_address,
-                    "service_asset_id": service_asset_id,
-                    "service_port": service_port,
-                }]
+                agg_service_cpes[asset_id][cpe] = [
+                    {
+                        "service_id": service_id,
+                        "service_address": service_address,
+                        "service_asset_id": service_asset_id,
+                        "service_port": service_port,
+                    }
+                ]
 
     return agg_service_cpes
+
 
 def enrich_services(services: list):
     enriched_assets = []
@@ -285,6 +280,7 @@ def enrich_services(services: list):
                         }
                     )
     return enriched_assets
+
 
 if __name__ == "__main__":
     services = get_services()
