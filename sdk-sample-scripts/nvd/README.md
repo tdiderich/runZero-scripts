@@ -35,3 +35,9 @@
 - Loops the services to get the CPEs and service data 
 - Enriches the information by using the CPE to query the NVD to get CVEs
 - Uploads the vulnerabilities to the runZero asset with the CVE as the name
+
+## Demo
+
+https://github.com/tdiderich/runZero-scripts/assets/15862572/a1494ef8-5c8b-42fa-b9ff-24fb8b5ad359
+
+
