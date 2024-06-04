@@ -110,7 +110,7 @@ COMPUTE_ASSETS = {
         "hostname": "RUNZERO",
         "type": "SERVER",
         "os": "Linux",
-        "mac": "94:C6:91:15:4D:91",
+        "mac": "94:C6:91:15:4D:91|08:6e:20:4a:e6:56",
     },
     "Linux-Raspbian-9.0": {
         "host": "192.168.0.8",
@@ -184,7 +184,7 @@ ROUTING_ASSETS = {
         "filename": "scan_lab.json",
         "hostname": "ADTRAN225",
         "type": "ROUTER",
-        "mac": "00:a0:c8:5d:8e:c6",
+        "mac": "00:a0:c8:5d:8e:c6|08:ea:44:37:f3:40",
     },
     "Ubiquiti UniFi UAP": {
         "host": "192.168.30.246",
@@ -219,7 +219,7 @@ ROUTING_ASSETS = {
         "filename": "scan_hikivision.json",
         "hostname": "D64896-SLCUSTOM",
         "type": "ROUTER",
-        "mac": "E4:AA:5D:43:ED:A0|E4:AA:5D:43:ED:A1",
+        "mac": "E4:AA:5D:43:ED:A0|E4:AA:5D:43:ED:A1|e4:aa:5d:43:ed:a0",
         "secondary_v4": "203.115.31.121",
     },
 }
@@ -230,7 +230,7 @@ IOT_DEVICES = {
         "filename": "scan_lab.json",
         "hostname": "ND0115050063214",
         "type": "IOT",
-        "mac": "00:40:7F:77:63:48",
+        "mac": "00:40:7F:77:63:48|08:ea:44:37:f3:40",
     },
     "Hikivision Camera": {
         "host": "89.174.39.70",
@@ -260,10 +260,10 @@ OT_DEVICES = {
 
 # Maps for integration data
 NESSUS_DEVICE_MAP = {
-    "SERVER": {"ip": "192.168.86.22", "mac": "60:B7:6E:6C:C6:48"},
+    "SERVER": {"ip": "192.168.86.22", "mac": "60:b7:6e:6c:c6:48"},
     "ROUTER": {"ip": "192.168.86.1", "mac": "60:B7:6E:6C:C6:1C"},
     "WAP": {"ip": "192.168.86.1", "mac": "60:B7:6E:6C:C6:1C"},
-    "LAPTOP": {"ip": "192.168.86.22", "mac": "60:B7:6E:6C:C6:48"},
+    "LAPTOP": {"ip": "192.168.86.22", "mac": "60:b7:6e:6c:c6:48"},
     "MOBILE": {
         "ip": "192.168.86.36",
         "mac": "4C:FC:AA:0A:FC:E3",
@@ -578,7 +578,9 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
     ## check for MAC addresses + randomizer
     mac_match = check_for_replacements("mac", asset_info[random_asset_type])
     mac = asset_info[random_asset_type]["mac"] if mac_match else None
-    new_mac = semi_rand_mac(mac=mac) if mac_match else None
+    new_mac = (
+        semi_rand_mac(mac=mac) if mac_match else semi_rand_mac(mac="19:3c:1f:78:f2:cf")
+    )
 
     # data to use
     filename = asset_info[random_asset_type]["filename"]
@@ -595,6 +597,14 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             primary_ip_match = re.compile(
                 asset_info[random_asset_type]["host"], re.IGNORECASE
             )
+
+            if (
+                asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
+                and "snmp.interfaceMacs" in temp_result
+            ):
+                temp_result["snmp.interfaceMacs"] = "\t".join(
+                    (semi_rand_mac(mac=mac) for i in range(10))
+                )
 
             if (
                 asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
@@ -638,7 +648,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
 
 
 def main():
-    create_new = False
+    create_new = True
     if create_new:
         asset_cache = []
 
@@ -663,7 +673,7 @@ def main():
 
         # create scan data for datacenter assets
         for subnet in range(11, 15):
-            for ip in range(1, 20):
+            for ip in range(1, 5):
                 asset = (
                     fudge_scan_data(
                         asset_info=COMPUTE_ASSETS | IOT_DEVICES | OT_DEVICES,
@@ -699,7 +709,7 @@ def main():
                 print(f"FAILURE - on create task for {integration}")
 
     # delete existing assets first (if you want to)
-    delete = False
+    delete = True
     if delete:
         # export current assets
         export_url = RUNZERO_BASE_URL + "/export/org/assets.json"
