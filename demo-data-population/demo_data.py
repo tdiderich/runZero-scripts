@@ -7,6 +7,7 @@ import re
 import gzip
 import base64
 import uuid
+import argparse
 
 
 #### NETWORK OVERVIEW ####
@@ -53,6 +54,17 @@ import uuid
 ### AWS OR Azure OR GCP + RZ Scan and Shodan
 
 #### END NETWORK OVERVIEW ####
+
+# Command line args
+parser = argparse.ArgumentParser(
+    prog="Demo Data Creator",
+    description="Creates and uploads demo data to runZero",
+)
+parser.add_argument("--create", action="store_true", help="create new demo data")
+parser.add_argument("--delete", action="store_true", help="delete existing assets in the console")
+parser.add_argument("--upload", action="store_true", help="upload demo data to runZero")
+args = parser.parse_args()
+
 
 # Creds for uploading tasks to rz
 RUNZERO_BASE_URL = "https://console.runZero.com/api/v1.0"
@@ -173,7 +185,8 @@ COMPUTE_ASSETS = {
         "os": "Apple",
         "secondary_v4": "192.168.30.56|192.168.30.3",
         "secondary_v6": "fdc5:e46c:5da8:4b48:6:fde2:62f1:8748",
-        "mac": "A4:CF:99:AB:0C:1B",
+        "mac": "A4:CF:99:AB:0C:1B|5A:D0:3B:15:84:70|A4:CF:99:AF:67:FF|56:3E:3A:BA:BB:76|A4:CF:99:B2:54:03",
+        "cn": "7506644C-DF32-4294-B2A5-49B2FFC09772",
     },
 }
 
@@ -383,6 +396,9 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                     username_match = check_for_replacements(
                         key="username", asset_replacements=device_map[device_type]
                     )
+                    cn_match = check_for_replacements(
+                        key="cn", asset_replacements=device_map[device_type]
+                    )
 
                     for line in raw_task:
 
@@ -582,6 +598,10 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
         semi_rand_mac(mac=mac) if mac_match else semi_rand_mac(mac="19:3c:1f:78:f2:cf")
     )
 
+    # replace tls.cn with random value
+    cn_match = check_for_replacements("cn", asset_info[random_asset_type])
+    new_cn = str(uuid.uuid4())
+
     # data to use
     filename = asset_info[random_asset_type]["filename"]
     raw_task = open(f"./tasks/{filename}")
@@ -621,15 +641,23 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             result = regex_bulk_sub(match=primary_ip_match, new_val=ip, result=result)
 
             # update other attributes as needed
-            result = result = regex_bulk_sub(
+            result = regex_bulk_sub(
                 match=domain_match, new_val="RUNZERO", result=result
             )
             result = regex_bulk_sub(match=mac_match, new_val=new_mac, result=result)
-            result = result = regex_bulk_sub(
+            if "56:3E:3A:BA:BB:76" in result:
+                print(mac_match, new_mac)
+
+            result = regex_bulk_sub(
                 match=secondary_v4_match, new_val=new_secondary_v4, result=result
             )
-            result = result = regex_bulk_sub(
+            result = regex_bulk_sub(
                 match=secondary_v6_match, new_val=new_secondary_v6, result=result
+            )
+            result = regex_bulk_sub(
+                match=cn_match,
+                new_val=new_cn,
+                result=result,
             )
 
             OUTPUT.append(json.loads(result))
@@ -640,6 +668,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
         "new_mac": new_mac,
         "new_secondary_v4": new_secondary_v4,
         "new_secondary_v6": new_secondary_v6,
+        "new_cn": new_cn,
         "os_full": random_asset_type,
         "username": f"USER-{ip_hostname_sub}",
         "device_id": str(uuid.uuid4()),
@@ -648,13 +677,12 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
 
 
 def main():
-    create_new = True
-    if create_new:
+    if args.create:
         asset_cache = []
 
         # create scan data for HQ assets
         for subnet in range(0, 5):
-            for ip in range(1, 5):
+            for ip in range(1, 20):
                 asset = (
                     fudge_scan_data(
                         asset_info=COMPUTE_ASSETS,
@@ -673,7 +701,7 @@ def main():
 
         # create scan data for datacenter assets
         for subnet in range(11, 15):
-            for ip in range(1, 5):
+            for ip in range(1, 20):
                 asset = (
                     fudge_scan_data(
                         asset_info=COMPUTE_ASSETS | IOT_DEVICES | OT_DEVICES,
@@ -709,8 +737,7 @@ def main():
                 print(f"FAILURE - on create task for {integration}")
 
     # delete existing assets first (if you want to)
-    delete = True
-    if delete:
+    if args.delete:
         # export current assets
         export_url = RUNZERO_BASE_URL + "/export/org/assets.json"
         headers = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
@@ -741,8 +768,7 @@ def main():
                         )
 
     # updload task(s) to rz (if you want to)
-    upload = True
-    if upload:
+    if args.upload:
         for filename in [
             "scan_output.json",
             "integration_crowdstrike.json",
