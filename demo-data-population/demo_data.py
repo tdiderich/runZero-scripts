@@ -682,7 +682,7 @@ def main():
 
         # create scan data for HQ assets
         for subnet in range(0, 5):
-            for ip in range(1, 20):
+            for ip in range(1, 5):
                 asset = (
                     fudge_scan_data(
                         asset_info=COMPUTE_ASSETS,
@@ -701,7 +701,7 @@ def main():
 
         # create scan data for datacenter assets
         for subnet in range(11, 15):
-            for ip in range(1, 20):
+            for ip in range(1, 5):
                 asset = (
                     fudge_scan_data(
                         asset_info=COMPUTE_ASSETS | IOT_DEVICES | OT_DEVICES,
