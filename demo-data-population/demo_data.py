@@ -461,7 +461,7 @@ END_USER_ASSETS = {
     "Brother MFC-L5900DW": {
         "host": "192.168.30.20",
         "filename": "scan_lab_printer.json",
-        "hostname": "WBRN3C2AF4ABE1C6",
+        "hostname": "BRN3C2AF4ABE1C6",
         "type": "PRINTER",
         "mac": "10:5b:ad:4a:69:45|10:5b:ad:4a:e9:45|3c:2a:f4:ab:e1:c6",
     },
@@ -545,6 +545,7 @@ IOT_DEVICES = {
         "hostname": "UBNT-788A20A2C84C",
         "type": "CAMERA",
         "mac": "78:8A:20:A2:C8:4C",
+        "cn": "UBNT-78:8A:20:fa:ed:b7",
     },
     "Apple-tvOS-17.5": {
         "host": "192.168.30.241",
@@ -1354,12 +1355,15 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
                 asset_info[random_asset_type]["host"], re.IGNORECASE
             )
 
+            if "snmp.sysName" in temp_result["info"]:
+                temp_result["info"]["snmp.sysName"] = new_hostname
+
             if (
                 asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
                 and "snmp.interfaceMacs" in temp_result["info"]
             ):
                 temp_result["info"]["snmp.interfaceMacs"] = "\t".join(
-                    (semi_rand_mac(mac=mac) for i in range(10))
+                    (semi_rand_mac(mac=mac) for _ in range(10))
                 )
 
             if (
@@ -1368,7 +1372,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             ):
                 temp_result["info"]["snmp.macs.ports"] = (
                     "giga-swx 0/1="
-                    + "\t".join((semi_rand_mac(mac=mac) for i in range(10)))
+                    + "\t".join((semi_rand_mac(mac=mac) for _ in range(10)))
                     + "\tvlan 1="
                     + semi_rand_mac(mac=mac)
                 )
