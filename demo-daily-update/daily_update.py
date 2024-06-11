@@ -106,6 +106,7 @@ def main():
                     temp_line["info"]["lastInteractiveTS"] = str(round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5])))
                     temp_line["info"]["lastLoginTS"] = str(round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5])))
                     temp_line["info"]["agentLocalTime"] = str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")) + "Z"
+                    temp_line["info"]["lastSeen"] = str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")) + "Z"
                     output.append(temp_line)
                 elif file == "integration_nessus.json.gz":
                     temp_line["info"]["lastSeenTS"] = str(round(time.time()))
