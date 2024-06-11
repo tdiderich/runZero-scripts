@@ -8,52 +8,7 @@ import gzip
 import base64
 import uuid
 import argparse
-
-
-#### NETWORK OVERVIEW ####
-
-# Corporate: 10.0.0.0 - 10.0.10.255
-
-## Standard end user assets - Linux, Apple, and Windows devices
-### RZ Scan, CrowdStrike, Nessus, and AzureAD
-
-## Routers
-### RZ Scan and Nessus
-
-## WAP
-### RZ Scan and Nessus
-
-# Datacenter: 10.0.11.0 - 10.0.20.255 = datacenter
-
-## Servers - Linux and Windows devices
-### RZ Scan, CrowdStrike, Nessus, and AzureAD
-
-## Routers
-### RZ Scan and Nessus
-
-## Switches
-### RZ Scan and Nessus
-
-## UPS
-### RZ Scan
-
-## BACnet
-### RZ Scan
-
-## PLC
-### RZ Scan
-
-# Cloud: 240.0.0.0 - 240.0.255.255
-## Servers
-### AWS OR Azure OR GCP + RZ Scan, Shodan, CrowdStrike, and Nessus
-
-## Databases
-### AWS OR Azure OR GCP + RZ Scan and Shodan
-
-## Load balancers
-### AWS OR Azure OR GCP + RZ Scan and Shodan
-
-#### END NETWORK OVERVIEW ####
+import string
 
 # Command line args
 parser = argparse.ArgumentParser(
@@ -61,23 +16,336 @@ parser = argparse.ArgumentParser(
     description="Creates and uploads demo data to runZero",
 )
 parser.add_argument("--create", action="store_true", help="create new demo data")
-parser.add_argument("--delete", action="store_true", help="delete existing assets in the console")
+parser.add_argument(
+    "--delete", action="store_true", help="delete existing assets in the console"
+)
 parser.add_argument("--upload", action="store_true", help="upload demo data to runZero")
+parser.add_argument(
+    "--assets-per-subnet", type=int, default=5, help="upload demo data to runZero"
+)
 args = parser.parse_args()
 
 
 # Creds for uploading tasks to rz
-RUNZERO_BASE_URL = "https://console.runZero.com/api/v1.0"
-RUNZERO_ORG_ID = "91bf5f0a-dbf9-4622-8d86-40aaaec90c78"
-RUNZERO_SITE_ID = "a1a2ecdb-cea7-4390-a873-ce6322bdd14d"
-NESSUS_SITE_ID = "5d6b0c27-962b-4b10-9ee6-b9f887a748e1"
-CS_SITE_ID = "680d5979-76dd-4b7d-a10b-ce3f8d369eed"
+RUNZERO_BASE_URL = "https://demo.runZero.com/api/v1.0"
+RUNZERO_ORG_ID = "bddd405a-f594-4891-88f9-c4e95d793f68"
+RUNZERO_SITE_ID = "43d7ee80-2927-4c68-9be0-1f8cf267cf9a"
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
+JAMF_CUSTOM_INTEGRATION_ID = "2ba644ef-2774-4539-b3e6-2dd06770c0a5"
 
-OUTPUT = []
+# Output seeded with scan config line
+OUTPUT = [
+    {
+        "type": "config",
+        "ts": 1718047038630343009,
+        "probes": [
+            "arp",
+            "aws-instances",
+            "bacnet",
+            "censys",
+            "crestron",
+            "dns",
+            "dtls",
+            "echo",
+            "ike",
+            "ipmi",
+            "l2t",
+            "mdns",
+            "memcache",
+            "mssql",
+            "natpmp",
+            "netbios",
+            "ntp",
+            "openvpn",
+            "pca",
+            "rdns",
+            "rpcbind",
+            "sip",
+            "snmp",
+            "ssdp",
+            "ssh",
+            "syn",
+            "tftp",
+            "ubnt",
+            "vmware",
+            "wlan-list",
+            "wsd",
+        ],
+        "addresses": [],
+        "networks": [
+            "10.0.0.0/24",
+            "10.0.1.0/24",
+            "10.0.2.0/24",
+            "10.0.3.0/24",
+            "10.0.4.0/24",
+            "10.0.5.0/24",
+            "10.0.6.0/24",
+            "10.0.7.0/24",
+            "10.0.8.0/24",
+            "10.0.9.0/24",
+            "10.0.10.0/24",
+            "10.0.11.0/24",
+            "10.0.12.0/24",
+            "10.0.13.0/24",
+            "10.0.14.0/24",
+            "10.0.15.0/24",
+            "10.0.16.0/24",
+            "10.0.17.0/24",
+            "10.0.18.0/24",
+            "10.0.19.0/24",
+            "10.0.20.0/24",
+            "23.20.0.0/24",
+            "23.20.1.0/24",
+            "23.20.2.0/24",
+            "23.20.3.0/24",
+            "23.20.4.0/24",
+            "23.20.5.0/24",
+        ],
+        "params": {
+            "arp-fast": "false",
+            "aws-instances-delete-stale": "false",
+            "aws-instances-exclude-unknown": "false",
+            "aws-instances-include-stopped": "false",
+            "aws-instances-service-options": "defaults",
+            "aws-instances-site-per-account": "false",
+            "aws-instances-site-per-vpc": "false",
+            "bacnet-ports": "46808,47808,48808",
+            "censys-exclude-unknown": "false",
+            "censys-mode": "targets",
+            "censys-query": "",
+            "clock-offset": "0",
+            "crestron-port": "41794",
+            "dns-disable-google-myaddr": "false",
+            "dns-disable-meraki-detection": "false",
+            "dns-port": "53",
+            "dns-resolve-name": "www.google.com",
+            "dns-trace-domain": "helper.rumble.network",
+            "dtls-ports": "443,3391,4433,5246,5349,5684",
+            "echo-report-errors": "false",
+            "excludes": "192.168.168.0/24",
+            "host-ping-probes": "arp,echo,syn,connect,netbios,snmp,ntp,sunrpc,ike,openvpn,mdns",
+            "ike-port": "500",
+            "ipmi-port": "623",
+            "l2t-port": "2228",
+            "max-attempts": "3",
+            "max-group-size": "4096",
+            "max-host-rate": "40",
+            "max-sockets": "2048",
+            "max-ttl": "255",
+            "mdns-port": "5353",
+            "memcache-port": "11211",
+            "mssql-port": "1434",
+            "nameservers": "",
+            "natpmp-port": "5351",
+            "netbios-port": "137",
+            "nopcap": "false",
+            "ntp-port": "123",
+            "openvpn-ports": "1194",
+            "passes": "1",
+            "pca-port": "5632",
+            "ping-only": "false",
+            "probes": "arp,aws-instances,bacnet,censys,crestron,dns,dtls,echo,ike,ipmi,l2t,mdns,memcache,mssql,natpmp,netbios,ntp,openvpn,pca,rdns,rpcbind,sip,snmp,ssdp,ssh,syn,connect,tftp,ubnt,vmware,wlan-list,wsd",
+            "rate": "1000",
+            "rdns-max-concurrent": "64",
+            "rdns-timeout": "3",
+            "rpcbind-port": "111",
+            "rpcbind-port-nfs": "2049",
+            "scan-mode": "host",
+            "scanner-name": "main",
+            "screenshots": "true",
+            "sip-port": "5060",
+            "skip-broadcast": "true",
+            "snmp-disable-bulk": "false",
+            "snmp-max-repetitions": "16",
+            "snmp-max-retries": "1",
+            "snmp-poll-interval": "300",
+            "snmp-port": "161",
+            "snmp-timeout": "5",
+            "snmp-v3-context": "",
+            "snmp-walk-timeout": "60",
+            "ssdp-port": "1900",
+            "ssh-fingerprint": "true",
+            "ssh-fingerprint-username": "_STATUS_",
+            "subnet-ping-net-size": "256",
+            "subnet-ping-probes": "arp,echo,syn,connect,netbios,snmp,ntp,sunrpc,ike,openvpn,mdns",
+            "subnet-ping-sample-rate": "3",
+            "syn-disable-bogus-filter": "false",
+            "syn-forwarding-check": "true",
+            "syn-forwarding-check-target": "13.248.161.247",
+            "syn-max-retries": "2",
+            "syn-report-resets": "true",
+            "syn-reset-sessions": "true",
+            "syn-reset-sessions-delay": "0",
+            "syn-reset-sessions-limit": "50",
+            "syn-traceroute": "true",
+            "syn-udp-trace-port": "65535",
+            "tcp-excludes": "",
+            "tcp-ports": "3306,8834,2083,2604,8028,8180,9443,10008,47002,21,1582,5061,5985,8883,8902,9300,264,512,5521,5903,17783,50013,993,2049,8800,9091,15671,17185,25000,5989,8000,2638,8686,42,1755,7879,27888,445,6661,9200,17,3033,6262,7579,50021,2100,5906,8471,8488,4443,7778,10259,28017,53,1091,8006,8020,8205,65535,5060,5353,1433,4949,6101,8090,9401,9418,500,1098,10162,10202,44334,65002,3050,6082,8445,8181,8888,34205,40007,1723,7144,5902,9593,32913,80,3001,8850,9000,41080,50070,61616,123,4343,6443,37,4322,6001,26000,5905,9001,8095,1801,3900,1521,5347,5901,9090,1030,1241,22222,38292,3200,16992,998,8023,4366,7902,8787,49,1533,5405,7070,61614,1514,2362,5907,8010,11333,17781,37777,3780,5093,17777,55580,9080,44818,1100,3389,2224,7210,9,623,111,19810,2181,110,280,6502,14330,37892,82,902,17791,32764,5275,8089,9855,46823,873,3268,2023,5988,6503,8081,9084,9152,636,903,5666,6504,9390,10250,1260,3071,5560,7510,7787,13838,28784,54922,102,137,7801,10001,17782,135,2103,1468,9002,7580,10050,139,4659,2375,3460,4092,4567,8172,9060,119,1000,50051,6106,12203,13364,20222,3502,5250,1199,8182,43,1035,50090,23,3128,1443,8903,8300,25565,79,1129,5631,20031,444,689,10628,4950,8127,4730,4848,7770,8503,10000,15672,1024,2381,13778,16993,17798,9809,10080,2380,5038,5040,1581,1611,40317,3000,28222,2376,2443,3300,3500,7777,515,1604,8099,25672,2074,6070,5351,6514,27000,34962,52311,69,587,2809,5800,7080,10203,20101,50000,912,1494,62514,5400,17775,26122,48899,1,1090,6050,20034,41025,52302,2533,3351,5683,6000,8889,1102,4369,5671,5672,6379,8082,12401,30000,1440,3628,3311,6161,6905,8444,9100,85,717,4433,4840,5355,6988,8880,9092,1220,3790,38102,54921,62078,9471,10255,10616,5392,7800,143,8088,10257,11234,6542,8443,4353,8008,9042,25025,402,2207,6112,1900,5938,540,1300,20010,20111,5555,8001,27018,54923,524,2002,37891,8009,20171,9099,9391,32844,921,7000,2525,2601,5601,17472,664,1128,7077,1270,5986,23791,2000,7001,47001,179,8083,4368,7547,47290,3299,3312,5000,8871,161,4444,34963,55553,442,9111,6667,31099,3269,5900,1434,1811,8098,10098,10443,105,1211,19300,33060,44343,513,1103,5432,5007,8030,13,1083,5814,5920,6556,8531,9081,9594,2105,5498,2947,4000,13500,88,1158,3872,11099,27019,109,1311,5911,5984,8400,8812,17778,38008,1099,1101,113,1830,4987,8333,9495,37890,7,22,5908,8649,17200,3037,5037,17784,2379,12221,5433,7002,9524,34964,19,2082,5168,34443,83,2222,2121,8222,8901,4445,5247,523,1352,5580,8012,222,1883,384,12174,5051,5909,8086,8500,830,1610,5222,8123,8983,20293,57772,1080,3220,7676,2323,2598,3260,41523,70,771,12379,910,12345,7373,18881,7474,8087,54321,631,7443,7700,8080,8890,2068,2967,5520,45230,23943,995,8545,6405,6660,7100,9530,18264,465,6060,9160,9380,1089,4679,11211,548,783,4365,16102,17790,20000,23472,49152,743,3057,443,27017,9999,888,8303,1583,3217,3273,8100,81,84,8161,17776,51443,2199,3817,9527,27080,46824,4786,5904,19888,3871,9440,15200,41524,8003,12397,617,2021,5022,7021,10051,37718,25,502,5910,6002,6080,8530,8899,11000,1530,3083,31001,705,3632,5001,50121,389,554,9595,9600,38080,1234,5632,7071,7181,8014,38010,990,3003,5554,16443,407,3690",
+            "tcp-skip-protocol": "false",
+            "tftp-ports": "69",
+            "tos": "0",
+            "ubnt-port": "10001",
+            "verbose": "true",
+            "very-verbose": "false",
+            "wlan-list-poll-interval": "300",
+            "wsd-port": "3702",
+        },
+        "scan_targets": {
+            "networks": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "enable_dns": True,
+            "enable_ip6": True,
+            "enable_zero_mask": False,
+            "enable_ip6_mask": False,
+            "enable_loopback": False,
+            "enable_multicast": False,
+            "inputs": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "dns_timeout": 2000000000,
+            "concurrency": 40,
+            "hostnames": [],
+        },
+        "seed_targets": {
+            "networks": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "enable_dns": True,
+            "enable_ip6": True,
+            "enable_zero_mask": False,
+            "enable_ip6_mask": False,
+            "enable_loopback": False,
+            "enable_multicast": False,
+            "inputs": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "dns_timeout": 2000000000,
+            "concurrency": 40,
+            "hostnames": [],
+        },
+        "disc_targets": {
+            "networks": [],
+            "enable_dns": True,
+            "enable_ip6": True,
+            "enable_zero_mask": False,
+            "enable_ip6_mask": False,
+            "enable_loopback": False,
+            "enable_multicast": False,
+            "dns_timeout": 2000000000,
+            "concurrency": 40,
+            "hostnames": [],
+        },
+        "version": "4.0.240607.0 (build 20240607195406) [da7d44913ffb8b6f9d39f7e7700122613e4a4e96]",
+    }
+]
 
 # Markers for common compute assets
-COMPUTE_ASSETS = {
+SERVER_ASSETS = {
     "Microsoft-Windows Server 2019": {
         "host": "192.168.0.244",
         "filename": "scan_lab.json",
@@ -86,16 +354,7 @@ COMPUTE_ASSETS = {
         "os": "Windows",
         "secondary_v4": "192.168.0.244",
         "mac": "00:02:A5:61:54:57",
-    },
-    "Microsoft-Windows 11": {
-        "host": "192.168.40.232",
-        "filename": "scan_lab.json",
-        "hostname": "WINDOWS11PRO",
-        "type": "LAPTOP",
-        "os": "Windows",
-        "secondary_v4": "192.168.40.232",
-        "secondary_v6": "fe80::5ab3:e54c:2653:12be",
-        "mac": "BC:24:11:32:3E:3B",
+        "ami": "ami-0000615e374d82a9a",
     },
     "Microsoft-Windows Server 2016": {
         "host": "192.168.40.249",
@@ -106,6 +365,7 @@ COMPUTE_ASSETS = {
         "os": "Windows",
         "secondary_v4": "192.168.40.249",
         "mac": "BC:24:11:A1:D8:AF",
+        "ami": "ami-0011898114361827d",
     },
     "Microsoft-Windows Server": {
         "host": "192.168.40.233",
@@ -115,6 +375,7 @@ COMPUTE_ASSETS = {
         "os": "Windows",
         "secondary_v4": "192.168.40.233",
         "mac": "BC:24:11:19:D4:0F",
+        "ami": "ami-0014d63892bdf8f1d",
     },
     "Linux-Ubuntu-22.04.2": {
         "host": "192.168.50.20",
@@ -123,14 +384,7 @@ COMPUTE_ASSETS = {
         "type": "SERVER",
         "os": "Linux",
         "mac": "94:C6:91:15:4D:91|08:6e:20:4a:e6:56",
-    },
-    "Linux-Raspbian-9.0": {
-        "host": "192.168.0.8",
-        "filename": "scan_lab.json",
-        "hostname": "RPI3-ACCESS-CONTROL|PIT.HDM.IO",
-        "type": "SERVER",
-        "os": "Linux",
-        "mac": "B8:27:EB:E6:4D:41",
+        "ami": "ami-0000456e99b2b6a9d",
     },
     "Linux": {
         "host": "192.168.40.26",
@@ -138,13 +392,15 @@ COMPUTE_ASSETS = {
         "type": "SERVER",
         "os": "Linux",
         "mac": "08:EA:44:37:F3:40",
+        "ami": "ami-00007188242c9f57d",
     },
-    "Linux-CentOS": {
+    "Linux-CentOS-7": {
         "host": "84.244.95.179",
         "filename": "scan_hikivision.json",
         "type": "SERVER",
         "os": "Linux",
         "hostname": "IMAP.GUMOTEXAUTOMOTIVE.CZ|84-244-95-179.STATIC.BLUETONE.CZ|KOALA.TANEXPLASTY.CZ|SMTP.GUMOTEXAUTOMOTIVE.CZ",
+        "ami": "ami-00037c9a571a60758",
     },
     "Linux-CentOS-4": {
         "host": "93.51.158.1039",
@@ -152,6 +408,7 @@ COMPUTE_ASSETS = {
         "type": "SERVER",
         "os": "Linux",
         "hostname": "93-51-158-103.IP267.FASTWEBNET.IT",
+        "ami": "ami-0254431cc221ee3ff",
     },
     "Linux-Ubuntu-16.04": {
         "host": "88.87.239.194",
@@ -159,8 +416,22 @@ COMPUTE_ASSETS = {
         "type": "SERVER",
         "os": "Linux",
         "hostname": "CPE-88-87-239-194.FALU-TV.HU",
+        "ami": "ami-0019254849cdb9eb6",
     },
-    "Apple-iOS": {
+    "Linux-Ubuntu-8.04": {
+        "host": "192.168.40.248",
+        "filename": "scan_lab_second.json",
+        "type": "SERVER",
+        "os": "Linux",
+        "hostname": "METASPLOITABLE|UBUNTU804-BASE",
+        "mac": "00:0C:29:28:20:93",
+        "ami": "ami-000280f76a9893805",
+    },
+}
+
+# End user assets
+END_USER_ASSETS = {
+    "Apple-iOS-15.2": {
         "host": "192.168.30.204",
         "filename": "scan_lab.json",
         "type": "MOBILE",
@@ -177,16 +448,22 @@ COMPUTE_ASSETS = {
         "secondary_v6": "fe80::5ab3:e54c:2653:12be",
         "mac": "00:30:93:12:3c:33",
     },
-    "Apple-tvOS-17.5": {
-        "host": "192.168.30.241",
+    "Microsoft-Windows 11": {
+        "host": "192.168.40.232",
         "filename": "scan_lab.json",
-        "hostname": "OPNSENSE.LOCALDOMAIN|Kitchen-A4CF99AB0C1B",
-        "type": "SENSOR",
-        "os": "Apple",
-        "secondary_v4": "192.168.30.56|192.168.30.3",
-        "secondary_v6": "fdc5:e46c:5da8:4b48:6:fde2:62f1:8748",
-        "mac": "A4:CF:99:AB:0C:1B|5A:D0:3B:15:84:70|A4:CF:99:AF:67:FF|56:3E:3A:BA:BB:76|A4:CF:99:B2:54:03",
-        "cn": "7506644C-DF32-4294-B2A5-49B2FFC09772",
+        "hostname": "WINDOWS11PRO",
+        "type": "LAPTOP",
+        "os": "Windows",
+        "secondary_v4": "192.168.40.232",
+        "secondary_v6": "fe80::5ab3:e54c:2653:12be",
+        "mac": "BC:24:11:32:3E:3B",
+    },
+    "Brother MFC-L5900DW": {
+        "host": "192.168.30.20",
+        "filename": "scan_lab_printer.json",
+        "hostname": "WBRN3C2AF4ABE1C6",
+        "type": "PRINTER",
+        "mac": "10:5b:ad:4a:69:45|10:5b:ad:4a:e9:45|3c:2a:f4:ab:e1:c6",
     },
 }
 
@@ -220,13 +497,6 @@ ROUTING_ASSETS = {
         "type": "WAP",
         "mac": "EC:58:EA:28:D7:90",
     },
-    "Zyxel USG60W": {
-        "host": "46.247.170.154",
-        "filename": "scan_hikivision.json",
-        "hostname": "USG60W_5CE28C704730|46.247.170.154.NOT.UPDATED.OPENIP-CS.NET",
-        "type": "FIREWALL",
-        "mac": "5CE28C704730",
-    },
     "Cisco IOS 15.5(1)T1": {
         "host": "203.115.7.170",
         "filename": "scan_hikivision.json",
@@ -236,6 +506,24 @@ ROUTING_ASSETS = {
         "secondary_v4": "203.115.31.121",
     },
 }
+
+# Markers for firewalls
+FIREWALL_DEVICES = {
+    "Zyxel USG60W": {
+        "host": "46.247.170.154",
+        "filename": "scan_hikivision.json",
+        "hostname": "USG60W_5CE28C704730|46.247.170.154.NOT.UPDATED.OPENIP-CS.NET",
+        "type": "FIREWALL",
+        "mac": "5CE28C704730",
+    },
+    "Fortinet FortiOS": {
+        "host": "62.48.202.126",
+        "filename": "scan_ups.json",
+        "hostname": "FGT60ETK19086062",
+        "type": "FIREWALL",
+    },
+}
+
 # Markers for IOT devices
 IOT_DEVICES = {
     "FLIR Linux": {
@@ -258,8 +546,34 @@ IOT_DEVICES = {
         "type": "CAMERA",
         "mac": "78:8A:20:A2:C8:4C",
     },
+    "Apple-tvOS-17.5": {
+        "host": "192.168.30.241",
+        "filename": "scan_lab.json",
+        "hostname": "OPNSENSE.LOCALDOMAIN|Kitchen-A4CF99AB0C1B",
+        "type": "SENSOR",
+        "os": "Apple",
+        "secondary_v4": "192.168.30.56|192.168.30.3",
+        "secondary_v6": "fdc5:e46c:5da8:4b48:6:fde2:62f1:8748",
+        "mac": "A4:CF:99:AB:0C:1B|5A:D0:3B:15:84:70|A4:CF:99:AF:67:FF|56:3E:3A:BA:BB:76|A4:CF:99:B2:54:03",
+        "cn": "7506644C-DF32-4294-B2A5-49B2FFC09772",
+    },
+    "Linux-Raspbian-9.0": {
+        "host": "192.168.0.8",
+        "filename": "scan_lab.json",
+        "hostname": "RPI3-ACCESS-CONTROL|PIT.HDM.IO",
+        "type": "SERVER",
+        "os": "Linux",
+        "mac": "B8:27:EB:E6:4D:41",
+    },
+    "Microsoft Windows CE": {
+        "host": "80.13.242.26",
+        "filename": "scan_ups.json",
+        "hostname": "LSTLAMBERT-658-1-223-26.W80-13.ABO.WANADOO.FR",
+        "type": "CAMERA",
+    },
 }
 
+# Markets for OT devices
 OT_DEVICES = {
     "Siemens CP343-1 2.0.16": {
         "host": "88.2.1.111",
@@ -268,6 +582,103 @@ OT_DEVICES = {
         "type": "MONITORING",
         "mac": "00:0e:8c:a4:61:84",
         "secondary_v4": "192.168.23.101",
+    },
+    "Westermo MRD-310": {
+        "host": "49.229.153.248",
+        "filename": "scan_ups.json",
+        "hostname": "WESTERMO-MRD-310",
+        "type": "PLC",
+        "mac": "00:07:7C:E0:48:E0|00:07:7c:e0:4a:4d|00:20:dd:00:00:01",
+        "secondary_v4": "192.168.2.200|192.168.127.100",
+    },
+    "Wind River VxWorks 6.4": {
+        "host": "61.220.231.43",
+        "filename": "scan_ups.json",
+        "hostname": "61-220-231-43.HINET-IP.HINET.NET",
+        "type": "PLC",
+        "mac": "00:80:f4:22:8e:f5",
+    },
+    "Siemens STEP 7-Micro": {
+        "host": "10.10.101.5",
+        "filename": "scan_plc_windows_linux.json",
+        "type": "PLC",
+    },
+    "Phoenix Contact AXC 1050": {
+        "host": "10.10.102.5",
+        "filename": "scan_plc_windows_linux.json",
+        "hostname": "AXC-1050",
+        "type": "PLC",
+        "mac": "00:A0:45:A7:8F:14",
+    },
+    "Shelly Plug": {
+        "host": "10.10.104.20",
+        "filename": "scan_plc_windows_linux.json",
+        "hostname": "SHELLYPRO3-C8F09E8847CC",
+        "type": "UPS",
+        "mac": "C8:F0:9E:88:47:CC",
+    },
+    "Cisco IOS 12.2(55)SE11": {
+        "host": "192.168.40.24",
+        "hostname": "SWITCH3560",
+        "filename": "scan_lab_second.json",
+        "type": "SWITCH",
+        "mac": "dc:7b:94:d7:64:81",
+    },
+    "Cisco IOS": {
+        "host": "192.168.40.231",
+        "hostname": "SWITCH.LOCALDOMAIN",
+        "filename": "scan_lab_second.json",
+        "type": "SWITCH",
+        "mac": "E8:04:62:75:89:C0",
+    },
+    "HP ProCurve J4905A M.10.104": {
+        "host": "192.168.40.13",
+        "hostname": "PROCURVE-SWITCH-3400CL-24G",
+        "filename": "scan_lab_second.json",
+        "type": "SWITCH",
+        "mac": "00:23:47:7a:0b:20",
+    },
+    "Brocade Switch": {
+        "host": "192.168.40.29",
+        "hostname": "BROCSW2",
+        "filename": "scan_lab_second.json",
+        "type": "SWITCH",
+        "mac": "00:05:33:47:28:52",
+    },
+    "Raritan Xerus 030002": {
+        "host": "192.168.40.73",
+        "filename": "scan_lab_printer.json",
+        "hostname": "RARITAN",
+        "type": "PDU",
+        "mac": "00:0d:5d:0c:74:32",
+    },
+}
+
+# Markers for BACNet devices
+BACNET_ASSETS = {
+    "Liebert Challenger": {
+        "host": "24.42.195.92",
+        "hostname": "STATIC-24-42-195-92.KNOLOGY.NET",
+        "filename": "scan_public_ot.json",
+        "type": "HVAC",
+    },
+    "eBMGR": {
+        "host": "68.227.78.195",
+        "hostname": "NIAGARA4|C6CD0C14563E.SN.MYNETNAME.NET",
+        "filename": "scan_public_ot.json",
+        "type": "HVAC",
+    },
+    "EX36 V3.5.2": {
+        "host": "75.83.97.77",
+        "hostname": "CPE-75-83-97-77.SOCAL.RES.RR.COM",
+        "filename": "scan_public_ot.json",
+        "type": "HVAC",
+    },
+    "Liebert DS": {
+        "host": "99.88.79.23",
+        "hostname": "ADSL-99-88-79-23.DSL.FRS2CA.SBCGLOBAL.NET",
+        "filename": "scan_public_ot.json",
+        "type": "HVAC",
     },
 }
 
@@ -310,6 +721,27 @@ CROWDSTRIKE_DEVICE_MAP = {
         "username": "=developer",
     },
 }
+
+AWS_DEVICE_MAP = {
+    "SERVER-CLOUD": {
+        "ip": "3.16.13.20",
+        "hostname": "UTILITY-SYSLOG|EC2-3-16-13-20.US-EAST-2|IP-172-31-16-221.US-EAST-2|EC2-10.0.0.3.US-EAST-2",
+        "os": "Linux",
+        "secondary_v4": "172.31.16.221",
+        "secondary_v6": "2600:1f16:a57:b303:121a:a53d:4232:8e5d",
+        "mac": "A4:CF:99:AB:0C:1B|5A:D0:3B:15:84:70|A4:CF:99:AF:67:FF|56:3E:3A:BA:BB:76|A4:CF:99:B2:54:03|06:ac:85:2f:1c:e5",
+    },
+}
+
+AWS_DEVICE_TYPES = [
+    "t2.micro",
+    "t2.small",
+    "t2.medium",
+    "t2.large",
+    "t2.xlarge",
+    "m5.large",
+    "m5.xlarge",
+]
 
 
 def semi_rand_mac(mac: str) -> str:
@@ -355,6 +787,224 @@ def encode(data: str = ""):
     return base64.b64encode(data.encode()).decode()
 
 
+def remove_random_assets(asset_cache: list) -> list:
+    # remove 5% of assets
+    for _ in range(round(len(asset_cache) / 20)):
+        asset_cache.pop(random.randint(0, len(asset_cache) - 1))
+
+    return asset_cache
+
+
+def fudge_jamf_data(asset_cache: list) -> bool:
+    # config file requires a custom id
+    output = [
+        {
+            "type": "config",
+            "ts": current_rz_time(),
+            "probes": ["custom"],
+            "params": {
+                "_custom-integration-id": JAMF_CUSTOM_INTEGRATION_ID,
+                "exclude-unknown": "false",
+                "stale-asset-expiration": "180",
+            },
+        }
+    ]
+    for asset in asset_cache:
+        os = asset.get("os")
+        # create records for correct asset types
+        if os == "Apple":
+            os_info = asset.get("os_full").split("-")
+
+            if len(os_info) == 3:
+                os_version = os_info[2]
+                os_type = os_info[1]
+            else:
+                print(os_info)
+                os_version = os_info[0]
+                os_type = os_info[0]
+
+            mac = asset.get("new_mac")
+            ip = asset.get("ip")
+            secondary_ip = asset.get("secondary_v4")
+
+            output.append(
+                {
+                    "type": "result",
+                    "ts": current_rz_time(),
+                    "probe": "custom",
+                    "info": {
+                        "_software": "W3siaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjAsInByb2R1Y3QiOiJNaXNzaW9uIENvbnRyb2wuYXBwIiwidmVyc2lvbiI6IjEuMiJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjYzLCJwcm9kdWN0IjoiTWFwcy5hcHAiLCJ2ZXJzaW9uIjoiMy4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NCwicHJvZHVjdCI6IkF1dG9tYXRvci5hcHAiLCJ2ZXJzaW9uIjoiMi4xMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjE2NjAsInByb2R1Y3QiOiJHb29nbGUgQ2hyb21lLmFwcCIsInZlcnNpb24iOiIxMjQuMC42MzY3LjIwOCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEsInByb2R1Y3QiOiJUaW1lIE1hY2hpbmUuYXBwIiwidmVyc2lvbiI6IjEuMyJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEzMzEsInByb2R1Y3QiOiJWTXdhcmUgRnVzaW9uLmFwcCIsInZlcnNpb24iOiIxMy4wLjIifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjowLCJwcm9kdWN0IjoiR29vZ2xlIFNoZWV0cy5hcHAiLCJ2ZXJzaW9uIjoiODQuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjAsInByb2R1Y3QiOiJTY3JlZW5zaG90LmFwcCIsInZlcnNpb24iOiIxLjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoyLCJwcm9kdWN0IjoiUHJpbnQgQ2VudGVyLmFwcCIsInZlcnNpb24iOiIxLjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjozLCJwcm9kdWN0IjoiU3lzdGVtIEluZm9ybWF0aW9uLmFwcCIsInZlcnNpb24iOiIxMS4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NDEsInByb2R1Y3QiOiJQb2RjYXN0cy5hcHAiLCJ2ZXJzaW9uIjoiMS4xLjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoyMzAsInByb2R1Y3QiOiIxUGFzc3dvcmQgNy5hcHAiLCJ2ZXJzaW9uIjoiNy45LjExIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MTksInByb2R1Y3QiOiJSZW1pbmRlcnMuYXBwIiwidmVyc2lvbiI6IjcuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjMsInByb2R1Y3QiOiJQaG90byBCb290aC5hcHAiLCJ2ZXJzaW9uIjoiMTMuMSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjQsInByb2R1Y3QiOiJBbmFjb25kYS1OYXZpZ2F0b3IuYXBwIiwidmVyc2lvbiI6IiRQS0dfVkVSU0lPTiJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjgsInByb2R1Y3QiOiJQcmV2aWV3LmFwcCIsInZlcnNpb24iOiIxMS4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NjEzLCJwcm9kdWN0IjoiTG9vbS5hcHAiLCJ2ZXJzaW9uIjoiMC4yMTUuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjQsInByb2R1Y3QiOiJOZXdzLmFwcCIsInZlcnNpb24iOiI5LjQifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo1MDUsInByb2R1Y3QiOiJNaWNyb3NvZnQgVGVhbXMuYXBwIiwidmVyc2lvbiI6IjUzMzM1NiJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjIwLCJwcm9kdWN0IjoiSnVtcENsb3VkU2VydmljZUFjY291bnQuYXBwIiwidmVyc2lvbiI6IjEuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjMsInByb2R1Y3QiOiJJbWFnZSBDYXB0dXJlLmFwcCIsInZlcnNpb24iOiI4LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxMywicHJvZHVjdCI6IkRpY3Rpb25hcnkuYXBwIiwidmVyc2lvbiI6IjIuMy4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MywicHJvZHVjdCI6IlZvaWNlTWVtb3MuYXBwIiwidmVyc2lvbiI6IjIuNCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjYsInByb2R1Y3QiOiJTeXN0ZW0gU2V0dGluZ3MuYXBwIiwidmVyc2lvbiI6IjE1LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxNiwicHJvZHVjdCI6Ik5vdGVzLmFwcCIsInZlcnNpb24iOiI0LjExIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MCwicHJvZHVjdCI6Ikdvb2dsZSBTbGlkZXMuYXBwIiwidmVyc2lvbiI6Ijg0LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo0MDMsInByb2R1Y3QiOiJHb29nbGUgRHJpdmUuYXBwIiwidmVyc2lvbiI6Ijg0LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo1LCJwcm9kdWN0IjoiQ2xvY2suYXBwIiwidmVyc2lvbiI6IjEuMSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEwLCJwcm9kdWN0IjoiR3JhcGhlci5hcHAiLCJ2ZXJzaW9uIjoiMi43In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MywicHJvZHVjdCI6IlRlcm1pbmFsLmFwcCIsInZlcnNpb24iOiIyLjE0In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MTMsInByb2R1Y3QiOiJKdW1wY2xvdWQuYXBwIiwidmVyc2lvbiI6InYyLjIuMSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjI2MCwicHJvZHVjdCI6Inpvb20udXMuYXBwIiwidmVyc2lvbiI6IjUuMTcuMTEgKDMxNTgwKSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjYxNCwicHJvZHVjdCI6IkNpc2NvIFBhY2tldCBUcmFjZXIgOC4xLjEuYXBwIiwidmVyc2lvbiI6Im4vYSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjUzLCJwcm9kdWN0IjoiQm9va3MuYXBwIiwidmVyc2lvbiI6IjYuNCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjE0LCJwcm9kdWN0IjoiRmFjZVRpbWUuYXBwIiwidmVyc2lvbiI6IjUuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEsInByb2R1Y3QiOiJEaWdpdGFsIENvbG9yIE1ldGVyLmFwcCIsInZlcnNpb24iOiI1LjIyIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6OSwicHJvZHVjdCI6IkFjdGl2aXR5IE1vbml0b3IuYXBwIiwidmVyc2lvbiI6IjEwLjE0In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NiwicHJvZHVjdCI6IkNvbnRhY3RzLmFwcCIsInZlcnNpb24iOiIxNC4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NSwicHJvZHVjdCI6IkhvbWUuYXBwIiwidmVyc2lvbiI6IjguMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjYsInByb2R1Y3QiOiJRdWlja1RpbWUgUGxheWVyLmFwcCIsInZlcnNpb24iOiIxMC41In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MywicHJvZHVjdCI6IlNjcmVlbiBTaGFyaW5nLmFwcCIsInZlcnNpb24iOiI0LjMifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxMSwicHJvZHVjdCI6IlZvaWNlT3ZlciBVdGlsaXR5LmFwcCIsInZlcnNpb24iOiIxMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEwLCJwcm9kdWN0IjoiRm9udCBCb29rLmFwcCIsInZlcnNpb24iOiIxMS4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NywicHJvZHVjdCI6IkRpc2sgVXRpbGl0eS5hcHAiLCJ2ZXJzaW9uIjoiMjIuNiJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjU4LCJwcm9kdWN0IjoiTXVzaWMuYXBwIiwidmVyc2lvbiI6IjEuNC41In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6Mjk4LCJwcm9kdWN0IjoiQnJhdmUgQnJvd3Nlci5hcHAiLCJ2ZXJzaW9uIjoiMTE2LjEuNTcuNDcifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoyNSwicHJvZHVjdCI6IkZyZWVmb3JtLmFwcCIsInZlcnNpb24iOiIyLjQifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoyLCJwcm9kdWN0IjoiU2NyaXB0IEVkaXRvci5hcHAiLCJ2ZXJzaW9uIjoiMi4xMSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjMsInByb2R1Y3QiOiJTdG9ja3MuYXBwIiwidmVyc2lvbiI6IjYuMi4yIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NSwicHJvZHVjdCI6IkJvb3QgQ2FtcCBBc3Npc3RhbnQuYXBwIiwidmVyc2lvbiI6IjYuMS4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MiwicHJvZHVjdCI6IlRleHRFZGl0LmFwcCIsInZlcnNpb24iOiIxLjE5In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MjUsInByb2R1Y3QiOiJNYWlsLmFwcCIsInZlcnNpb24iOiIxNi4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MywicHJvZHVjdCI6IkNhbGN1bGF0b3IuYXBwIiwidmVyc2lvbiI6IjEwLjE2In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MjIxLCJwcm9kdWN0IjoiV2lyZXNoYXJrLmFwcCIsInZlcnNpb24iOiI0LjAuNCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjI4LCJwcm9kdWN0IjoibWFpbnRlbmFuY2V0b29sLmFwcCIsInZlcnNpb24iOiJuL2EifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoyNTgsInByb2R1Y3QiOiJTbGFjay5hcHAiLCJ2ZXJzaW9uIjoiNC4zOC4xMjEifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjowLCJwcm9kdWN0IjoiR29vZ2xlIERvY3MuYXBwIiwidmVyc2lvbiI6Ijg0LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjozMiwicHJvZHVjdCI6IldlYXRoZXIuYXBwIiwidmVyc2lvbiI6IjQuMi4yIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NywicHJvZHVjdCI6IkNoZXNzLmFwcCIsInZlcnNpb24iOiIzLjE4In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MTMsInByb2R1Y3QiOiJTYWZhcmkuYXBwIiwidmVyc2lvbiI6IjE3LjUifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxLCJwcm9kdWN0IjoiTGF1bmNocGFkLmFwcCIsInZlcnNpb24iOiIxLjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjozMSwicHJvZHVjdCI6IkZpbmRNeS5hcHAiLCJ2ZXJzaW9uIjoiNC4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NCwicHJvZHVjdCI6IkNvbG9yU3luYyBVdGlsaXR5LmFwcCIsInZlcnNpb24iOiIxMi4wLjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxLCJwcm9kdWN0IjoiU3RpY2tpZXMuYXBwIiwidmVyc2lvbiI6IjEwLjIifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoyLCJwcm9kdWN0IjoiQ29uc29sZS5hcHAiLCJ2ZXJzaW9uIjoiMS4xIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MiwicHJvZHVjdCI6IlNpcmkuYXBwIiwidmVyc2lvbiI6IjEuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjE1LCJwcm9kdWN0IjoiQXBwIFN0b3JlLmFwcCIsInZlcnNpb24iOiIzLjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo3MCwicHJvZHVjdCI6ImlUZXJtLmFwcCIsInZlcnNpb24iOiIzLjQuMjMifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo1NTYsInByb2R1Y3QiOiJWaXN1YWwgU3R1ZGlvIENvZGUuYXBwIiwidmVyc2lvbiI6IjEuODkuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEsInByb2R1Y3QiOiJNaWdyYXRpb24gQXNzaXN0YW50LmFwcCIsInZlcnNpb24iOiIxNC41In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MiwicHJvZHVjdCI6IlNob3J0Y3V0cy5hcHAiLCJ2ZXJzaW9uIjoiNy4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MTkxLCJwcm9kdWN0IjoiR2F0aGVyLmFwcCIsInZlcnNpb24iOiIwLjIuMiJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjM3LCJwcm9kdWN0IjoiQWlyUG9ydCBVdGlsaXR5LmFwcCIsInZlcnNpb24iOiI2LjMuOSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjQ1LCJwcm9kdWN0IjoiVFYuYXBwIiwidmVyc2lvbiI6IjEuNC41In0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6Nzg0LCJwcm9kdWN0IjoiV2ViZXguYXBwIiwidmVyc2lvbiI6IjQzLjIuMC4yNTIxMSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjUwMywicHJvZHVjdCI6IkRyYXRhIEFnZW50LmFwcCIsInZlcnNpb24iOiIzLjYuMSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjIyLCJwcm9kdWN0IjoiUGhvdG9zLmFwcCIsInZlcnNpb24iOiI5LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo2LCJwcm9kdWN0IjoiQ2FsZW5kYXIuYXBwIiwidmVyc2lvbiI6IjE0LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxLCJwcm9kdWN0IjoiQmx1ZXRvb3RoIEZpbGUgRXhjaGFuZ2UuYXBwIiwidmVyc2lvbiI6IjkuMCJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjEsInByb2R1Y3QiOiJTZW50aW5lbE9uZSBFeHRlbnNpb25zLmFwcCIsInZlcnNpb24iOiIyMy4yLjYifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo1LCJwcm9kdWN0IjoiTWVzc2FnZXMuYXBwIiwidmVyc2lvbiI6IjE0LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjo0LCJwcm9kdWN0IjoiS2V5Y2hhaW4gQWNjZXNzLmFwcCIsInZlcnNpb24iOiIxMS4wIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6NDYsInByb2R1Y3QiOiJSYXNwYmVycnkgUGkgSW1hZ2VyLmFwcCIsInZlcnNpb24iOiIxLjcuMyJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjI1NywicHJvZHVjdCI6IktpbmRsZS5hcHAiLCJ2ZXJzaW9uIjoiMS40MC4zIn0seyJpZCI6Ilx1MDAzY2Z1bmN0aW9uIHV1aWQ0IGF0IDB4MTA2ODA4MDQwXHUwMDNlIiwic2VydmljZUFkZHJlc3MiOiIxOTIuMTY4Ljg2LjQ3IiwiaW5zdGFsbGVkU2l6ZSI6MjYxLCJwcm9kdWN0IjoiSnVtcENsb3VkIFJlbW90ZSBBc3Npc3QuYXBwIiwidmVyc2lvbiI6IjAuMTk1LjAifSx7ImlkIjoiXHUwMDNjZnVuY3Rpb24gdXVpZDQgYXQgMHgxMDY4MDgwNDBcdTAwM2UiLCJzZXJ2aWNlQWRkcmVzcyI6IjE5Mi4xNjguODYuNDciLCJpbnN0YWxsZWRTaXplIjoxLCJwcm9kdWN0IjoiTGluZ3Vpc3QuYXBwIiwidmVyc2lvbiI6Im4vYSJ9LHsiaWQiOiJcdTAwM2NmdW5jdGlvbiB1dWlkNCBhdCAweDEwNjgwODA0MFx1MDAzZSIsInNlcnZpY2VBZGRyZXNzIjoiMTkyLjE2OC44Ni40NyIsImluc3RhbGxlZFNpemUiOjQsInByb2R1Y3QiOiJBdWRpbyBNSURJIFNldHVwLmFwcCIsInZlcnNpb24iOiIzLjYifV0=",
+                        "applications": "[{'name': 'Mission Control.app', 'path': '/System/Applications/Mission Control.app', 'version': '1.2', 'macAppStore': False, 'sizeMegabytes': 0, 'bundleId': 'com.apple.exposelauncher', 'updateAvailable': False, 'externalVersionId': '0'}, {'name': 'Maps.app', 'path': '/System/Applications/Maps.app', 'version': '3.0', 'macAppStore': False, 'sizeMegabytes': 63, 'bundleId': 'com.apple.Maps', 'updateAvailable': False, 'externalVersionId': '0'}, {'name': 'Automator.app', 'path': '/System/Applications/Automator.app', 'version': '2.10', 'macAppStore': False, 'sizeMegabytes': 4, 'bundleId': 'com.apple.Automator', 'updateAvailable': False, 'externalVersionId': '0'}, {'name': 'Google Chrome.app', 'path': '/Applications/Google Chrome.app', 'version': '124.0.6367.208', 'macAppStore': False, 'sizeMegabytes': 1660, 'bundleId': 'com.google.Chrome', 'updateAvailable': False, 'externalVersionId': '0'}, {'name': 'Time Machine.app', 'path': '/System/Applications/Time Machine.app', 'version': '1.3', 'macAppStore': False, 'sizeMe",
+                        "attachments": "[]",
+                        "certificates": "[]",
+                        "configurationProfiles": "[]",
+                        "diskEncryption_bootPartitionEncryptionDetails_partitionFileVault2Percent": "100",
+                        "diskEncryption_bootPartitionEncryptionDetails_partitionFileVault2State": "ENCRYPTED",
+                        "diskEncryption_bootPartitionEncryptionDetails_partitionName": "Macintosh HD (Boot Partition)",
+                        "diskEncryption_fileVault2EligibilityMessage": "Eligible",
+                        "diskEncryption_fileVault2EnabledUserNames_0": "_jumpcloudserviceaccount",
+                        "diskEncryption_fileVault2EnabledUserNames_1": asset.get(
+                            "username"
+                        ),
+                        "diskEncryption_individualRecoveryKeyValidityStatus": "UNKNOWN",
+                        "diskEncryption_institutionalRecoveryKeyPresent": "False",
+                        "fonts": "[]",
+                        "general_declarativeDeviceManagementEnabled": "False",
+                        "general_enrolledViaAutomatedDeviceEnrollment": "False",
+                        "general_itunesStoreAccountActive": "False",
+                        "general_jamfBinaryVersion": "11.4.2-t1713554080",
+                        "general_lastIpAddress": asset.get("new_secondary_v4", ""),
+                        "general_lastReportedIp": asset.get("ip", ""),
+                        "general_managementId": str(uuid.uuid4()),
+                        "general_mdmCapable_capable": "False",
+                        "general_mdmCapable_capableUsers": "[]",
+                        "general_name": asset.get("new_hostname"),
+                        "general_platform": "Mac",
+                        "general_remoteManagement_managed": "True",
+                        "general_site_id": "-1",
+                        "general_site_name": "None",
+                        "general_supervised": "False",
+                        "general_userApprovedMdm": "False",
+                        "groupMemberships": "[{'groupId': '1', 'groupName': 'All Managed Clients', 'smartGroup': True}]",
+                        "hardware_altNetworkAdapterType": "Ethernet",
+                        "hardware_appleSilicon": "False",
+                        "hardware_batteryCapacityPercent": "1",
+                        "hardware_bleCapable": "False",
+                        "hardware_bootRom": "10151.121.1",
+                        "hardware_busSpeedMhz": "0",
+                        "hardware_cacheSizeKilobytes": "0",
+                        "hardware_coreCount": "10",
+                        "hardware_macAddress": mac,
+                        "hardware_make": "Apple",
+                        "hardware_networkAdapterType": "IEEE80211",
+                        "hardware_nicSpeed": "n/a",
+                        "hardware_openRamSlots": "0",
+                        "hardware_processorArchitecture": "arm64",
+                        "hardware_processorCount": "1",
+                        "hardware_processorSpeedMhz": "0",
+                        "hardware_serialNumber": "QJFRJ7HC9R",
+                        "hardware_supportsIosAppInstalls": "False",
+                        "hardware_totalRamMegabytes": "16384",
+                        "hostnames": asset.get("new_hostname"),
+                        "ibeacons": "[]",
+                        "id": asset.get("device_id"),
+                        "ipAddresses": f"{ip}\t{secondary_ip}",
+                        "licensedSoftware": "[]",
+                        "macAddresses": mac,
+                        "manufacturer": "Apple",
+                        "model": " ".join(os_info),
+                        "operatingSystem_activeDirectoryStatus": "Not Bound",
+                        "operatingSystem_build": "23F79",
+                        "operatingSystem_fileVault2Status": "BOOT_ENCRYPTED",
+                        "operatingSystem_name": os_type,
+                        "operatingSystem_version": os_version,
+                        "os": os_type,
+                        "osVersion": os_version,
+                        "plugins": "[]",
+                        "printers": "[{'name': 'Canon MG3600 series', 'type': 'Canon MG3600 series-AirPrint', 'uri': 'dnssd://Canon%20MG3600%20series._ipps._tcp.local./?uuid=00000000-0000-1000-8000-6C3C7C196E33', 'location': None}]",
+                        "purchasing_leased": "False",
+                        "purchasing_lifeExpectancy": "0",
+                        "purchasing_purchased": "True",
+                        "security_activationLockEnabled": "False",
+                        "security_autoLoginDisabled": "True",
+                        "security_bootstrapTokenEscrowedStatus": "NOT_ESCROWED",
+                        "security_externalBootLevel": "UNKNOWN",
+                        "security_firewallEnabled": "False",
+                        "security_gatekeeperStatus": "APP_STORE_AND_IDENTIFIED_DEVELOPERS",
+                        "security_recoveryLockEnabled": "False",
+                        "security_remoteDesktopEnabled": "False",
+                        "security_secureBootLevel": "UNKNOWN",
+                        "security_sipStatus": "ENABLED",
+                        "security_xprotectVersion": "2194",
+                        "softwareUpdates": "[]",
+                        "udid": asset.get("device_id"),
+                    },
+                }
+            )
+
+    # write modified results to file for import
+    with open(f"integration_jamf.json", "w") as f:
+        for l in output:
+            f.write(json.dumps(l, separators=(",", ":")) + "\n")
+    return True
+
+
+# these functions are for integrations that only require key=value updates
+def fudge_azuread_data(asset_cache: list) -> bool:
+    output = []
+    for asset in asset_cache:
+        asset_type = asset.get("type")
+        asset_location = asset.get("network")
+
+        # create records for correct asset types
+        if asset_type in ["SERVER", "LAPTOP", "MOBILE"] and asset_location != "CLOUD":
+            os_info = asset.get("os_full").split("-")
+            if os_info[0] == "Microsoft":
+                manufacter = "Microsoft Corporation"
+            elif os_info[0] == "Apple":
+                manufacter = "Apple Inc."
+            else:
+                manufacter = random.choice(["Dell Inc.", "SUSE", "HP", "IBM"])
+
+            if len(os_info) == 3:
+                os_version = os_info[2]
+                os_type = os_info[1]
+            elif len(os_info) == 2:
+                os_version = os_info[1]
+                os_type = os_info[0]
+            else:
+                os_version = "RZ-v1.0.0"
+                os_type = "Unknown"
+
+            output.append(
+                {
+                    "type": "result",
+                    "ts": current_rz_time(),
+                    "probe": "azuread",
+                    "info": {
+                        "_type": "dev",
+                        "accountEnabled": "true",
+                        "alternativeSecurityId.keys": "RZID-" + str(uuid.uuid4()),
+                        "alternativeSecurityId.types": "2",
+                        "approximateLastSignInDateTimeTS": str(
+                            round(time.time() - 10000)
+                        ),
+                        "azureId": str(uuid.uuid4()),
+                        "createdDateTimeTS": str(
+                            round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5]))
+                        ),
+                        "deviceId": str(asset.get("device_id", uuid.uuid4())),
+                        "deviceOwnership": "Company",
+                        "displayName": asset.get("new_hostname"),
+                        "enrollmentType": "OnPremiseCoManaged",
+                        "isManaged": "true",
+                        "isRooted": "false",
+                        "managementType": "MDM",
+                        "manufacturer": manufacter,
+                        "mdmAppId": str(uuid.uuid4()),
+                        "onPremisesLastSyncDateTimeTS": str(round(time.time() - 10000)),
+                        "onPremisesSyncEnabled": "true",
+                        "operatingSystem": os_type,
+                        "operatingSystemVersion": os_version,
+                        "profileType": "RegisteredDevice",
+                        "registrationDateTimeTS": str(
+                            round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5]))
+                        ),
+                        "trustType": (
+                            "ServerAd" if asset_type == "SERVER" else "UserEnrollment"
+                        ),
+                    },
+                }
+            )
+
+    # write modified results to file for import
+    with open(f"integration_azuread.json", "w") as f:
+        for l in output:
+            f.write(json.dumps(l, separators=(",", ":")) + "\n")
+    return True
+
+
+# this is for integrations that require bulk regex operations to update the data
 def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
     output = []
 
@@ -365,6 +1015,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
         device_map_key = {
             "nessus": NESSUS_DEVICE_MAP,
             "crowdstrike": CROWDSTRIKE_DEVICE_MAP,
+            "aws": AWS_DEVICE_MAP,
         }
 
         device_map = device_map_key.get(integration_name, None)
@@ -378,6 +1029,11 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
             os = asset.get("os", None)
             if os and integration_name == "crowdstrike":
                 device_type = device_type + "-" + os
+
+            # only create AWS data for CLOUD assets
+            network = asset.get("network", None)
+            if network == "CLOUD" and integration_name == "aws":
+                device_type = f"{device_type}-CLOUD"
 
             if device_type:
 
@@ -396,9 +1052,6 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                     username_match = check_for_replacements(
                         key="username", asset_replacements=device_map[device_type]
                     )
-                    cn_match = check_for_replacements(
-                        key="cn", asset_replacements=device_map[device_type]
-                    )
 
                     for line in raw_task:
 
@@ -408,6 +1061,10 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                             result_ip = temp_result.get("info", {}).get("id", None)
                         elif integration_name == "crowdstrike":
                             result_ip = temp_result.get("info", {}).get("localIP", None)
+                        elif integration_name == "aws":
+                            result_ip = temp_result.get("info", {}).get(
+                                "publicIP", None
+                            )
 
                         device_map_ip = device_map[device_type].get("ip")
 
@@ -415,15 +1072,29 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                             temp_result.get("type") == "result"
                             and result_ip == device_map_ip
                         ):
-
                             # update timestamp
                             temp_result["ts"] = current_rz_time()
 
                             # integration specific modifications
+                            os_info = asset.get("os_full", "").split("-")
                             if integration_name == "nessus":
+                                temp_result["info"]["lastSeenTS"] = str(
+                                    round(time.time())
+                                )
+                                temp_result["info"]["firstSeenTS"] = str(
+                                    round(time.time())
+                                )
+                                temp_result["info"]["lastScanTimeTS"] = str(
+                                    round(time.time())
+                                )
                                 temp_result["info"]["_vulnerabilities"] = decode(
                                     temp_result["info"]["_vulnerabilities"]
                                 )
+                                if "operatingSystems" in temp_result["info"]:
+                                    temp_result["info"]["operatingSystems"] = " ".join(
+                                        os_info
+                                    )
+
                             if integration_name == "crowdstrike":
                                 temp_result["info"]["_applications"] = decode(
                                     temp_result["info"]["_applications"]
@@ -447,7 +1118,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     round(time.time())
                                 )
                                 # Windows Server 2019 | Windows 11 | Windows Server 2016 | etc
-                                os_info = asset.get("os_full", "").split("0")
+
                                 if len(os_info) == 3:
                                     temp_result["info"]["osVersion"] = os_info[2]
                                 elif len(os_info) == 2:
@@ -477,10 +1148,10 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                         "biosManufacturer"
                                     ] = "Apple Inc."
                                 else:
-                                    temp_result["info"]["systemManufacturer"] = "Linux"
-                                    temp_result["info"][
-                                        "biosManufacturer"
-                                    ] = "Apple Inc."
+                                    temp_result["info"]["systemManufacturer"] = (
+                                        random.choice(["Dell", "SUSE", "HP", "IBM"])
+                                    )
+                                    temp_result["info"]["biosManufacturer"] = "Linux"
 
                                 # get rid of AWS / VMWare stuff
                                 temp_result["info"][
@@ -499,6 +1170,32 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 temp_result["info"]["cid"] = asset.get(
                                     "device_id", str(uuid.uuid4())
                                 )
+
+                            if integration_name == "aws":
+                                temp_result["info"][
+                                    "accountEmail"
+                                ] = "admin@runzero.com"
+                                temp_result["info"]["accountID"] = "RZ2024"
+                                temp_result["info"]["accountName"] = "RUNZERO"
+                                temp_result["info"]["id"] = str(uuid.uuid4())
+                                temp_result["info"]["imageID"] = asset.get("ami", None)
+                                temp_result["info"]["instanceID"] = "i-" + "".join(
+                                    random.choice(
+                                        ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+                                        + list(string.ascii_lowercase)
+                                    )
+                                    for _ in range(17)
+                                )
+                                temp_result["info"]["tags"] = "region=US2"
+                                temp_result["info"]["instanceType"] = random.choice(
+                                    AWS_DEVICE_TYPES
+                                )
+                                new_ip = asset.get("ip")
+                                new_aws_ip = semi_random_ipv4(
+                                    old_ip="172.31.16.221", new_ip=new_ip
+                                )
+                                temp_result["info"]["ipv4"] = f"{new_aws_ip}\t{new_ip}"
+                                temp_result["info"]["privateIP"] = new_aws_ip
 
                             # make regex based modifications
                             result = regex_bulk_sub(
@@ -525,6 +1222,45 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                             # reencode for upload
                             final_result = json.loads(result)
                             if integration_name == "nessus":
+                                # able to add vulns as needed
+                                modifiable_vulns = json.loads(
+                                    temp_result["info"]["_vulnerabilities"]
+                                )
+                                modifiable_vulns.append(
+                                    {
+                                        "asset": {"ipv4": asset.get("ip")},
+                                        "output": "Tyler can own this device.",
+                                        "plugin": {
+                                            "cve": ["CVE-2024-00000"],
+                                            "cvss3_base_score": 0.0,
+                                            "cvss3_vector": {
+                                                "raw": "CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N"
+                                            },
+                                            "cvss_base_score": 0.0,
+                                            "cvss_vector": {
+                                                "raw": "CVSS2#AV:L/AC:L/Au:N/C:N/I:N/A:N"
+                                            },
+                                            "description": "Tyler can own this device.",
+                                            "family": "General",
+                                            "id": 10114,
+                                            "name": "Tyler has the keys",
+                                            "modification_date": "2023/04/27",
+                                            "publication_date": "1999/08/01",
+                                            "risk_factor": "None",
+                                            "solution": "Ask Tyler to not own this device.",
+                                        },
+                                        "port": {
+                                            "port": 0,
+                                            "protocol": "icmp",
+                                            "service": "general",
+                                        },
+                                        "scan": {},
+                                        "severity_id": 2,
+                                    }
+                                )
+                                final_result["info"]["_vulnerabilities"] = json.dumps(
+                                    modifiable_vulns
+                                )
                                 final_result["info"]["_vulnerabilities"] = encode(
                                     final_result["info"]["_vulnerabilities"]
                                 )
@@ -620,18 +1356,21 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
 
             if (
                 asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
-                and "snmp.interfaceMacs" in temp_result
+                and "snmp.interfaceMacs" in temp_result["info"]
             ):
-                temp_result["snmp.interfaceMacs"] = "\t".join(
+                temp_result["info"]["snmp.interfaceMacs"] = "\t".join(
                     (semi_rand_mac(mac=mac) for i in range(10))
                 )
 
             if (
                 asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
-                and "snmp.interfaceMacs" in temp_result
+                and "snmp.macs.ports" in temp_result["info"]
             ):
-                temp_result["snmp.interfaceMacs"] = "\t".join(
-                    (semi_rand_mac(mac=mac) for i in range(10))
+                temp_result["info"]["snmp.macs.ports"] = (
+                    "giga-swx 0/1="
+                    + "\t".join((semi_rand_mac(mac=mac) for i in range(10)))
+                    + "\tvlan 1="
+                    + semi_rand_mac(mac=mac)
                 )
 
             # update hostname + primary IP
@@ -645,9 +1384,6 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
                 match=domain_match, new_val="RUNZERO", result=result
             )
             result = regex_bulk_sub(match=mac_match, new_val=new_mac, result=result)
-            if "56:3E:3A:BA:BB:76" in result:
-                print(mac_match, new_mac)
-
             result = regex_bulk_sub(
                 match=secondary_v4_match, new_val=new_secondary_v4, result=result
             )
@@ -659,7 +1395,6 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
                 new_val=new_cn,
                 result=result,
             )
-
             OUTPUT.append(json.loads(result))
 
     new_asset_info = {
@@ -672,79 +1407,185 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
         "os_full": random_asset_type,
         "username": f"USER-{ip_hostname_sub}",
         "device_id": str(uuid.uuid4()),
+        "network": network,
     }
+
     return asset_info[random_asset_type] | new_asset_info
 
 
-def main():
-    if args.create:
-        asset_cache = []
+def create_assets(
+    subnet_start: int, subnet_finish: int, ip_start: int, ip_finish: int, network: str
+):
+    asset_cache = []
 
-        # create scan data for HQ assets
-        for subnet in range(0, 5):
-            for ip in range(1, 5):
-                asset = (
-                    fudge_scan_data(
-                        asset_info=COMPUTE_ASSETS,
-                        ip=f"10.0.{subnet}.{ip}",
-                        network="HQ",
-                    )
-                    if ip > 1
-                    else fudge_scan_data(
-                        asset_info=ROUTING_ASSETS,
-                        ip=f"10.0.{subnet}.{ip}",
-                        network="HQ",
-                    )
+    for subnet in range(subnet_start, subnet_finish):
+        for ip in range(ip_start, ip_finish):
+
+            final_ip = (
+                f"23.20.{subnet}.{ip}" if network == "CLOUD" else f"10.0.{subnet}.{ip}"
+            )
+
+            # BACNET includes routers, OT, and BACnet
+            if network == "BACNET" and ip == 1:
+                asset = fudge_scan_data(
+                    asset_info=ROUTING_ASSETS,
+                    ip=final_ip,
+                    network=network,
                 )
-                if asset:
-                    asset_cache.append(asset)
+            elif network == "BACNET":
+                asset = fudge_scan_data(
+                    asset_info=OT_DEVICES | BACNET_ASSETS,
+                    ip=final_ip,
+                    network=network,
+                )
+
+            # Cloud is just servers
+            if network == "CLOUD":
+                asset = fudge_scan_data(
+                    asset_info=SERVER_ASSETS, ip=final_ip, network=network
+                )
+
+            # HQ and Datacenters include routers, firewalls, a few IOT/OT devices, and mostly servers and end users devices
+            if network in ["HQ", "DC"]:
+                if ip == 1:
+                    asset = fudge_scan_data(
+                        asset_info=ROUTING_ASSETS,
+                        ip=final_ip,
+                        network=network,
+                    )
+                elif ip == 2:
+                    asset = fudge_scan_data(
+                        asset_info=FIREWALL_DEVICES,
+                        ip=final_ip,
+                        network=network,
+                    )
+                elif ip % 7 == 0:
+                    asset = fudge_scan_data(
+                        asset_info=IOT_DEVICES | OT_DEVICES,
+                        ip=final_ip,
+                        network=network,
+                    )
+                else:
+                    asset = fudge_scan_data(
+                        asset_info=END_USER_ASSETS | SERVER_ASSETS,
+                        ip=final_ip,
+                        network=network,
+                    )
+
+            if asset:
+                asset_cache.append(asset)
+
+    return asset_cache
+
+
+def main():
+    # create new tasks for demo data if enabled
+    # python3 demo_data.py --create
+    if args.create:
+        print("STARTING - asset creation")
+        # create scan data for HQ assets
+        hq_asset_cache = create_assets(
+            subnet_start=0,
+            subnet_finish=9,
+            ip_start=1,
+            ip_finish=args.assets_per_subnet + 1,
+            network="HQ",
+        )
+
+        hq_bacnet_cache = create_assets(
+            subnet_start=10,
+            subnet_finish=11,
+            ip_start=1,
+            ip_finish=args.assets_per_subnet + 1,
+            network="BACNET",
+        )
+
+        print(
+            f"SUCCESS - created {len(hq_asset_cache) + len(hq_bacnet_cache)} HQ + HQ BACNET assets"
+        )
 
         # create scan data for datacenter assets
-        for subnet in range(11, 15):
-            for ip in range(1, 5):
-                asset = (
-                    fudge_scan_data(
-                        asset_info=COMPUTE_ASSETS | IOT_DEVICES | OT_DEVICES,
-                        ip=f"10.0.{subnet}.{ip}",
-                        network="DC",
-                    )
-                    if ip > 1
-                    else fudge_scan_data(
-                        asset_info=ROUTING_ASSETS,
-                        ip=f"10.0.{subnet}.{ip}",
-                        network="DC",
-                    )
-                )
-                if asset:
-                    asset_cache.append(asset)
+        dc_asset_cache = create_assets(
+            subnet_start=10,
+            subnet_finish=19,
+            ip_start=1,
+            ip_finish=args.assets_per_subnet + 1,
+            network="DC",
+        )
 
-        # clears the output file
-        open("scan_output.json", "w").close()
+        dc_bacnet_cache = create_assets(
+            subnet_start=20,
+            subnet_finish=21,
+            ip_start=1,
+            ip_finish=args.assets_per_subnet + 1,
+            network="BACNET",
+        )
 
-        with open("scan_output.json", "a") as scan_output:
+        print(
+            f"SUCCESS - created {len(dc_asset_cache) + len(dc_bacnet_cache)} DC + DC BACNET assets"
+        )
+
+        # create scan data for cloud assets
+        cloud_asset_cache = create_assets(
+            subnet_start=0,
+            subnet_finish=5,
+            ip_start=1,
+            ip_finish=args.assets_per_subnet + 1,
+            network="CLOUD",
+        )
+
+        print(f"SUCCESS - created {len(cloud_asset_cache)} CLOUD assets")
+
+        # combine all asset data
+        asset_cache = hq_asset_cache + dc_asset_cache + cloud_asset_cache
+
+        # writes new data to scan_output.json
+        with open("scan_output.json", "w") as scan_output:
             for l in OUTPUT:
                 scan_output.write(json.dumps(l) + "\n")
             scan_output.close()
             print("SUCCESS - created task for rz scan")
 
-        for integration in ["nessus", "crowdstrike"]:
-            success = fudge_integration_data(
-                asset_cache=asset_cache, integration_name=integration
-            )
+        # creates supported integration tasks
+        for integration in ["crowdstrike", "nessus", "aws", "azuread", "jamf"]:
+            if integration in ["crowdstrike", "nessus", "aws"]:
+                success = fudge_integration_data(
+                    asset_cache=(
+                        asset_cache
+                        if integration == "aws"
+                        else remove_random_assets(asset_cache=asset_cache)
+                    ),
+                    integration_name=integration,
+                )
+            elif integration == "azuread":
+                success = fudge_azuread_data(
+                    remove_random_assets(
+                        asset_cache=remove_random_assets(asset_cache=asset_cache)
+                    )
+                )
+            elif integration == "jamf":
+                success = fudge_jamf_data(
+                    asset_cache=remove_random_assets(asset_cache=asset_cache)
+                )
+
             if success:
                 print(f"SUCCESS - created task for {integration}")
             else:
                 print(f"FAILURE - on create task for {integration}")
 
-    # delete existing assets first (if you want to)
+    # delete existing assets if enabled
+    # python3 demo_data.py --delete
     if args.delete:
         # export current assets
         export_url = RUNZERO_BASE_URL + "/export/org/assets.json"
         headers = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
         params = {"search": f"site:{RUNZERO_SITE_ID}", "fields": "id"}
         resp = requests.get(url=export_url, headers=headers, params=params)
+
+        # create list of assets to delete
         asset_list = [x["id"] for x in resp.json()]
         if len(asset_list) > 0:
+            print("STARTING - asset deletion")
             delete_url = RUNZERO_BASE_URL + "/org/assets/bulk/delete"
             delete = requests.delete(
                 url=delete_url,
@@ -752,9 +1593,12 @@ def main():
                 json={"asset_ids": asset_list},
                 params={"_oid": RUNZERO_ORG_ID},
             )
+            # verify deleted
             if delete.status_code == 204:
-                print("SUCCESS - started asset deletion")
+                print("IN PROGRESS - runZero is deleting the assets")
+                time.sleep(10)
                 deleted = False
+                # wait for deletion to finish if not done
                 while not deleted:
                     resp = requests.get(url=export_url, headers=headers, params=params)
                     if len(resp.json()) == 0:
@@ -764,15 +1608,22 @@ def main():
                         time.sleep(5)
                         print(
                             "WAITING - still deleting assets. Waiting 5 seconds to check again. Current asset count:",
-                            len(asset_list),
+                            len(resp.json()),
                         )
+        else:
+            print("SUCCESS - no assets to delete")
 
-    # updload task(s) to rz (if you want to)
+    # upload task(s) to rz if enabled
+    # python3 demo_data.py --upload
     if args.upload:
+        print("STARTING - uploading tasks to runZero")
         for filename in [
             "scan_output.json",
             "integration_crowdstrike.json",
             "integration_nessus.json",
+            "integration_aws.json",
+            "integration_azuread.json",
+            "integration_jamf.json",
         ]:
             gzip_upload = gzip.compress(open(filename, "rb").read())
             upload_url = RUNZERO_BASE_URL + f"/org/sites/{RUNZERO_SITE_ID}/import"
