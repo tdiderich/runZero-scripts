@@ -6,3 +6,17 @@ terraform/gcp-self-hosted-install/.terraform.lock.hcl
 terraform/gcp-self-hosted-install/terraform.tfstate.backup
 terraform/gcp-self-hosted-install/.terraform/providers/registry.terraform.io/hashicorp/google/4.51.0/darwin_arm64/terraform-provider-google_v4.51.0_x5
 .DS_Store
+demo-data-population/tasks/integration_aws.json
+demo-data-population/tasks/integration_azure.json
+demo-data-population/tasks/integration_crowdstrike.json
+demo-data-population/tasks/integration_jamf.json
+demo-data-population/tasks/integration_nessus.json
+demo-data-population/tasks/integration_shodan.json
+demo-data-population/tasks/sample_lab.json
+demo-data-population/tasks/scan_hikivision.json
+demo-data-population/tasks/scan_lab_printer.json
+demo-data-population/tasks/scan_lab_second.json
+demo-data-population/tasks/scan_lab.json
+demo-data-population/tasks/scan_plc_windows_linux.json
+demo-data-population/tasks/scan_public_ot.json
+demo-data-population/tasks/scan_ups.json
