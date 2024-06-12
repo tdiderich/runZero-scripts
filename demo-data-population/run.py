@@ -27,11 +27,11 @@ args = parser.parse_args()
 
 
 # Creds for uploading tasks to rz
-RUNZERO_BASE_URL = "https://demo.runZero.com/api/v1.0"
-RUNZERO_ORG_ID = "bddd405a-f594-4891-88f9-c4e95d793f68"
-RUNZERO_SITE_ID = "43d7ee80-2927-4c68-9be0-1f8cf267cf9a"
+RUNZERO_BASE_URL = "https://console.runzero.com/api/v1.0"
+RUNZERO_ORG_ID = os.environ["RUNZERO_ORG_ID"]
+RUNZERO_SITE_ID = os.environ["RUNZERO_SITE_ID"]
 RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
-JAMF_CUSTOM_INTEGRATION_ID = "2ba644ef-2774-4539-b3e6-2dd06770c0a5"
+JAMF_CUSTOM_INTEGRATION_ID = "848e2690-8a8a-4554-b8ee-755deaf3606d"
 
 # Output seeded with scan config line
 OUTPUT = [
@@ -535,6 +535,7 @@ IOT_DEVICES = {
     },
     "Hikivision Camera": {
         "host": "89.174.39.70",
+        "secondary_v4": "23.21.0.0",
         "filename": "scan_hikivision.json",
         "hostname": "CHRISMT",
         "type": "CAMERA",
@@ -694,6 +695,10 @@ NESSUS_DEVICE_MAP = {
         "mac": "4C:FC:AA:0A:FC:E3",
         "hostname": "tesla_model_s",
     },
+    "PRINTER": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
+    "SWITCH": {"ip": "192.168.86.38", "mac": "D8:6C:63:5C:48:14"},
+    "CAMERA": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
+    "SENSOR": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
 }
 
 CROWDSTRIKE_DEVICE_MAP = {
@@ -1092,9 +1097,11 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     temp_result["info"]["_vulnerabilities"]
                                 )
                                 if "operatingSystems" in temp_result["info"]:
-                                    temp_result["info"]["operatingSystems"] = " ".join(
-                                        os_info
-                                    )
+                                    if len(os_info) > 1:
+                                        temp_result["info"]["operatingSystems"] = os_info[0]
+                                    else:
+                                        temp_result["info"]["operatingSystems"] = "Linux"
+
 
                             if integration_name == "crowdstrike":
                                 temp_result["info"]["_applications"] = decode(
