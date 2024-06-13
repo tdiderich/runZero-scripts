@@ -23,15 +23,25 @@ parser.add_argument("--upload", action="store_true", help="upload demo data to r
 parser.add_argument(
     "--assets-per-subnet", type=int, default=5, help="upload demo data to runZero"
 )
+parser.add_argument(
+    "--env", type=str, default=5, help="demo or prod"
+)
 args = parser.parse_args()
 
-
 # Creds for uploading tasks to rz
-RUNZERO_BASE_URL = "https://console.runzero.com/api/v1.0"
-RUNZERO_ORG_ID = os.environ["RUNZERO_ORG_ID"]
-RUNZERO_SITE_ID = os.environ["RUNZERO_SITE_ID"]
-RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
-JAMF_CUSTOM_INTEGRATION_ID = "848e2690-8a8a-4554-b8ee-755deaf3606d"
+RUNZERO_BASE_URL = "https://demo.runzero.com/api/v1.0" if args.env == "demo" else "https://console.runzero.com/api/v1.0"
+RUNZERO_ORG_ID = os.environ["RUNZERO_DEMO_ORG_ID"] if args.env == "demo" else os.environ["RUNZERO_ORG_ID"]
+RUNZERO_SITE_ID = os.environ["RUNZERO_DEMO_SITE_ID"] if args.env == "demo" else os.environ["RUNZERO_SITE_ID"]
+RUNZERO_ORG_TOKEN = (
+    os.environ["RUNZERO_DEMO_ORG_TOKEN"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_ORG_TOKEN"]
+)
+JAMF_CUSTOM_INTEGRATION_ID = os.environ["RUNZERO_DEMO_JAMF_ID"] if args.env == "demo" else os.environ["RUNZERO_JAMF_ID"]
+
+# MAC cache
+MAC_CACHE = []
+ROUTER_SWITCH_MAC_CACHE = []
 
 # Output seeded with scan config line
 OUTPUT = [
@@ -505,6 +515,12 @@ ROUTING_ASSETS = {
         "mac": "E4:AA:5D:43:ED:A0|E4:AA:5D:43:ED:A1|e4:aa:5d:43:ed:a0",
         "secondary_v4": "203.115.31.121",
     },
+    "TP-LINK Wireless Lite N 3G/4G Router MR3220": {
+        "host": "194.116.41.76",
+        "filename": "scan_tplink.json",
+        "hostname": "194-116-41-76-STATIC.BBBELL.COM",
+        "type": "WAP",
+    },
 }
 
 # Markers for firewalls
@@ -751,9 +767,14 @@ AWS_DEVICE_TYPES = [
 
 
 def semi_rand_mac(mac: str) -> str:
-    start = ":".join(mac.split(":")[:3])
-    end = ":".join("%02x" % random.randrange(256) for _ in range(3))
-    return start + ":" + end
+    dup = True
+    while dup:
+        start = ":".join(mac.split(":")[:3])
+        end = ":".join("%02x" % random.randrange(256) for _ in range(3))
+        new_mac = start + ":" + end
+        if new_mac not in MAC_CACHE:
+            MAC_CACHE.append(new_mac)
+            return new_mac
 
 
 def semi_random_ipv4(old_ip: str, new_ip: str) -> str:
@@ -770,7 +791,8 @@ def random_ipv6() -> str:
 def check_for_replacements(key: str, asset_replacements: dict):
     match = None
     if key in asset_replacements:
-        match = re.compile(asset_replacements[key], re.IGNORECASE)
+        safe_key = asset_replacements[key].replace(".", "\\.")
+        match = re.compile(safe_key, re.IGNORECASE)
     return match
 
 
@@ -825,7 +847,6 @@ def fudge_jamf_data(asset_cache: list) -> bool:
                 os_version = os_info[2]
                 os_type = os_info[1]
             else:
-                print(os_info)
                 os_version = os_info[0]
                 os_type = os_info[0]
 
@@ -1045,6 +1066,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
                 # check that the integration supports the type
                 if device_type in device_map:
+
                     # check if the integration has values to replace
                     ip_match = check_for_replacements(
                         key="ip", asset_replacements=device_map[device_type]
@@ -1102,7 +1124,6 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     else:
                                         temp_result["info"]["operatingSystems"] = "Linux"
 
-
                             if integration_name == "crowdstrike":
                                 temp_result["info"]["_applications"] = decode(
                                     temp_result["info"]["_applications"]
@@ -1125,12 +1146,19 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 temp_result["info"]["lastLoginTS"] = str(
                                     round(time.time())
                                 )
-                                # Windows Server 2019 | Windows 11 | Windows Server 2016 | etc
 
+                                # Windows Server 2019 | Windows 11 | Windows Server 2016 | etc
                                 if len(os_info) == 3:
                                     temp_result["info"]["osVersion"] = os_info[2]
                                 elif len(os_info) == 2:
                                     temp_result["info"]["osVersion"] = os_info[1]
+
+                                if len(os_info) == 3:
+                                    temp_result["info"]["systemProductName"] = os_info[1] + " " + os_info[2]
+                                elif len(os_info) == 2:
+                                    temp_result["info"]["systemProductName"] = "Windows"
+                                else:
+                                    temp_result["info"]["systemProductName"] = os_info[0]
 
                                 # Windows | Mac | Linux
                                 temp_result["info"]["platformName"] = os_info[0]
@@ -1166,11 +1194,6 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     "biosVersion"
                                 ] = "RZ-CUSTOM-BIOS-v1.0.0"
 
-                                # Device Type
-                                temp_result["info"]["systemProductName"] = asset.get(
-                                    "os_full", ""
-                                )
-
                                 # replace device_id values
                                 temp_result["info"]["deviceID"] = asset.get(
                                     "device_id", str(uuid.uuid4())
@@ -1204,6 +1227,8 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 )
                                 temp_result["info"]["ipv4"] = f"{new_aws_ip}\t{new_ip}"
                                 temp_result["info"]["privateIP"] = new_aws_ip
+                                new_ipv6 = random_ipv6()
+                                temp_result["info"]["ipv6"] = new_ipv6
 
                             # make regex based modifications
                             result = regex_bulk_sub(
@@ -1224,6 +1249,17 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                             result = regex_bulk_sub(
                                 match=username_match,
                                 new_val=asset.get("username", None),
+                                result=result,
+                            )
+
+                            # nessus random hostnames
+                            nessus_hostnames_match = re.compile(
+                                    "google-home.lan|tesla_model_s.lan|46d8d572f529283b8ed7c7565033867b.lan|15aa01ac34180re1.lan|esp_a93bf6.lan|esp_003d1d.lan|simplisafe_basestation.lan|teslawallconnector_179ace.lan",
+                                    re.IGNORECASE,
+                                )
+                            result = regex_bulk_sub(
+                                match=nessus_hostnames_match,
+                                new_val=asset.get("new_hostname", None),
                                 result=result,
                             )
 
@@ -1362,27 +1398,35 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
                 asset_info[random_asset_type]["host"], re.IGNORECASE
             )
 
+            if "snmp.vlans" in temp_result["info"]:
+                temp_result["info"]["snmp.vlans"] = "\t".join([f"1=RZ-{network}", f"2=RZ{network}-GUEST", f"3-RZ{network}-ADMIN"])
+
             if "snmp.sysName" in temp_result["info"]:
                 temp_result["info"]["snmp.sysName"] = new_hostname
 
-            if (
-                asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
-                and "snmp.interfaceMacs" in temp_result["info"]
-            ):
-                temp_result["info"]["snmp.interfaceMacs"] = "\t".join(
-                    (semi_rand_mac(mac=mac) for _ in range(10))
-                )
+            if "snmp.interfaceMacs" in temp_result["info"] or "snmp.macs.ports" in temp_result["info"]:
+                random_macs = [semi_rand_mac(mac=new_mac) for _ in range(10)]
 
-            if (
-                asset_info[random_asset_type]["type"] in ["ROUTER", "WAP"]
-                and "snmp.macs.ports" in temp_result["info"]
-            ):
-                temp_result["info"]["snmp.macs.ports"] = (
-                    "giga-swx 0/1="
-                    + "\t".join((semi_rand_mac(mac=mac) for _ in range(10)))
-                    + "\tvlan 1="
-                    + semi_rand_mac(mac=mac)
-                )
+                if len(ROUTER_SWITCH_MAC_CACHE) > 2:
+                    existing_macs = []
+                    for _ in range(5):
+                        temp_mac = random.choice(ROUTER_SWITCH_MAC_CACHE)
+                        if temp_mac not in existing_macs:
+                            existing_macs.append(temp_mac)
+
+                    random_macs.extend(existing_macs)
+
+                if "snmp.interfaceMacs" in temp_result["info"]:    
+                    temp_result["info"]["snmp.interfaceMacs"] = "\t".join(random_macs)
+
+                    if asset_type in ["SWITCH", "ROUTER"]:
+                        ROUTER_SWITCH_MAC_CACHE.append(new_mac)
+
+                if "snmp.macs.ports" in temp_result["info"]:
+                    mac_ports = [
+                        f"Gi0/{i}={random_macs[i]}" for i in range(0, len(random_macs) - 1)
+                    ]
+                    temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
 
             # update hostname + primary IP
             result = regex_bulk_sub(
@@ -1497,11 +1541,13 @@ def main():
         # create scan data for HQ assets
         hq_asset_cache = create_assets(
             subnet_start=0,
-            subnet_finish=9,
+            subnet_finish=10,
             ip_start=1,
             ip_finish=args.assets_per_subnet + 1,
             network="HQ",
         )
+
+        del ROUTER_SWITCH_MAC_CACHE[:]
 
         hq_bacnet_cache = create_assets(
             subnet_start=10,
@@ -1517,12 +1563,14 @@ def main():
 
         # create scan data for datacenter assets
         dc_asset_cache = create_assets(
-            subnet_start=10,
-            subnet_finish=19,
+            subnet_start=11,
+            subnet_finish=20,
             ip_start=1,
             ip_finish=args.assets_per_subnet + 1,
             network="DC",
         )
+
+        del ROUTER_SWITCH_MAC_CACHE[:]
 
         dc_bacnet_cache = create_assets(
             subnet_start=20,
@@ -1531,6 +1579,8 @@ def main():
             ip_finish=args.assets_per_subnet + 1,
             network="BACNET",
         )
+
+        del ROUTER_SWITCH_MAC_CACHE[:]
 
         print(
             f"SUCCESS - created {len(dc_asset_cache) + len(dc_bacnet_cache)} DC + DC BACNET assets"

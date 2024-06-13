@@ -1,10 +1,9 @@
 import json
 IPS = [
-    "192.168.30.20",
-    "192.168.40.73",
+    "194.116.41.76",
 ]
 OUTPUT = []
-with open("scan_lab_printer.json", "r") as file:
+with open("scan_tplink.json", "r") as file:
     for line in file:
         result = json.loads(line)
         if result.get("host") in IPS:
