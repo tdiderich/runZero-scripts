@@ -120,19 +120,19 @@ def create_upload_assets(assets: list):
                             cve=cve.get("id", ""),
                             name=cve.get("id", ""),
                             description=description_out,
-                            serviceAddress=service.get("service_address", ""),
-                            servicePort=service.get("service_port", ""),
-                            severityRank=(
+                            service_address=service.get("service_address", ""),
+                            service_port=service.get("service_port", ""),
+                            severity_rank=(
                                 severity_rank_map[severity]
                                 if severity in severity_rank_map
                                 else 0
                             ),
-                            severityScore=metrics.get("baseScore", 0),
-                            riskRank=risk_rank,
-                            riskScore=impact_score,
+                            severity_score=metrics.get("baseScore", 0),
+                            risk_rank=risk_rank,
+                            risk_score=impact_score,
                             exploitable=True if exploitability_score >= 5 else False,
                             cpe23=service.get("cpe", ""),
-                            customAttributes={
+                            custom_attributes={
                                 "version": str(metrics.get("version", "")),
                                 "vectorString": str(metrics.get("vectorString", "")),
                                 "attackVector": str(metrics.get("attackVector", "")),
@@ -162,7 +162,7 @@ def create_upload_assets(assets: list):
                     )
 
         output.append(
-            ImportAsset(id=asset_id, runZeroID=asset_id, vulnerabilities=vulns)
+            ImportAsset(id=asset_id, run_zero_id=asset_id, vulnerabilities=vulns)
         )
 
     return output

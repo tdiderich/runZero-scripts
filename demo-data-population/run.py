@@ -21,23 +21,40 @@ parser.add_argument(
 )
 parser.add_argument("--upload", action="store_true", help="upload demo data to runZero")
 parser.add_argument(
-    "--assets-per-subnet", type=int, default=5, help="upload demo data to runZero"
+    "--assets-per-subnet",
+    type=int,
+    default=5,
+    help="how many assets to put in each subnet",
 )
-parser.add_argument(
-    "--env", type=str, default=5, help="demo or prod"
-)
+parser.add_argument("--env", type=str, help="demo or prod")
 args = parser.parse_args()
 
 # Creds for uploading tasks to rz
-RUNZERO_BASE_URL = "https://demo.runzero.com/api/v1.0" if args.env == "demo" else "https://console.runzero.com/api/v1.0"
-RUNZERO_ORG_ID = os.environ["RUNZERO_DEMO_ORG_ID"] if args.env == "demo" else os.environ["RUNZERO_ORG_ID"]
-RUNZERO_SITE_ID = os.environ["RUNZERO_DEMO_SITE_ID"] if args.env == "demo" else os.environ["RUNZERO_SITE_ID"]
+RUNZERO_BASE_URL = (
+    "https://demo.runzero.com/api/v1.0"
+    if args.env == "demo"
+    else "https://console.runzero.com/api/v1.0"
+)
+RUNZERO_ORG_ID = (
+    os.environ["RUNZERO_DEMO_ORG_ID"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_ORG_ID"]
+)
+RUNZERO_SITE_ID = (
+    os.environ["RUNZERO_DEMO_SITE_ID"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_SITE_ID"]
+)
 RUNZERO_ORG_TOKEN = (
     os.environ["RUNZERO_DEMO_ORG_TOKEN"]
     if args.env == "demo"
     else os.environ["RUNZERO_ORG_TOKEN"]
 )
-JAMF_CUSTOM_INTEGRATION_ID = os.environ["RUNZERO_DEMO_JAMF_ID"] if args.env == "demo" else os.environ["RUNZERO_JAMF_ID"]
+JAMF_CUSTOM_INTEGRATION_ID = (
+    os.environ["RUNZERO_DEMO_JAMF_ID"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_JAMF_ID"]
+)
 
 # MAC cache
 MAC_CACHE = []
@@ -473,7 +490,9 @@ END_USER_ASSETS = {
         "filename": "scan_lab_printer.json",
         "hostname": "BRN3C2AF4ABE1C6",
         "type": "PRINTER",
-        "mac": "10:5b:ad:4a:69:45|10:5b:ad:4a:e9:45|3c:2a:f4:ab:e1:c6",
+        "secondary_v4": "192.168.30.3",
+        "mac": "3c:2a:f4:ab:e1:c6|10:5b:ad:4a:69:45|10:5b:ad:4a:e9:45|D4:10:5b:ad:5a:22:39|00:0c:29:01:66:14",
+        "cn": "e3248000-80ce-11db-8000-3c2af4abe1c6",
     },
 }
 
@@ -493,7 +512,7 @@ ROUTING_ASSETS = {
         "type": "WAP",
         "mac": "F4:E2:C6:A8:CA:34",
     },
-    "Ruckus Access Point": {
+    "Ruckus": {
         "host": "192.168.40.136",
         "filename": "scan_lab.json",
         "hostname": "SN-291802001160",
@@ -507,7 +526,7 @@ ROUTING_ASSETS = {
         "type": "WAP",
         "mac": "EC:58:EA:28:D7:90",
     },
-    "Cisco IOS 15.5(1)T1": {
+    "Cisco IOS-15.5(1)T1": {
         "host": "203.115.7.170",
         "filename": "scan_hikivision.json",
         "hostname": "D64896-SLCUSTOM",
@@ -515,7 +534,7 @@ ROUTING_ASSETS = {
         "mac": "E4:AA:5D:43:ED:A0|E4:AA:5D:43:ED:A1|e4:aa:5d:43:ed:a0",
         "secondary_v4": "203.115.31.121",
     },
-    "TP-LINK Wireless Lite N 3G/4G Router MR3220": {
+    "TP LINK-Wireless Lite N 3G/4G Router MR3220": {
         "host": "194.116.41.76",
         "filename": "scan_tplink.json",
         "hostname": "194-116-41-76-STATIC.BBBELL.COM",
@@ -530,7 +549,7 @@ FIREWALL_DEVICES = {
         "filename": "scan_hikivision.json",
         "hostname": "USG60W_5CE28C704730|46.247.170.154.NOT.UPDATED.OPENIP-CS.NET",
         "type": "FIREWALL",
-        "mac": "5CE28C704730",
+        "mac": "5C:E2:8C:70:47:30|5CE28C704730",
     },
     "Fortinet FortiOS": {
         "host": "62.48.202.126",
@@ -559,10 +578,10 @@ IOT_DEVICES = {
     "Reolink": {
         "host": "45.148.214.167",
         "filename": "scan_hikivision.json",
-        "hostname": "UBNT-788A20A2C84C",
+        "hostname": "UBNT-788A20A2C84C|REO-LINK",
         "type": "CAMERA",
         "mac": "78:8A:20:A2:C8:4C",
-        "cn": "UBNT-78:8A:20:fa:ed:b7",
+        "cn": "UBNT-78:8A:20:fa:ed:b7|UBNT-78:8A:20:fc:ff:ad|ubnt-78:8A:20:71:f2:83",
     },
     "Apple-tvOS-17.5": {
         "host": "192.168.30.241",
@@ -583,7 +602,7 @@ IOT_DEVICES = {
         "os": "Linux",
         "mac": "B8:27:EB:E6:4D:41",
     },
-    "Microsoft Windows CE": {
+    "Microsoft Windows-CE": {
         "host": "80.13.242.26",
         "filename": "scan_ups.json",
         "hostname": "LSTLAMBERT-658-1-223-26.W80-13.ABO.WANADOO.FR",
@@ -670,6 +689,17 @@ OT_DEVICES = {
         "type": "PDU",
         "mac": "00:0d:5d:0c:74:32",
     },
+    "DNP3 Outstation Device": {
+        "host": "192.168.86.222",
+        "hostname": "DNP3 Outstation Device",
+        "filename": "scan_ot.json",
+        "type": "OT",
+    },
+    "Step Function I/O": {
+        "host": "192.168.86.3",
+        "filename": "scan_ot.json",
+        "type": "OT",
+    },
 }
 
 # Markers for BACNet devices
@@ -705,6 +735,7 @@ NESSUS_DEVICE_MAP = {
     "SERVER": {"ip": "192.168.86.22", "mac": "60:b7:6e:6c:c6:48"},
     "ROUTER": {"ip": "192.168.86.1", "mac": "60:B7:6E:6C:C6:1C"},
     "WAP": {"ip": "192.168.86.1", "mac": "60:B7:6E:6C:C6:1C"},
+    "FIREWALL": {"ip": "192.168.86.1", "mac": "60:B7:6E:6C:C6:1C"},
     "LAPTOP": {"ip": "192.168.86.22", "mac": "60:b7:6e:6c:c6:48"},
     "MOBILE": {
         "ip": "192.168.86.36",
@@ -766,7 +797,7 @@ AWS_DEVICE_TYPES = [
 ]
 
 
-def semi_rand_mac(mac: str) -> str:
+def semi_random_mac(mac: str) -> str:
     dup = True
     while dup:
         start = ":".join(mac.split(":")[:3])
@@ -1120,9 +1151,22 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 )
                                 if "operatingSystems" in temp_result["info"]:
                                     if len(os_info) > 1:
-                                        temp_result["info"]["operatingSystems"] = os_info[0]
+                                        temp_result["info"]["operatingSystems"] = (
+                                            os_info[0]
+                                        )
                                     else:
-                                        temp_result["info"]["operatingSystems"] = "Linux"
+                                        temp_result["info"][
+                                            "operatingSystems"
+                                        ] = "Linux"
+
+                                if "systemTypes" in temp_result["info"]:
+                                    temp_result["info"][
+                                        "systemTypes"
+                                    ] = device_type.lower().capitalize()
+                                new_mac = asset.get("new_mac")
+                                ip = asset.get("ip")
+                                temp_result["info"]["macAddresses"] = new_mac
+                                temp_result["info"]["macPairs"] = f"{ip}={new_mac}"
 
                             if integration_name == "crowdstrike":
                                 temp_result["info"]["_applications"] = decode(
@@ -1154,11 +1198,15 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     temp_result["info"]["osVersion"] = os_info[1]
 
                                 if len(os_info) == 3:
-                                    temp_result["info"]["systemProductName"] = os_info[1] + " " + os_info[2]
+                                    temp_result["info"]["systemProductName"] = (
+                                        os_info[1] + " " + os_info[2]
+                                    )
                                 elif len(os_info) == 2:
                                     temp_result["info"]["systemProductName"] = "Windows"
                                 else:
-                                    temp_result["info"]["systemProductName"] = os_info[0]
+                                    temp_result["info"]["systemProductName"] = os_info[
+                                        0
+                                    ]
 
                                 # Windows | Mac | Linux
                                 temp_result["info"]["platformName"] = os_info[0]
@@ -1254,9 +1302,9 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
                             # nessus random hostnames
                             nessus_hostnames_match = re.compile(
-                                    "google-home.lan|tesla_model_s.lan|46d8d572f529283b8ed7c7565033867b.lan|15aa01ac34180re1.lan|esp_a93bf6.lan|esp_003d1d.lan|simplisafe_basestation.lan|teslawallconnector_179ace.lan",
-                                    re.IGNORECASE,
-                                )
+                                "google-home.lan|tesla_model_s.lan|46d8d572f529283b8ed7c7565033867b.lan|15aa01ac34180re1.lan|esp_a93bf6.lan|esp_003d1d.lan|simplisafe_basestation.lan|teslawallconnector_179ace.lan",
+                                re.IGNORECASE,
+                            )
                             result = regex_bulk_sub(
                                 match=nessus_hostnames_match,
                                 new_val=asset.get("new_hostname", None),
@@ -1270,38 +1318,11 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 modifiable_vulns = json.loads(
                                     temp_result["info"]["_vulnerabilities"]
                                 )
-                                modifiable_vulns.append(
-                                    {
-                                        "asset": {"ipv4": asset.get("ip")},
-                                        "output": "Tyler can own this device.",
-                                        "plugin": {
-                                            "cve": ["CVE-2024-00000"],
-                                            "cvss3_base_score": 0.0,
-                                            "cvss3_vector": {
-                                                "raw": "CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N"
-                                            },
-                                            "cvss_base_score": 0.0,
-                                            "cvss_vector": {
-                                                "raw": "CVSS2#AV:L/AC:L/Au:N/C:N/I:N/A:N"
-                                            },
-                                            "description": "Tyler can own this device.",
-                                            "family": "General",
-                                            "id": 10114,
-                                            "name": "Tyler has the keys",
-                                            "modification_date": "2023/04/27",
-                                            "publication_date": "1999/08/01",
-                                            "risk_factor": "None",
-                                            "solution": "Ask Tyler to not own this device.",
-                                        },
-                                        "port": {
-                                            "port": 0,
-                                            "protocol": "icmp",
-                                            "service": "general",
-                                        },
-                                        "scan": {},
-                                        "severity_id": 2,
-                                    }
-                                )
+                                for i, v in enumerate(modifiable_vulns):
+                                    if "output" in v:
+                                        if "Remote operating system" in v["output"]:
+                                            del modifiable_vulns[i]
+
                                 final_result["info"]["_vulnerabilities"] = json.dumps(
                                     modifiable_vulns
                                 )
@@ -1375,7 +1396,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
     mac_match = check_for_replacements("mac", asset_info[random_asset_type])
     mac = asset_info[random_asset_type]["mac"] if mac_match else None
     new_mac = (
-        semi_rand_mac(mac=mac) if mac_match else semi_rand_mac(mac="19:3c:1f:78:f2:cf")
+        semi_random_mac(mac=mac) if mac_match else semi_random_mac(mac="19:3c:1f:78:f2:cf")
     )
 
     # replace tls.cn with random value
@@ -1399,32 +1420,54 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             )
 
             if "snmp.vlans" in temp_result["info"]:
-                temp_result["info"]["snmp.vlans"] = "\t".join([f"1=RZ-{network}", f"2=RZ{network}-GUEST", f"3-RZ{network}-ADMIN"])
+                temp_result["info"]["snmp.vlans"] = "\t".join(
+                    [
+                        f"1=RZ-{network}",
+                        f"2=RZ-{network}-GUEST",
+                        f"3-RZ-{network}-ADMIN",
+                    ]
+                )
 
             if "snmp.sysName" in temp_result["info"]:
                 temp_result["info"]["snmp.sysName"] = new_hostname
 
-            if "snmp.interfaceMacs" in temp_result["info"] or "snmp.macs.ports" in temp_result["info"]:
-                random_macs = [semi_rand_mac(mac=new_mac) for _ in range(10)]
+            if (
+                "snmp.interfaceMacs" in temp_result["info"]
+                or "snmp.macs.ports" in temp_result["info"]
+            ):
 
-                if len(ROUTER_SWITCH_MAC_CACHE) > 2:
+                snmp_macs = [] if new_mac == None else [new_mac]
+
+                if len(ROUTER_SWITCH_MAC_CACHE) > 2 and asset_type in [
+                    "SWITCH",
+                    "ROUTER",
+                ]:
+                    snmp_macs.extend([semi_random_mac(mac=new_mac) for _ in range(2)])
                     existing_macs = []
-                    for _ in range(5):
+                    loop_len = (
+                        len(ROUTER_SWITCH_MAC_CACHE)
+                        if len(ROUTER_SWITCH_MAC_CACHE) < 5
+                        else 5
+                    )
+
+                    for _ in range(loop_len):
                         temp_mac = random.choice(ROUTER_SWITCH_MAC_CACHE)
                         if temp_mac not in existing_macs:
                             existing_macs.append(temp_mac)
 
-                    random_macs.extend(existing_macs)
+                    snmp_macs.extend(existing_macs)
 
-                if "snmp.interfaceMacs" in temp_result["info"]:    
-                    temp_result["info"]["snmp.interfaceMacs"] = "\t".join(random_macs)
+                if "snmp.interfaceMacs" in temp_result["info"]:
+                    temp_result["info"]["snmp.interfaceMacs"] = (
+                        "\t".join(snmp_macs) if len(snmp_macs) > 0 else ""
+                    )
 
                     if asset_type in ["SWITCH", "ROUTER"]:
                         ROUTER_SWITCH_MAC_CACHE.append(new_mac)
 
                 if "snmp.macs.ports" in temp_result["info"]:
                     mac_ports = [
-                        f"Gi0/{i}={random_macs[i]}" for i in range(0, len(random_macs) - 1)
+                        f"Gi0/{i}={snmp_macs[i]}" for i in range(0, len(snmp_macs) - 1)
                     ]
                     temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
 
@@ -1685,6 +1728,7 @@ def main():
             "integration_aws.json",
             "integration_azuread.json",
             "integration_jamf.json",
+            "scan_output.json",
         ]:
             gzip_upload = gzip.compress(open(filename, "rb").read())
             upload_url = RUNZERO_BASE_URL + f"/org/sites/{RUNZERO_SITE_ID}/import"
@@ -1695,7 +1739,10 @@ def main():
             )
             if resp.status_code == 200:
                 print("SUCCESS - uploaded", filename)
-
+            
+            # create compressed version as well
+            os.system(f"gzip {filename} -k -f")
+            print(f"SUCCESS - compressed {filename} to {filename}.gz")
 
 if __name__ == "__main__":
     main()
