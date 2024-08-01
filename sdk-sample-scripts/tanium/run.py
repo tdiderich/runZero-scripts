@@ -1,5 +1,7 @@
 import requests
 import os
+import json
+import uuid
 from flatten_json import flatten
 from ipaddress import ip_address
 from typing import Any, Dict, List
@@ -7,12 +9,13 @@ import runzero
 from runzero.client import AuthError
 from runzero.api import CustomAssets, CustomIntegrationsAdmin, Sites, Tasks
 from runzero.types import (
-    CustomAttribute,
     ImportAsset,
     IPv4Address,
     IPv6Address,
     NetworkInterface,
     ImportTask,
+    Software,
+    Vulnerability,
 )
 
 # runZero creds
@@ -27,6 +30,17 @@ TANIUM_URL = os.environ["TANIUM_URL"]
 TANIUM_TOKEN = os.environ["TANIUM_TOKEN"]
 
 # Will need to change on a per integration basis to align wtih JSON object keys
+
+
+def force_string(value: Any) -> str:
+    if isinstance(value, list):
+        output = ",".join(str(v) for v in value)
+    elif isinstance(value, dict):
+        output = json.dumps(value)
+    else:
+        output = str(value)
+
+    return output[:1023]
 
 
 def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset]:
@@ -53,10 +67,182 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
         else:
             networks = build_network_interface(ips=[ip], mac=None)
 
-        # handle any additional values and insert into custom_attrs
-        custom_attrs: Dict[str, CustomAttribute] = {}
+        software = []
+        applications = item.get("installedApplications", [])
+        installed_software = item.get("deployedSoftwarePackages", [])
+        unique_applications = {}
+        for a in applications + installed_software:
+            key_list = a.get("name", "").split(" ")
+            key_unique = (
+                "_".join(key_list[0:2]) if len(key_list) > 1 else "_".join(key_list)
+            )
+            if key_unique not in unique_applications:
+                unique_applications[key_unique] = {
+                    "name": a.get("name", ""),
+                    "version": a.get("version", ""),
+                    "vendor": a.get("vendor", ""),
+                }
+        final_applications = []
+        for _, value in unique_applications.items():
+            final_applications.append(value)
 
-        root_keys_to_ignore = []
+        for app in final_applications:
+            name = app.get("name", "")
+            vendor = app.get("vendor", "")
+            version = app.get("version", "")
+
+            software.append(
+                Software(
+                    id=str(uuid.uuid4()),
+                    vendor=vendor,
+                    product=name,
+                    version=version,
+                    service_address="127.0.0.1",
+                )
+            )
+
+        vulnerabilities = []
+        tanium_vulnerabilities = item.get("compliance", {}).get("cveFindings", [])
+        for vuln in tanium_vulnerabilities:
+            absoluteFirstFoundDate = vuln.get("absoluteFirstFoundDate", "")
+            affectedProducts = vuln.get("affectedProducts", "")
+            cisaDateAdded = vuln.get("cisaDateAdded", "")
+            cisaDueDate = vuln.get("cisaDueDate", "")
+            cisaNotes = vuln.get("cisaNotes", "")
+            cisaProduct = vuln.get("cisaProduct", "")
+            cisaRequiredAction = vuln.get("cisaRequiredAction", "")
+            cisaShortDescription = vuln.get("cisaShortDescription", "")
+            cisaVendor = vuln.get("cisaVendor", "")
+            cisaVulnerabilityName = vuln.get("cisaVulnerabilityName", "")
+            cpes = vuln.get("cpes", [])
+            cveId = vuln.get("cveId", "")
+            cveYear = vuln.get("cveYear", "")
+            cvssScore = vuln.get("cvssScore", "")
+            excepted = vuln.get("excepted", "")
+            firstFound = vuln.get("firstFound", "")
+            isCisaKev = vuln.get("isCisaKev", "")
+            lastFound = vuln.get("lastFound", "")
+            lastScanDate = vuln.get("lastScanDate", "")
+            scanType = vuln.get("scanType", "")
+
+            # take plain text severity and map to rz integer
+            severity = vuln.get("severity", "")
+
+            rank_map = {
+                "Critical": 4,
+                "High": 3,
+                "Medium": 2,
+                "Low": 1,
+            }
+
+            score_map = {
+                "Critical": 10,
+                "High": 7,
+                "Medium": 5,
+                "Low": 2,
+            }
+
+            if severity in rank_map:
+                risk_rank = rank_map[severity]
+                score = score_map[severity]
+            else:
+                risk_rank = 0
+                score = 0
+
+            if risk_rank > 0:
+                print(risk_rank)
+                print(score)
+
+            summary = vuln.get("summary", "")
+
+            try:
+                vulnerabilities.append(
+                    Vulnerability(
+                        id=str(cveId),
+                        name=str(summary)[0:255],
+                        description=str(cisaShortDescription),
+                        cve=str(cveId)[:13],
+                        cvss2BaseScore=cvssScore,
+                        cvss2TemporalScore=cvssScore,
+                        cvss3BaseScore=cvssScore,
+                        cvss3TemporalScore=cvssScore,
+                        risk_score=score,
+                        risk_rank=risk_rank,
+                        severity_score=score,
+                        severity_rank=risk_rank,
+                        service_address="127.0.0.1",
+                        customAttributes={
+                            "affectedProducts": force_string(affectedProducts),
+                            "cisaDueDate": force_string(cisaDueDate),
+                            "cisaNotes": force_string(cisaNotes),
+                            "cisaProduct": force_string(cisaProduct),
+                            "cisaRequiredAction": force_string(cisaRequiredAction),
+                            "cisaVulnerabilityName": force_string(
+                                cisaVulnerabilityName
+                            ),
+                            "cisaVendor": force_string(cisaVendor),
+                            "cveYear": force_string(cveYear),
+                            "excepted": force_string(excepted),
+                            "firstFound": force_string(firstFound),
+                            "lastScanDate": force_string(lastScanDate),
+                            "scanType": force_string(scanType),
+                            "summary": force_string(summary),
+                            "cpes": force_string(cpes),
+                            "absoluteFirstFoundDate": force_string(
+                                absoluteFirstFoundDate
+                            ),
+                            "cisaDateAdded": force_string(cisaDateAdded),
+                            "isCisaKev": force_string(isCisaKev),
+                            "lastFound": force_string(lastFound),
+                        },
+                    )
+                )
+
+            except:
+                vulnerabilities.append(
+                    Vulnerability(
+                        id=str(cveId),
+                        name=str(summary)[0:255],
+                        description=str(cisaShortDescription),
+                        risk_score=score,
+                        risk_rank=risk_rank,
+                        severity_score=score,
+                        severity_rank=risk_rank,
+                        customAttributes={
+                            "affectedProducts": force_string(affectedProducts),
+                            "cisaDueDate": force_string(cisaDueDate),
+                            "cisaNotes": force_string(cisaNotes),
+                            "cisaProduct": force_string(cisaProduct),
+                            "cisaRequiredAction": force_string(cisaRequiredAction),
+                            "cisaVendor": force_string(cisaVendor),
+                            "cisaVulnerabilityName": force_string(
+                                cisaVulnerabilityName
+                            ),
+                            "cveYear": force_string(cveYear),
+                            "excepted": force_string(excepted),
+                            "firstFound": force_string(firstFound),
+                            "lastScanDate": force_string(lastScanDate),
+                            "scanType": force_string(scanType),
+                            "summary": force_string(summary),
+                            "cpes": force_string(cpes),
+                            "absoluteFirstFoundDate": force_string(
+                                absoluteFirstFoundDate
+                            ),
+                            "cisaDateAdded": force_string(cisaDateAdded),
+                            "isCisaKev": force_string(isCisaKev),
+                            "lastFound": force_string(lastFound),
+                        },
+                    )
+                )
+
+        # handle any additional values and insert into custom_attrs
+        custom_attrs: Dict[str] = {}
+
+        root_keys_to_ignore = [
+            "installedApplications",
+            "deployedSoftwarePackages",
+            "compliance",
+        ]
         for key, value in item.items():
             if not isinstance(value, dict) and value is not None:
                 root_keys_to_ignore.append(key)
@@ -70,7 +256,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
         for key, value in item.items():
             if not isinstance(value, dict) and value is not None:
                 if len(custom_attrs) < 1022:
-                    custom_attrs[key] = CustomAttribute(str(value)[:1022])
+                    custom_attrs[key] = str(value)[:1022]
 
         assets.append(
             ImportAsset(
@@ -85,10 +271,10 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                 manufacturer=manufacturer,
                 model=model,
                 deviceType=deviceType,
+                software=software[:99],
+                vulnerabilities=vulnerabilities[:99],
             )
         )
-
-    print(assets)
     return assets
 
 
@@ -113,11 +299,10 @@ def build_network_interface(ips: List[str], mac: str = None) -> NetworkInterface
                 continue
         except:
             continue
-
-    if mac is None:
-        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
-    else:
+    try:
         return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+    except:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
 
 
 def import_data_to_runzero(assets: List[ImportAsset]):
@@ -218,6 +403,32 @@ def get_endpoints():
                 assetCriticality
                 criticalityScore
             }
+            compliance {
+                cveFindings {
+                    absoluteFirstFoundDate
+                    affectedProducts
+                    cisaDateAdded
+                    cisaDueDate
+                    cisaNotes
+                    cisaProduct
+                    cisaRequiredAction
+                    cisaShortDescription
+                    cisaVendor
+                    cisaVulnerabilityName
+                    cpes
+                    cveId
+                    cveYear
+                    cvssScore
+                    excepted
+                    firstFound
+                    isCisaKev
+                    lastFound
+                    lastScanDate
+                    scanType
+                    severity
+                    summary
+                }
+            }
         }
         }
         pageInfo {
@@ -248,7 +459,7 @@ def get_endpoints():
         # grab data from the response
         endpoints.extend(data.json()["data"]["endpoints"]["edges"])
         hasNextPage = data.json()["data"]["endpoints"]["pageInfo"]["hasNextPage"]
-        cursor = data.json()["data"]["endpoints"]["pageInfo"]["startCursor"]
+        cursor = data.json()["data"]["endpoints"]["pageInfo"]["endCursor"]
 
     return endpoints
 
@@ -258,5 +469,7 @@ if __name__ == "__main__":
     runzero_endpoints = []
     for t in tanium_endpoints:
         runzero_endpoints.append(t["node"])
+    with open("tanium_assets.json", "w") as f:
+        json.dump(runzero_endpoints, f)
     runzero_assets = build_assets_from_json(runzero_endpoints)
     import_data_to_runzero(runzero_assets)

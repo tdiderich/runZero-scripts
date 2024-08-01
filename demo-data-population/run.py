@@ -21,6 +21,16 @@ parser.add_argument(
 )
 parser.add_argument("--upload", action="store_true", help="upload demo data to runZero")
 parser.add_argument(
+    "--verify",
+    action="store_true",
+    help="run checks on the results to verify they are correct",
+)
+parser.add_argument(
+    "--compress",
+    action="store_true",
+    help="gzips the JSON after uploading to have a smaller file to share",
+)
+parser.add_argument(
     "--assets-per-subnet",
     type=int,
     default=5,
@@ -43,7 +53,7 @@ RUNZERO_ORG_ID = (
 RUNZERO_SITE_ID = (
     os.environ["RUNZERO_DEMO_SITE_ID"]
     if args.env == "demo"
-    else os.environ["RUNZERO_SITE_ID"]
+    else "182921a0-39f0-4d34-810a-0a9446450101" # os.environ["RUNZERO_SITE_ID"]
 )
 RUNZERO_ORG_TOKEN = (
     os.environ["RUNZERO_DEMO_ORG_TOKEN"]
@@ -57,8 +67,16 @@ JAMF_CUSTOM_INTEGRATION_ID = (
 )
 
 # MAC cache
-MAC_CACHE = []
-ROUTER_SWITCH_MAC_CACHE = []
+MAC_CACHE = [
+    "00:23:47:61:15:30",
+    "00:a0:c8:f5:08:a5",
+    "3c:2a:f4:ab:e1:c6",
+    "e4:aa:5d:43:ed:a0",
+    "00:05:33:c6:b0:d6",
+    "e4:aa:5d:86:8f:3c",
+    "e4:aa:5d:fc:55:8e",
+]
+ROUTER_SWITCH_SERVER_MAC_CACHE = []
 
 # Output seeded with scan config line
 OUTPUT = [
@@ -492,7 +510,7 @@ END_USER_ASSETS = {
         "type": "PRINTER",
         "secondary_v4": "192.168.30.3",
         "mac": "3c:2a:f4:ab:e1:c6|10:5b:ad:4a:69:45|10:5b:ad:4a:e9:45|D4:10:5b:ad:5a:22:39|00:0c:29:01:66:14",
-        "cn": "e3248000-80ce-11db-8000-3c2af4abe1c6",
+        "cn": "e3248000-80ce-11db-8000-3c2af4abe1c6|39bb2b02-b72f-1d75-6fae-bb0ede560240",
     },
 }
 
@@ -503,7 +521,7 @@ ROUTING_ASSETS = {
         "filename": "scan_lab.json",
         "hostname": "ADTRAN225",
         "type": "ROUTER",
-        "mac": "00:a0:c8:5d:8e:c6|08:ea:44:37:f3:40",
+        "mac": "00:a0:c8:5d:8e:c6|08:ea:44:37:f3:40|e4:aa:5d:91:3c:17",
     },
     "Ubiquiti UniFi UAP": {
         "host": "192.168.30.246",
@@ -666,7 +684,7 @@ OT_DEVICES = {
         "hostname": "SWITCH.LOCALDOMAIN",
         "filename": "scan_lab_second.json",
         "type": "SWITCH",
-        "mac": "E8:04:62:75:89:C0",
+        "mac": "E8:04:62:75:89:C0|e4:aa:5d:eb:61:58",
     },
     "HP ProCurve J4905A M.10.104": {
         "host": "192.168.40.13",
@@ -742,7 +760,7 @@ NESSUS_DEVICE_MAP = {
         "mac": "4C:FC:AA:0A:FC:E3",
         "hostname": "tesla_model_s",
     },
-    "PRINTER": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
+    "PRINTER": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5|3c:2a:f4:ab:e1:c6"},
     "SWITCH": {"ip": "192.168.86.38", "mac": "D8:6C:63:5C:48:14"},
     "CAMERA": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
     "SENSOR": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
@@ -798,6 +816,10 @@ AWS_DEVICE_TYPES = [
 
 
 def semi_random_mac(mac: str) -> str:
+    # add MACs for the asset profiles to ensure we don't re-use them
+    macs = mac.split("|")
+    for m in macs:
+        MAC_CACHE.append(m)
     dup = True
     while dup:
         start = ":".join(mac.split(":")[:3])
@@ -809,7 +831,8 @@ def semi_random_mac(mac: str) -> str:
 
 
 def semi_random_ipv4(old_ip: str, new_ip: str) -> str:
-    start = old_ip.split(".")[:2]
+    single_ip = old_ip.split("|")[0]
+    start = single_ip.split(".")[:2]
     end = new_ip.split(".")[2:]
     return ".".join(start + end)
 
@@ -822,14 +845,15 @@ def random_ipv6() -> str:
 def check_for_replacements(key: str, asset_replacements: dict):
     match = None
     if key in asset_replacements:
-        safe_key = asset_replacements[key].replace(".", "\\.")
+        safe_key = asset_replacements[key].replace(".", "[.]")
         match = re.compile(safe_key, re.IGNORECASE)
     return match
 
 
 def regex_bulk_sub(match, new_val, result):
     if match and new_val:
-        return match.sub(new_val, result)
+        new_result = re.subn(match, new_val, result)
+        return new_result[0]
     else:
         return result
 
@@ -1102,6 +1126,12 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                     ip_match = check_for_replacements(
                         key="ip", asset_replacements=device_map[device_type]
                     )
+
+                    # replace old MAC addresses and integrations MACs
+                    old_macs = asset.get("mac")
+                    int_macs = device_map[device_type]["mac"]
+                    if old_macs:
+                        device_map[device_type]["mac"] = old_macs + "|" + int_macs
                     mac_match = check_for_replacements(
                         key="mac", asset_replacements=device_map[device_type]
                     )
@@ -1149,6 +1179,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 temp_result["info"]["_vulnerabilities"] = decode(
                                     temp_result["info"]["_vulnerabilities"]
                                 )
+
                                 if "operatingSystems" in temp_result["info"]:
                                     if len(os_info) > 1:
                                         temp_result["info"]["operatingSystems"] = (
@@ -1251,9 +1282,8 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 )
 
                             if integration_name == "aws":
-                                temp_result["info"][
-                                    "accountEmail"
-                                ] = "admin@runzero.com"
+                                temp_result["info"]["accountEmail"] = "admin@rzcorp.com"
+                                temp_result["info"]["keyName"] = "admin@rzcorp.com"
                                 temp_result["info"]["accountID"] = "RZ2024"
                                 temp_result["info"]["accountName"] = "RUNZERO"
                                 temp_result["info"]["id"] = str(uuid.uuid4())
@@ -1284,16 +1314,19 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 new_val=asset.get("ip", None),
                                 result=json.dumps(temp_result),
                             )
+
                             result = regex_bulk_sub(
                                 match=mac_match,
                                 new_val=asset.get("new_mac", None),
                                 result=result,
                             )
+
                             result = regex_bulk_sub(
                                 match=hostname_match,
                                 new_val=asset.get("new_hostname", None),
                                 result=result,
                             )
+
                             result = regex_bulk_sub(
                                 match=username_match,
                                 new_val=asset.get("username", None),
@@ -1305,6 +1338,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 "google-home.lan|tesla_model_s.lan|46d8d572f529283b8ed7c7565033867b.lan|15aa01ac34180re1.lan|esp_a93bf6.lan|esp_003d1d.lan|simplisafe_basestation.lan|teslawallconnector_179ace.lan",
                                 re.IGNORECASE,
                             )
+
                             result = regex_bulk_sub(
                                 match=nessus_hostnames_match,
                                 new_val=asset.get("new_hostname", None),
@@ -1322,6 +1356,10 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     if "output" in v:
                                         if "Remote operating system" in v["output"]:
                                             del modifiable_vulns[i]
+                                        if "DHCP server" in v["output"]:
+                                            del modifiable_vulns[i]
+                                    if "asset" in v and "ipv4" in v["asset"]:
+                                        v["asset"]["ipv4"] = asset.get("ip", None)
 
                                 final_result["info"]["_vulnerabilities"] = json.dumps(
                                     modifiable_vulns
@@ -1393,12 +1431,36 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
     new_secondary_v6 = random_ipv6() if secondary_v6_match else None
 
     ## check for MAC addresses + randomizer
-    mac_match = check_for_replacements("mac", asset_info[random_asset_type])
-    mac = asset_info[random_asset_type]["mac"] if mac_match else None
-    new_mac = (
-        semi_random_mac(mac=mac) if mac_match else semi_random_mac(mac="19:3c:1f:78:f2:cf")
-    )
+    ## this verifies the MAC randomizer doesn't accidentally create an already used MAC address
+    retry = True
+    while retry:
+        mac_match = check_for_replacements("mac", asset_info[random_asset_type])
+        mac = asset_info[random_asset_type]["mac"] if mac_match else None
+        new_mac = (
+            semi_random_mac(mac=mac)
+            if mac_match
+            else semi_random_mac(mac="19:3c:1f:78:f2:cf")
+        )
 
+        if mac != new_mac:
+            retry = False
+
+    # ensure all assets have an ARP entry with a MAC address
+    OUTPUT.append(
+        {
+            "type": "result",
+            "ts": current_rz_time(),
+            "host": ip,
+            "port": "0",
+            "proto": "arp",
+            "probe": "arp",
+            "info": {
+                "arp.mac": new_mac,
+                "source": "arp",
+            },
+        }
+    )
+    
     # replace tls.cn with random value
     cn_match = check_for_replacements("cn", asset_info[random_asset_type])
     new_cn = str(uuid.uuid4())
@@ -1419,57 +1481,67 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
                 asset_info[random_asset_type]["host"], re.IGNORECASE
             )
 
+            if asset_type in ["SWITCH", "ROUTER", "SERVER"]:
+                ROUTER_SWITCH_SERVER_MAC_CACHE.append({
+                    "ip": ip,
+                    "mac": new_mac
+                })
+
             if "snmp.vlans" in temp_result["info"]:
                 temp_result["info"]["snmp.vlans"] = "\t".join(
                     [
-                        f"1=RZ-{network}",
-                        f"2=RZ-{network}-GUEST",
-                        f"3-RZ-{network}-ADMIN",
+                        f"RZ1=RZ-{network}",
+                        f"RZ2=RZ-{network}-GUEST",
+                        f"RZ3=RZ-{network}-ADMIN",
                     ]
                 )
 
             if "snmp.sysName" in temp_result["info"]:
                 temp_result["info"]["snmp.sysName"] = new_hostname
 
-            if (
-                "snmp.interfaceMacs" in temp_result["info"]
-                or "snmp.macs.ports" in temp_result["info"]
-            ):
+            snmp_macs = [] if new_mac == None else [new_mac]
 
-                snmp_macs = [] if new_mac == None else [new_mac]
+            if len(ROUTER_SWITCH_SERVER_MAC_CACHE) > 0 and asset_type in [
+                "SWITCH",
+                "ROUTER",
+            ]:
+                snmp_macs.extend([semi_random_mac(mac=new_mac) for _ in range(2)])
+                existing_macs = []
+                loop_len = (
+                    len(ROUTER_SWITCH_SERVER_MAC_CACHE)
+                    if len(ROUTER_SWITCH_SERVER_MAC_CACHE) < 10
+                    else 10
+                )
 
-                if len(ROUTER_SWITCH_MAC_CACHE) > 2 and asset_type in [
-                    "SWITCH",
-                    "ROUTER",
-                ]:
-                    snmp_macs.extend([semi_random_mac(mac=new_mac) for _ in range(2)])
-                    existing_macs = []
-                    loop_len = (
-                        len(ROUTER_SWITCH_MAC_CACHE)
-                        if len(ROUTER_SWITCH_MAC_CACHE) < 5
-                        else 5
-                    )
+                for _ in range(loop_len):
+                    temp_mac = random.choice(ROUTER_SWITCH_SERVER_MAC_CACHE)["mac"]
+                    if temp_mac not in existing_macs:
+                        existing_macs.append(temp_mac)
 
-                    for _ in range(loop_len):
-                        temp_mac = random.choice(ROUTER_SWITCH_MAC_CACHE)
-                        if temp_mac not in existing_macs:
-                            existing_macs.append(temp_mac)
+                snmp_macs.extend(existing_macs)
 
-                    snmp_macs.extend(existing_macs)
+            if "snmp.interfaceMacs" in temp_result["info"]:
+                temp_result["info"]["snmp.interfaceMacs"] = new_mac
 
-                if "snmp.interfaceMacs" in temp_result["info"]:
-                    temp_result["info"]["snmp.interfaceMacs"] = (
-                        "\t".join(snmp_macs) if len(snmp_macs) > 0 else ""
-                    )
+            if "snmp.macs.ports" in temp_result["info"]:
+                mac_ports = [
+                    f"1/g{i}={snmp_macs[i]}" for i in range(0, len(snmp_macs) - 1)
+                ]
+                temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
 
-                    if asset_type in ["SWITCH", "ROUTER"]:
-                        ROUTER_SWITCH_MAC_CACHE.append(new_mac)
+            if "snmp.interfaceNames" in temp_result["info"]:
+                names = [
+                    f"1/g{i}" for i in range(0, len(snmp_macs) - 1)
+                ]
+                temp_result["info"]["snmp.interfaceNames"] = "\t".join(names)
 
-                if "snmp.macs.ports" in temp_result["info"]:
-                    mac_ports = [
-                        f"Gi0/{i}={snmp_macs[i]}" for i in range(0, len(snmp_macs) - 1)
-                    ]
-                    temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
+            if "snmp.arpcache" in temp_result["info"]:
+                arp_cache = []
+                for _, asset in enumerate(ROUTER_SWITCH_SERVER_MAC_CACHE):
+                    arp_ip = asset.get("ip")
+                    arp_mac = asset.get("mac")
+                    arp_cache.append(f"{arp_ip}={arp_mac}")
+                temp_result["info"]["snmp.arpcache"] = "\t".join(arp_cache)
 
             # update hostname + primary IP
             result = regex_bulk_sub(
@@ -1590,7 +1662,7 @@ def main():
             network="HQ",
         )
 
-        del ROUTER_SWITCH_MAC_CACHE[:]
+        del ROUTER_SWITCH_SERVER_MAC_CACHE[:]
 
         hq_bacnet_cache = create_assets(
             subnet_start=10,
@@ -1599,6 +1671,8 @@ def main():
             ip_finish=args.assets_per_subnet + 1,
             network="BACNET",
         )
+
+        del ROUTER_SWITCH_SERVER_MAC_CACHE[:]
 
         print(
             f"SUCCESS - created {len(hq_asset_cache) + len(hq_bacnet_cache)} HQ + HQ BACNET assets"
@@ -1613,7 +1687,7 @@ def main():
             network="DC",
         )
 
-        del ROUTER_SWITCH_MAC_CACHE[:]
+        del ROUTER_SWITCH_SERVER_MAC_CACHE[:]
 
         dc_bacnet_cache = create_assets(
             subnet_start=20,
@@ -1623,7 +1697,7 @@ def main():
             network="BACNET",
         )
 
-        del ROUTER_SWITCH_MAC_CACHE[:]
+        del ROUTER_SWITCH_SERVER_MAC_CACHE[:]
 
         print(
             f"SUCCESS - created {len(dc_asset_cache) + len(dc_bacnet_cache)} DC + DC BACNET assets"
@@ -1721,6 +1795,7 @@ def main():
     # python3 demo_data.py --upload
     if args.upload:
         print("STARTING - uploading tasks to runZero")
+        last_task_id = "d8781eaf-b98c-4013-8d8c-5d2a424026ac"
         for filename in [
             "scan_output.json",
             "integration_crowdstrike.json",
@@ -1738,11 +1813,57 @@ def main():
                 url=upload_url, headers=headers, params=params, data=gzip_upload
             )
             if resp.status_code == 200:
+                last_task_id = resp.json()["id"]
                 print("SUCCESS - uploaded", filename)
-            
-            # create compressed version as well
-            os.system(f"gzip {filename} -k -f")
-            print(f"SUCCESS - compressed {filename} to {filename}.gz")
+
+            if args.compress:
+                # create compressed version as well
+                os.system(f"gzip {filename} -k -f")
+                print(f"SUCCESS - compressed {filename} to {filename}.gz")
+
+        if args.verify and last_task_id:
+            wait = True
+            while wait:
+                task_status = requests.get(
+                    url=RUNZERO_BASE_URL + f"/org/tasks/{last_task_id}",
+                    headers={"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"},
+                )
+                if task_status.status_code == 200:
+                    status = task_status.json().get("status", None)
+                    if status == "processed":
+                        print("SUCCESS - task is processed")
+                        wait = False
+                    else:
+                        print("IN PROGRESS - waiting for last task to be processed")
+                        time.sleep(10)
+
+            headers = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
+
+            # check for overlapping MACs
+            params = {
+                "search": f"site:{RUNZERO_SITE_ID} mac_overlap:t",
+                "fields": "os,macs,names",
+            }
+            mac_overlaps = requests.get(
+                url=RUNZERO_BASE_URL + "/export/org/assets.json",
+                headers=headers,
+                params=params,
+            )
+            macs = {}
+            for a in mac_overlaps.json():
+                for mac in a["macs"]:
+                    if mac in macs:
+                        macs[mac]["count"] += 1
+                        macs[mac]["os"] = macs[mac]["os"] + "," + a["os"]
+                        new_names = a["names"]
+                        macs[mac]["names"] = macs[mac]["names"] + new_names
+                    else:
+                        macs[mac] = {"count": 1, "os": a["os"], "names": a["names"]}
+            for dup in macs:
+                if macs[dup].get("count") > 1:
+                    print(dup)
+                    print(macs[dup])
+
 
 if __name__ == "__main__":
     main()

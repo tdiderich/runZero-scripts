@@ -5,12 +5,43 @@ import random
 import datetime
 import os
 import requests
+import argparse
 
-RUNZERO_BASE_URL = "https://demo.runZero.com/api/v1.0"
-RUNZERO_ORG_ID = "bddd405a-f594-4891-88f9-c4e95d793f68"
-RUNZERO_SITE_ID = "43d7ee80-2927-4c68-9be0-1f8cf267cf9a"
-RUNZERO_ORG_TOKEN = os.environ["RUNZERO_ORG_TOKEN"]
-JAMF_CUSTOM_INTEGRATION_ID = "2ba644ef-2774-4539-b3e6-2dd06770c0a5"
+
+# Command line args
+parser = argparse.ArgumentParser(
+    prog="Demo Data Creator",
+    description="Creates and uploads demo data to runZero",
+)
+parser.add_argument("--env", type=str, default=5, help="demo or prod")
+args = parser.parse_args()
+
+RUNZERO_BASE_URL = (
+    "https://demo.runzero.com/api/v1.0"
+    if args.env == "demo"
+    else "https://console.runzero.com/api/v1.0"
+)
+RUNZERO_ORG_ID = (
+    os.environ["RUNZERO_DEMO_ORG_ID"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_ORG_ID"]
+)
+RUNZERO_SITE_ID = (
+    os.environ["RUNZERO_DEMO_SITE_ID"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_SITE_ID"]
+)
+RUNZERO_ORG_TOKEN = (
+    os.environ["RUNZERO_DEMO_ORG_TOKEN"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_ORG_TOKEN"]
+)
+JAMF_CUSTOM_INTEGRATION_ID = (
+    os.environ["RUNZERO_DEMO_JAMF_ID"]
+    if args.env == "demo"
+    else os.environ["RUNZERO_JAMF_ID"]
+)
+
 def current_rz_time() -> float:
     return round(time.time() * 1000000000)
 
