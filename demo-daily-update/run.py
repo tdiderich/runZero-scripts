@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser(
     description="Creates and uploads demo data to runZero",
 )
 parser.add_argument("--env", type=str, default=5, help="demo or prod")
+parser.add_argument("--delete", action="store_true", help="demo or prod")
 args = parser.parse_args()
 
 RUNZERO_BASE_URL = (
@@ -123,7 +124,7 @@ def main():
         output = []
         print("STARTING - updating", file)
         with gzip.open(file, "rt") as unzipped: 
-            # fix all the timestamps 
+            # fix all the timestamps
             for line in unzipped.readlines():
                 temp_line = json.loads(line)
                 temp_line["ts"] = current_rz_time()
@@ -162,15 +163,16 @@ def main():
                     output.append(temp_line)
                 else:
                     print("ERROR - file not supported: ", file)
-            
-            # create the new .json file to upload to rz 
+
+            # create the new .json file to upload to rz
             handle_output(output=output, filename=file)
-        
+
         print("SUCCESS - updated", file)
-    
-    # delete the existing assets 
-    delete_existing_assets()
-    # upload the updated tasks     
+
+    # delete the existing assets
+    if args.delete:
+        delete_existing_assets()
+    # upload the updated tasks
     upload_tasks()
 
 if __name__ == "__main__":
