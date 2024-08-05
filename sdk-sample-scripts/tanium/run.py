@@ -47,7 +47,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
     assets: List[ImportAsset] = []
     for item in json_input:
         asset_id = item.get("id")
-        name = item.get("name", "")
+        hostname = item.get("name", "")
         os = item.get("os", {}).get("name", "")
         macs = item.get("macAddresses", [])
         ip = item.get("ipAddress", "")
@@ -149,19 +149,16 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                 risk_rank = 0
                 score = 0
 
-            if risk_rank > 0:
-                print(risk_rank)
-                print(score)
-
             summary = vuln.get("summary", "")
 
             try:
                 vulnerabilities.append(
                     Vulnerability(
-                        id=str(cveId),
-                        name=str(summary)[0:255],
-                        description=str(cisaShortDescription),
+                        id=str(uuid.uuid4()),
+                        name=str(summary)[:255],
+                        description=str(summary)[:255],
                         cve=str(cveId)[:13],
+                        solution=str(cisaRequiredAction),
                         cvss2BaseScore=cvssScore,
                         cvss2TemporalScore=cvssScore,
                         cvss3BaseScore=cvssScore,
@@ -194,6 +191,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                             "cisaDateAdded": force_string(cisaDateAdded),
                             "isCisaKev": force_string(isCisaKev),
                             "lastFound": force_string(lastFound),
+                            "cisaShortDescription": force_string(cisaShortDescription),
                         },
                     )
                 )
@@ -201,9 +199,10 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             except:
                 vulnerabilities.append(
                     Vulnerability(
-                        id=str(cveId),
-                        name=str(summary)[0:255],
-                        description=str(cisaShortDescription),
+                        id=str(uuid.uuid4()),
+                        name=str(summary)[:255],
+                        description=str(summary)[:255],
+                        solution=str(cisaRequiredAction),
                         risk_score=score,
                         risk_rank=risk_rank,
                         severity_score=score,
@@ -231,6 +230,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                             "cisaDateAdded": force_string(cisaDateAdded),
                             "isCisaKev": force_string(isCisaKev),
                             "lastFound": force_string(lastFound),
+                            "cisaShortDescription": force_string(cisaShortDescription),
                         },
                     )
                 )
@@ -251,7 +251,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
             nested_dict=item, root_keys_to_ignore=root_keys_to_ignore
         )
 
-        item = flattened_items | item
+        item = flattened_items
 
         for key, value in item.items():
             if not isinstance(value, dict) and value is not None:
@@ -263,7 +263,7 @@ def build_assets_from_json(json_input: List[Dict[str, Any]]) -> List[ImportAsset
                 id=asset_id,
                 networkInterfaces=networks,
                 os=os,
-                hostnames=[name],
+                hostnames=[hostname],
                 customAttributes=custom_attrs,
                 domain=domain,
                 firstSeenTS=firstSeenTS,
@@ -469,7 +469,5 @@ if __name__ == "__main__":
     runzero_endpoints = []
     for t in tanium_endpoints:
         runzero_endpoints.append(t["node"])
-    with open("tanium_assets.json", "w") as f:
-        json.dump(runzero_endpoints, f)
     runzero_assets = build_assets_from_json(runzero_endpoints)
     import_data_to_runzero(runzero_assets)
