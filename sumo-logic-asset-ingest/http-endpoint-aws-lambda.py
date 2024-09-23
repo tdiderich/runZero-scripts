@@ -18,14 +18,17 @@ def lambda_handler(event, context):
     data = response.data
     assets = json.loads(data)
     batchsize = 500
-    for i in range(0, len(assets), batchsize):
-        batch = assets[i:i+batchsize]
-        f = open("upload.txt", "w")
-        f.truncate(0)
-        for a in batch:
-            json.dump(a, f)
-            f.write("\n")
-        f.close()
-        r = open("upload.txt")
-        http.request("POST", HTTP_ENDPOINT, body=r.read())
-        r.close()
+    if len(assets.json()) > 0 and assets.status_code == 200:
+        for i in range(0, len(assets.json()), batchsize):
+            batch = assets.json()[i : i + batchsize]
+            f = open("upload.txt", "w")
+            f.truncate(0)
+            for a in batch:
+                json.dump(a, f)
+                f.write("\n")
+            f.close()
+            r = open("upload.txt")
+            http.request("POST", HTTP_ENDPOINT, data=r.read())
+            r.close()
+    else:
+        print(f"No assets found - status code from runZero API: {assets.status_code}")

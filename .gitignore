@@ -40,3 +40,4 @@ demo-data-population/integration_nessus.json
 demo-data-population/scan_output.json
 demo-data-population/tasks/scan_tplink.json
 demo-data-population/tasks/scan_ot.json
+sdk-sample-scripts/tanium/optum_run.py

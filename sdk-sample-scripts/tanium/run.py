@@ -29,9 +29,8 @@ RUNZERO_CLIENT_SECRET = os.environ["RUNZERO_CLIENT_SECRET"]
 TANIUM_URL = os.environ["TANIUM_URL"]
 TANIUM_TOKEN = os.environ["TANIUM_TOKEN"]
 
+
 # Will need to change on a per integration basis to align wtih JSON object keys
-
-
 def force_string(value: Any) -> str:
     if isinstance(value, list):
         output = ",".join(str(v) for v in value)
@@ -343,7 +342,7 @@ def import_data_to_runzero(assets: List[ImportAsset]):
         site_id=site.id,
         custom_integration_id=source_id,
         assets=assets,
-        task_info=ImportTask(name="Tanium Sync"),
+        task_info=ImportTask(name="Tanium Sync - Corvallis"),
     )
 
     if import_task:
@@ -456,6 +455,8 @@ def get_endpoints():
             json={"query": query, "variables": variables},
         )
 
+        print(data.status_code, data.text)
+
         # grab data from the response
         endpoints.extend(data.json()["data"]["endpoints"]["edges"])
         hasNextPage = data.json()["data"]["endpoints"]["pageInfo"]["hasNextPage"]
@@ -470,4 +471,5 @@ if __name__ == "__main__":
     for t in tanium_endpoints:
         runzero_endpoints.append(t["node"])
     runzero_assets = build_assets_from_json(runzero_endpoints)
+    print(len(runzero_assets))
     import_data_to_runzero(runzero_assets)

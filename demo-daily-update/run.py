@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(
     prog="Demo Data Creator",
     description="Creates and uploads demo data to runZero",
 )
-parser.add_argument("--env", type=str, default=5, help="demo or prod")
+parser.add_argument("--env", type=str, default="prod", help="demo or prod")
 parser.add_argument("--delete", action="store_true", help="demo or prod")
 args = parser.parse_args()
 
