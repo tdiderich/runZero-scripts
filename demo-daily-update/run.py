@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(
     description="Creates and uploads demo data to runZero",
 )
 parser.add_argument("--env", type=str, default="prod", help="demo or prod")
-parser.add_argument("--delete", action="store_true", help="demo or prod")
+parser.add_argument("--delete", action="store_true")
 args = parser.parse_args()
 
 RUNZERO_BASE_URL = (

@@ -1,4 +1,5 @@
 import os
+import datetime
 import requests
 import json
 import time
@@ -53,7 +54,7 @@ RUNZERO_ORG_ID = (
 RUNZERO_SITE_ID = (
     os.environ["RUNZERO_DEMO_SITE_ID"]
     if args.env == "demo"
-    else "182921a0-39f0-4d34-810a-0a9446450101" # os.environ["RUNZERO_SITE_ID"]
+    else os.environ["RUNZERO_SITE_ID"]
 )
 RUNZERO_ORG_TOKEN = (
     os.environ["RUNZERO_DEMO_ORG_TOKEN"]
@@ -66,7 +67,7 @@ JAMF_CUSTOM_INTEGRATION_ID = (
     else os.environ["RUNZERO_JAMF_ID"]
 )
 
-# MAC cache
+# MAC caches
 MAC_CACHE = [
     "00:23:47:61:15:30",
     "00:a0:c8:f5:08:a5",
@@ -76,318 +77,11 @@ MAC_CACHE = [
     "e4:aa:5d:86:8f:3c",
     "e4:aa:5d:fc:55:8e",
 ]
+
 ROUTER_SWITCH_SERVER_MAC_CACHE = []
 
 # Output seeded with scan config line
-OUTPUT = [
-    {
-        "type": "config",
-        "ts": 1718047038630343009,
-        "probes": [
-            "arp",
-            "aws-instances",
-            "bacnet",
-            "censys",
-            "crestron",
-            "dns",
-            "dtls",
-            "echo",
-            "ike",
-            "ipmi",
-            "l2t",
-            "mdns",
-            "memcache",
-            "mssql",
-            "natpmp",
-            "netbios",
-            "ntp",
-            "openvpn",
-            "pca",
-            "rdns",
-            "rpcbind",
-            "sip",
-            "snmp",
-            "ssdp",
-            "ssh",
-            "syn",
-            "tftp",
-            "ubnt",
-            "vmware",
-            "wlan-list",
-            "wsd",
-        ],
-        "addresses": [],
-        "networks": [
-            "10.0.0.0/24",
-            "10.0.1.0/24",
-            "10.0.2.0/24",
-            "10.0.3.0/24",
-            "10.0.4.0/24",
-            "10.0.5.0/24",
-            "10.0.6.0/24",
-            "10.0.7.0/24",
-            "10.0.8.0/24",
-            "10.0.9.0/24",
-            "10.0.10.0/24",
-            "10.0.11.0/24",
-            "10.0.12.0/24",
-            "10.0.13.0/24",
-            "10.0.14.0/24",
-            "10.0.15.0/24",
-            "10.0.16.0/24",
-            "10.0.17.0/24",
-            "10.0.18.0/24",
-            "10.0.19.0/24",
-            "10.0.20.0/24",
-            "23.20.0.0/24",
-            "23.20.1.0/24",
-            "23.20.2.0/24",
-            "23.20.3.0/24",
-            "23.20.4.0/24",
-            "23.20.5.0/24",
-        ],
-        "params": {
-            "arp-fast": "false",
-            "aws-instances-delete-stale": "false",
-            "aws-instances-exclude-unknown": "false",
-            "aws-instances-include-stopped": "false",
-            "aws-instances-service-options": "defaults",
-            "aws-instances-site-per-account": "false",
-            "aws-instances-site-per-vpc": "false",
-            "bacnet-ports": "46808,47808,48808",
-            "censys-exclude-unknown": "false",
-            "censys-mode": "targets",
-            "censys-query": "",
-            "clock-offset": "0",
-            "crestron-port": "41794",
-            "dns-disable-google-myaddr": "false",
-            "dns-disable-meraki-detection": "false",
-            "dns-port": "53",
-            "dns-resolve-name": "www.google.com",
-            "dns-trace-domain": "helper.rumble.network",
-            "dtls-ports": "443,3391,4433,5246,5349,5684",
-            "echo-report-errors": "false",
-            "excludes": "192.168.168.0/24",
-            "host-ping-probes": "arp,echo,syn,connect,netbios,snmp,ntp,sunrpc,ike,openvpn,mdns",
-            "ike-port": "500",
-            "ipmi-port": "623",
-            "l2t-port": "2228",
-            "max-attempts": "3",
-            "max-group-size": "4096",
-            "max-host-rate": "40",
-            "max-sockets": "2048",
-            "max-ttl": "255",
-            "mdns-port": "5353",
-            "memcache-port": "11211",
-            "mssql-port": "1434",
-            "nameservers": "",
-            "natpmp-port": "5351",
-            "netbios-port": "137",
-            "nopcap": "false",
-            "ntp-port": "123",
-            "openvpn-ports": "1194",
-            "passes": "1",
-            "pca-port": "5632",
-            "ping-only": "false",
-            "probes": "arp,aws-instances,bacnet,censys,crestron,dns,dtls,echo,ike,ipmi,l2t,mdns,memcache,mssql,natpmp,netbios,ntp,openvpn,pca,rdns,rpcbind,sip,snmp,ssdp,ssh,syn,connect,tftp,ubnt,vmware,wlan-list,wsd",
-            "rate": "1000",
-            "rdns-max-concurrent": "64",
-            "rdns-timeout": "3",
-            "rpcbind-port": "111",
-            "rpcbind-port-nfs": "2049",
-            "scan-mode": "host",
-            "scanner-name": "main",
-            "screenshots": "true",
-            "sip-port": "5060",
-            "skip-broadcast": "true",
-            "snmp-disable-bulk": "false",
-            "snmp-max-repetitions": "16",
-            "snmp-max-retries": "1",
-            "snmp-poll-interval": "300",
-            "snmp-port": "161",
-            "snmp-timeout": "5",
-            "snmp-v3-context": "",
-            "snmp-walk-timeout": "60",
-            "ssdp-port": "1900",
-            "ssh-fingerprint": "true",
-            "ssh-fingerprint-username": "_STATUS_",
-            "subnet-ping-net-size": "256",
-            "subnet-ping-probes": "arp,echo,syn,connect,netbios,snmp,ntp,sunrpc,ike,openvpn,mdns",
-            "subnet-ping-sample-rate": "3",
-            "syn-disable-bogus-filter": "false",
-            "syn-forwarding-check": "true",
-            "syn-forwarding-check-target": "13.248.161.247",
-            "syn-max-retries": "2",
-            "syn-report-resets": "true",
-            "syn-reset-sessions": "true",
-            "syn-reset-sessions-delay": "0",
-            "syn-reset-sessions-limit": "50",
-            "syn-traceroute": "true",
-            "syn-udp-trace-port": "65535",
-            "tcp-excludes": "",
-            "tcp-ports": "3306,8834,2083,2604,8028,8180,9443,10008,47002,21,1582,5061,5985,8883,8902,9300,264,512,5521,5903,17783,50013,993,2049,8800,9091,15671,17185,25000,5989,8000,2638,8686,42,1755,7879,27888,445,6661,9200,17,3033,6262,7579,50021,2100,5906,8471,8488,4443,7778,10259,28017,53,1091,8006,8020,8205,65535,5060,5353,1433,4949,6101,8090,9401,9418,500,1098,10162,10202,44334,65002,3050,6082,8445,8181,8888,34205,40007,1723,7144,5902,9593,32913,80,3001,8850,9000,41080,50070,61616,123,4343,6443,37,4322,6001,26000,5905,9001,8095,1801,3900,1521,5347,5901,9090,1030,1241,22222,38292,3200,16992,998,8023,4366,7902,8787,49,1533,5405,7070,61614,1514,2362,5907,8010,11333,17781,37777,3780,5093,17777,55580,9080,44818,1100,3389,2224,7210,9,623,111,19810,2181,110,280,6502,14330,37892,82,902,17791,32764,5275,8089,9855,46823,873,3268,2023,5988,6503,8081,9084,9152,636,903,5666,6504,9390,10250,1260,3071,5560,7510,7787,13838,28784,54922,102,137,7801,10001,17782,135,2103,1468,9002,7580,10050,139,4659,2375,3460,4092,4567,8172,9060,119,1000,50051,6106,12203,13364,20222,3502,5250,1199,8182,43,1035,50090,23,3128,1443,8903,8300,25565,79,1129,5631,20031,444,689,10628,4950,8127,4730,4848,7770,8503,10000,15672,1024,2381,13778,16993,17798,9809,10080,2380,5038,5040,1581,1611,40317,3000,28222,2376,2443,3300,3500,7777,515,1604,8099,25672,2074,6070,5351,6514,27000,34962,52311,69,587,2809,5800,7080,10203,20101,50000,912,1494,62514,5400,17775,26122,48899,1,1090,6050,20034,41025,52302,2533,3351,5683,6000,8889,1102,4369,5671,5672,6379,8082,12401,30000,1440,3628,3311,6161,6905,8444,9100,85,717,4433,4840,5355,6988,8880,9092,1220,3790,38102,54921,62078,9471,10255,10616,5392,7800,143,8088,10257,11234,6542,8443,4353,8008,9042,25025,402,2207,6112,1900,5938,540,1300,20010,20111,5555,8001,27018,54923,524,2002,37891,8009,20171,9099,9391,32844,921,7000,2525,2601,5601,17472,664,1128,7077,1270,5986,23791,2000,7001,47001,179,8083,4368,7547,47290,3299,3312,5000,8871,161,4444,34963,55553,442,9111,6667,31099,3269,5900,1434,1811,8098,10098,10443,105,1211,19300,33060,44343,513,1103,5432,5007,8030,13,1083,5814,5920,6556,8531,9081,9594,2105,5498,2947,4000,13500,88,1158,3872,11099,27019,109,1311,5911,5984,8400,8812,17778,38008,1099,1101,113,1830,4987,8333,9495,37890,7,22,5908,8649,17200,3037,5037,17784,2379,12221,5433,7002,9524,34964,19,2082,5168,34443,83,2222,2121,8222,8901,4445,5247,523,1352,5580,8012,222,1883,384,12174,5051,5909,8086,8500,830,1610,5222,8123,8983,20293,57772,1080,3220,7676,2323,2598,3260,41523,70,771,12379,910,12345,7373,18881,7474,8087,54321,631,7443,7700,8080,8890,2068,2967,5520,45230,23943,995,8545,6405,6660,7100,9530,18264,465,6060,9160,9380,1089,4679,11211,548,783,4365,16102,17790,20000,23472,49152,743,3057,443,27017,9999,888,8303,1583,3217,3273,8100,81,84,8161,17776,51443,2199,3817,9527,27080,46824,4786,5904,19888,3871,9440,15200,41524,8003,12397,617,2021,5022,7021,10051,37718,25,502,5910,6002,6080,8530,8899,11000,1530,3083,31001,705,3632,5001,50121,389,554,9595,9600,38080,1234,5632,7071,7181,8014,38010,990,3003,5554,16443,407,3690",
-            "tcp-skip-protocol": "false",
-            "tftp-ports": "69",
-            "tos": "0",
-            "ubnt-port": "10001",
-            "verbose": "true",
-            "very-verbose": "false",
-            "wlan-list-poll-interval": "300",
-            "wsd-port": "3702",
-        },
-        "scan_targets": {
-            "networks": [
-                "10.0.0.0/24",
-                "10.0.1.0/24",
-                "10.0.2.0/24",
-                "10.0.3.0/24",
-                "10.0.4.0/24",
-                "10.0.5.0/24",
-                "10.0.6.0/24",
-                "10.0.7.0/24",
-                "10.0.8.0/24",
-                "10.0.9.0/24",
-                "10.0.10.0/24",
-                "10.0.11.0/24",
-                "10.0.12.0/24",
-                "10.0.13.0/24",
-                "10.0.14.0/24",
-                "10.0.15.0/24",
-                "10.0.16.0/24",
-                "10.0.17.0/24",
-                "10.0.18.0/24",
-                "10.0.19.0/24",
-                "10.0.20.0/24",
-                "23.20.0.0/24",
-                "23.20.1.0/24",
-                "23.20.2.0/24",
-                "23.20.3.0/24",
-                "23.20.4.0/24",
-                "23.20.5.0/24",
-            ],
-            "enable_dns": True,
-            "enable_ip6": True,
-            "enable_zero_mask": False,
-            "enable_ip6_mask": False,
-            "enable_loopback": False,
-            "enable_multicast": False,
-            "inputs": [
-                "10.0.0.0/24",
-                "10.0.1.0/24",
-                "10.0.2.0/24",
-                "10.0.3.0/24",
-                "10.0.4.0/24",
-                "10.0.5.0/24",
-                "10.0.6.0/24",
-                "10.0.7.0/24",
-                "10.0.8.0/24",
-                "10.0.9.0/24",
-                "10.0.10.0/24",
-                "10.0.11.0/24",
-                "10.0.12.0/24",
-                "10.0.13.0/24",
-                "10.0.14.0/24",
-                "10.0.15.0/24",
-                "10.0.16.0/24",
-                "10.0.17.0/24",
-                "10.0.18.0/24",
-                "10.0.19.0/24",
-                "10.0.20.0/24",
-                "23.20.0.0/24",
-                "23.20.1.0/24",
-                "23.20.2.0/24",
-                "23.20.3.0/24",
-                "23.20.4.0/24",
-                "23.20.5.0/24",
-            ],
-            "dns_timeout": 2000000000,
-            "concurrency": 40,
-            "hostnames": [],
-        },
-        "seed_targets": {
-            "networks": [
-                "10.0.0.0/24",
-                "10.0.1.0/24",
-                "10.0.2.0/24",
-                "10.0.3.0/24",
-                "10.0.4.0/24",
-                "10.0.5.0/24",
-                "10.0.6.0/24",
-                "10.0.7.0/24",
-                "10.0.8.0/24",
-                "10.0.9.0/24",
-                "10.0.10.0/24",
-                "10.0.11.0/24",
-                "10.0.12.0/24",
-                "10.0.13.0/24",
-                "10.0.14.0/24",
-                "10.0.15.0/24",
-                "10.0.16.0/24",
-                "10.0.17.0/24",
-                "10.0.18.0/24",
-                "10.0.19.0/24",
-                "10.0.20.0/24",
-                "23.20.0.0/24",
-                "23.20.1.0/24",
-                "23.20.2.0/24",
-                "23.20.3.0/24",
-                "23.20.4.0/24",
-                "23.20.5.0/24",
-            ],
-            "enable_dns": True,
-            "enable_ip6": True,
-            "enable_zero_mask": False,
-            "enable_ip6_mask": False,
-            "enable_loopback": False,
-            "enable_multicast": False,
-            "inputs": [
-                "10.0.0.0/24",
-                "10.0.1.0/24",
-                "10.0.2.0/24",
-                "10.0.3.0/24",
-                "10.0.4.0/24",
-                "10.0.5.0/24",
-                "10.0.6.0/24",
-                "10.0.7.0/24",
-                "10.0.8.0/24",
-                "10.0.9.0/24",
-                "10.0.10.0/24",
-                "10.0.11.0/24",
-                "10.0.12.0/24",
-                "10.0.13.0/24",
-                "10.0.14.0/24",
-                "10.0.15.0/24",
-                "10.0.16.0/24",
-                "10.0.17.0/24",
-                "10.0.18.0/24",
-                "10.0.19.0/24",
-                "10.0.20.0/24",
-                "23.20.0.0/24",
-                "23.20.1.0/24",
-                "23.20.2.0/24",
-                "23.20.3.0/24",
-                "23.20.4.0/24",
-                "23.20.5.0/24",
-            ],
-            "dns_timeout": 2000000000,
-            "concurrency": 40,
-            "hostnames": [],
-        },
-        "disc_targets": {
-            "networks": [],
-            "enable_dns": True,
-            "enable_ip6": True,
-            "enable_zero_mask": False,
-            "enable_ip6_mask": False,
-            "enable_loopback": False,
-            "enable_multicast": False,
-            "dns_timeout": 2000000000,
-            "concurrency": 40,
-            "hostnames": [],
-        },
-        "version": "4.0.240607.0 (build 20240607195406) [da7d44913ffb8b6f9d39f7e7700122613e4a4e96]",
-    }
-]
+OUTPUT = []
 
 # Markers for common compute assets
 SERVER_ASSETS = {
@@ -766,6 +460,40 @@ NESSUS_DEVICE_MAP = {
     "SENSOR": {"ip": "192.168.86.42", "mac": "A6:51:78:A5:F5"},
 }
 
+QUALYS_DEVICE_MAP = {
+    "SERVER-Windows": {
+        "ip": "192.168.40.139",
+        "mac": "00:0c:29:3d:57:13",
+        "hostname": "win11preview",
+    },
+    "LAPTOP-Windows": {
+        "ip": "192.168.1.6",
+        "mac": "zz:zz:zz:zz:zz:zz",
+        "hostname": "RUNZERO",
+    },
+    "LAPTOP-Apple": {
+        "ip": "192.168.0.6",
+        "mac": "4C:20:B8:AB:B6:A3",
+        "hostname": "MAC-MINI-M1",
+    },
+    "SERVER-Linux": {
+        "ip": "192.168.50.9",
+        "mac": "zz:zz:zz:zz:zz:zz",
+        "hostname": "nanananananana",
+    },
+    "ROUTER": {
+        "ip": "192.168.40.28",
+        "mac": "00:1B:D5:D8:72:BE",
+        "hostname": "cisco18",
+    },
+    "PRINTER": {
+        "ip": "192.168.30.20",
+        "mac": "10:5b:ad:4a:69:45|10:5b:ad:4a:e9:45|3c:2a:f4:ab:e1:c6",
+        "hostname": "BRN3C2AF4ABE1C6",
+    },
+    "PDU": {"ip": "192.168.40.73", "mac": "00:0d:5d:0c:74:32", "hostname": "RARITAN"},
+}
+
 CROWDSTRIKE_DEVICE_MAP = {
     "SERVER-Linux": {
         "ip": "172.31.33.53",
@@ -790,6 +518,17 @@ CROWDSTRIKE_DEVICE_MAP = {
         "mac": "f0-18-98-ee-7c-7b",
         "hostname": "Developers-Mac-mini.local",
         "username": "=developer",
+    },
+}
+
+AWS_DEVICE_MAP = {
+    "SERVER-CLOUD": {
+        "ip": "3.16.13.20",
+        "hostname": "UTILITY-SYSLOG|EC2-3-16-13-20.US-EAST-2|IP-172-31-16-221.US-EAST-2|EC2-10.0.0.3.US-EAST-2",
+        "os": "Linux",
+        "secondary_v4": "172.31.16.221",
+        "secondary_v6": "2600:1f16:a57:b303:121a:a53d:4232:8e5d",
+        "mac": "A4:CF:99:AB:0C:1B|5A:D0:3B:15:84:70|A4:CF:99:AF:67:FF|56:3E:3A:BA:BB:76|A4:CF:99:B2:54:03|06:ac:85:2f:1c:e5",
     },
 }
 
@@ -1086,6 +825,110 @@ def fudge_azuread_data(asset_cache: list) -> bool:
     return True
 
 
+def fudge_wiz_data(asset_cache: list) -> bool:
+    output = []
+    for asset in asset_cache:
+        asset_type = asset.get("type")
+        asset_location = asset.get("network")
+
+        # create records for correct asset types
+        if asset_type == "SERVER" and asset_location == "CLOUD":
+            with open(f"./tasks/integration_wiz.json") as f:
+                json_data = json.load(f)
+
+                # crate fake values that are used more than once
+                aws_id = "i-" + "".join(
+                                    random.choice(
+                                        ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+                                        + list(string.ascii_lowercase)
+                                    )
+                                    for _ in range(17)
+                                )
+                env = random.choice(["dev", "prod", "staging"])
+                hostname = asset.get("new_hostname")
+                provider_unique_id = f"arn:aws:ec2:us-east-2:123456789123:instance/{aws_id}"
+                provider_url = f"https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#InstanceDetails:instanceId={aws_id}"
+                tags = f"name={hostname} env={env}"
+                ip_list = [asset.get("ip"), asset.get("ipv6")]
+                asset_id = str(uuid.uuid4())
+
+                # update main json data with fake values
+                json_data["info"]["_type"] = "dev"
+                json_data["info"]["cloudPlatform"] = "AWS"
+                json_data["info"]["cloudProviderURL"] = provider_url
+                json_data["info"]["creationDateTS"] = str(round(time.time() - 10000 * random.choice([5, 6, 7, 8, 9, 10])))
+                json_data["info"]["dns"] = f"{hostname}.us-east-2.compute.amazonaws.com"
+                json_data["info"]["externalID"] = aws_id
+                json_data["info"]["id"] = asset_id
+                json_data["info"]["ipv4"] = asset.get("ip")
+                json_data["info"]["ipv6"] = asset.get("ipv6")
+                json_data["info"]["isEphemeral"] = "true"
+                json_data["info"]["isManaged"] = "true"
+                json_data["info"]["name"] = hostname
+                json_data["info"]["nativeType"] = "virtualMachine"
+                json_data["info"]["providerUniqueID"] = provider_unique_id
+                json_data["info"]["region"] = "us-east-2"
+                json_data["info"]["regionLocation"] = "US"
+                json_data["info"]["sizeGB"] = random.choice(["2", "4", "8", "16", "32"])
+                json_data["info"]["status"] = "Active"
+                json_data["info"]["subscriptionExternalID"] = "123456789123"
+                json_data["info"]["tags"] = tags
+                json_data["info"]["totalDisks"] = random.choice(["1", "2", "3", "4", "5"])
+                json_data["info"]["type"] = "Server"
+                json_data["info"]["updatedAtTS"] = str(round(time.time())) 
+                json_data["info"]["vCPUs"] = random.choice(["2", "4", "8", "16", "32"])
+
+                # upddate software and vulns with fake values
+                json_data["info"]["_software"] = decode(
+                    json_data.get("info").get("_software")
+                )
+                for s in json.loads(json_data["info"]["_software"]):
+                    s["id"] = str(uuid.uuid4())
+                    s["properties"]["subscriptionExternalId"] = "123456789123"
+                    s["properties"]["externalId"] = f"CloudPlatform/VirtualMachine##{aws_id}"
+                    s["name"] = s["name"].replace("app-small", hostname)
+                    s["properties"]["name"] = s["properties"]["name"].replace("app-small", hostname)
+
+                json_data["info"]["_vulnerabilities"] = decode(
+                    json_data.get("info").get("_vulnerabilities")
+                )
+                for v in json.loads(json_data["info"]["_vulnerabilities"]):
+                    v["id"] = asset_id
+                    v["name"] = hostname
+                    v["providerUniqueId"] = provider_unique_id
+                    v["cloudProviderURL"] = provider_url
+                    v["subscriptionExternalId"] = "123456789123"
+                    v["subscriptionId"] = "123456789123"
+                    v["tags"] = tags
+                    v["ipAddresses"] = ip_list
+                    v["imageId"] = str(uuid.uuid4())
+                    v["imageExternalId"] = asset.get("ami")
+                    v["imageProviderUniqueId"] = asset.get("ami")
+                    v["vulnerableAsset"]["id"] = asset_id
+                    v["vulnerableAsset"]["name"] = hostname
+                    v["vulnerableAsset"]["providerUniqueId"] = provider_unique_id
+                    v["vulnerableAsset"]["cloudProviderURL"] = provider_url
+                    v["vulnerableAsset"]["subscriptionExternalId"] = "123456789123"
+                    v["vulnerableAsset"]["subscriptionId"] = "123456789123"
+                    v["vulnerableAsset"]["tags"] = tags
+
+                    if "imageName" in v:
+                        del v["imageName"]
+                    if "portalUrl" in v:
+                        del v["portalUrl"]
+
+                # encode back to base64
+                json_data["info"]["_software"] = encode(json_data["info"]["_software"])
+                json_data["info"]["_vulnerabilities"] = encode(json_data["info"]["_vulnerabilities"])
+                output.append(json_data)
+
+    # write modified results to file for import
+    with open(f"integration_wiz.json", "w") as f:
+        for l in output:
+            f.write(json.dumps(l, separators=(",", ":")) + "\n")
+    return True
+
+
 # this is for integrations that require bulk regex operations to update the data
 def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
     output = []
@@ -1098,6 +941,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
             "nessus": NESSUS_DEVICE_MAP,
             "crowdstrike": CROWDSTRIKE_DEVICE_MAP,
             "aws": AWS_DEVICE_MAP,
+            "qualys": QUALYS_DEVICE_MAP,
         }
 
         device_map = device_map_key.get(integration_name, None)
@@ -1109,7 +953,9 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
             # match CrowdStrike assets more granularly
             os = asset.get("os", None)
-            if os and integration_name == "crowdstrike":
+            if os and (
+                integration_name == "crowdstrike" or integration_name == "qualys"
+            ):
                 device_type = device_type + "-" + os
 
             # only create AWS data for CLOUD assets
@@ -1146,6 +992,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
                         # check if the log is worth working on
                         temp_result = json.loads(line)
+                        temp_result["ts"] = current_rz_time()
                         if integration_name == "nessus":
                             result_ip = temp_result.get("info", {}).get("id", None)
                         elif integration_name == "crowdstrike":
@@ -1154,6 +1001,10 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                             result_ip = temp_result.get("info", {}).get(
                                 "publicIP", None
                             )
+                        elif integration_name == "qualys":
+                            result_ip = temp_result.get("info", {}).get("host.ip", None)
+
+                        # check if the result is worth updating
 
                         device_map_ip = device_map[device_type].get("ip")
 
@@ -1166,6 +1017,26 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
                             # integration specific modifications
                             os_info = asset.get("os_full", "").split("-")
+                            if integration_name == "qualys":
+                                temp_result["info"]["host.id"] = str(uuid.uuid4())
+                                temp_result["info"]["id"] = str(uuid.uuid4())
+                                temp_result["info"]["host.lastScannedDateTimeTS"] = str(round(time.time()))
+                                temp_result["info"]["host.lastVMScannedDateTS"] = str(round(
+                                    time.time()
+                                ))
+                                temp_result["info"]["detection.firstFoundTS"] = str(round(time.time()))
+                                temp_result["info"]["detection.lastFoundTS"] = str(
+                                    round(time.time())
+                                )
+                                if "host.os" in temp_result["info"]:
+                                    if len(os_info) > 1:
+                                        temp_result["info"]["host.os"] = os_info[0]
+                                    else:
+                                        temp_result["info"]["host.os"] = "Linux"
+
+                                temp_result["info"]["_detections"] = decode(
+                                    temp_result["info"]["_detections"]
+                                )
                             if integration_name == "nessus":
                                 temp_result["info"]["lastSeenTS"] = str(
                                     round(time.time())
@@ -1206,21 +1077,13 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 temp_result["info"]["_vulnerabilities"] = decode(
                                     temp_result["info"]["_vulnerabilities"]
                                 )
-                                temp_result["info"]["modifiedTS"] = str(
-                                    round(time.time())
-                                )
-                                temp_result["info"]["firstLoginTS"] = str(
-                                    round(time.time() - 10000)
-                                )
-                                temp_result["info"]["lastInteractiveTSS"] = str(
-                                    round(time.time() - 10000)
-                                )
-                                temp_result["info"]["lastInteractiveTS"] = str(
-                                    round(time.time() - 10000)
-                                )
-                                temp_result["info"]["lastLoginTS"] = str(
-                                    round(time.time())
-                                )
+                                temp_result["info"]["modifiedTS"] = str(round(time.time()))
+                                temp_result["info"]["firstLoginTS"] = str(round(time.time() - 10000 * random.choice([5, 6, 7, 8, 9, 10])))
+                                temp_result["info"]["lastInteractiveTSS"] = str(round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5])))
+                                temp_result["info"]["lastInteractiveTS"] = str(round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5])))
+                                temp_result["info"]["lastLoginTS"] = str(round(time.time() - 10000 * random.choice([1, 2, 3, 4, 5])))
+                                temp_result["info"]["agentLocalTime"] = str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")) + "Z"
+                                temp_result["info"]["lastSeen"] = str(datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")) + "Z"
 
                                 # Windows Server 2019 | Windows 11 | Windows Server 2016 | etc
                                 if len(os_info) == 3:
@@ -1303,9 +1166,11 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 new_aws_ip = semi_random_ipv4(
                                     old_ip="172.31.16.221", new_ip=new_ip
                                 )
+                                asset["ip"] = new_aws_ip
                                 temp_result["info"]["ipv4"] = f"{new_aws_ip}\t{new_ip}"
                                 temp_result["info"]["privateIP"] = new_aws_ip
                                 new_ipv6 = random_ipv6()
+                                asset["ipv6"] = new_ipv6
                                 temp_result["info"]["ipv6"] = new_ipv6
 
                             # make regex based modifications
@@ -1347,6 +1212,10 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
                             # reencode for upload
                             final_result = json.loads(result)
+                            if integration_name == "qualys":
+                                final_result["info"]["_detections"] = encode(
+                                    final_result["info"]["_detections"]
+                                )
                             if integration_name == "nessus":
                                 # able to add vulns as needed
                                 modifiable_vulns = json.loads(
@@ -1460,7 +1329,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             },
         }
     )
-    
+
     # replace tls.cn with random value
     cn_match = check_for_replacements("cn", asset_info[random_asset_type])
     new_cn = str(uuid.uuid4())
@@ -1482,10 +1351,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             )
 
             if asset_type in ["SWITCH", "ROUTER", "SERVER"]:
-                ROUTER_SWITCH_SERVER_MAC_CACHE.append({
-                    "ip": ip,
-                    "mac": new_mac
-                })
+                ROUTER_SWITCH_SERVER_MAC_CACHE.append({"ip": ip, "mac": new_mac})
 
             if "snmp.vlans" in temp_result["info"]:
                 temp_result["info"]["snmp.vlans"] = "\t".join(
@@ -1530,9 +1396,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
                 temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
 
             if "snmp.interfaceNames" in temp_result["info"]:
-                names = [
-                    f"1/g{i}" for i in range(0, len(snmp_macs) - 1)
-                ]
+                names = [f"1/g{i}" for i in range(0, len(snmp_macs) - 1)]
                 temp_result["info"]["snmp.interfaceNames"] = "\t".join(names)
 
             if "snmp.arpcache" in temp_result["info"]:
@@ -1653,6 +1517,313 @@ def main():
     # python3 demo_data.py --create
     if args.create:
         print("STARTING - asset creation")
+        OUTPUT.append({
+        "type": "config",
+        "ts": current_rz_time(),
+        "probes": [
+            "arp",
+            "aws-instances",
+            "bacnet",
+            "censys",
+            "crestron",
+            "dns",
+            "dtls",
+            "echo",
+            "ike",
+            "ipmi",
+            "l2t",
+            "mdns",
+            "memcache",
+            "mssql",
+            "natpmp",
+            "netbios",
+            "ntp",
+            "openvpn",
+            "pca",
+            "rdns",
+            "rpcbind",
+            "sip",
+            "snmp",
+            "ssdp",
+            "ssh",
+            "syn",
+            "tftp",
+            "ubnt",
+            "vmware",
+            "wlan-list",
+            "wsd",
+        ],
+        "addresses": [],
+        "networks": [
+            "10.0.0.0/24",
+            "10.0.1.0/24",
+            "10.0.2.0/24",
+            "10.0.3.0/24",
+            "10.0.4.0/24",
+            "10.0.5.0/24",
+            "10.0.6.0/24",
+            "10.0.7.0/24",
+            "10.0.8.0/24",
+            "10.0.9.0/24",
+            "10.0.10.0/24",
+            "10.0.11.0/24",
+            "10.0.12.0/24",
+            "10.0.13.0/24",
+            "10.0.14.0/24",
+            "10.0.15.0/24",
+            "10.0.16.0/24",
+            "10.0.17.0/24",
+            "10.0.18.0/24",
+            "10.0.19.0/24",
+            "10.0.20.0/24",
+            "23.20.0.0/24",
+            "23.20.1.0/24",
+            "23.20.2.0/24",
+            "23.20.3.0/24",
+            "23.20.4.0/24",
+            "23.20.5.0/24",
+        ],
+        "params": {
+            "arp-fast": "false",
+            "aws-instances-delete-stale": "false",
+            "aws-instances-exclude-unknown": "false",
+            "aws-instances-include-stopped": "false",
+            "aws-instances-service-options": "defaults",
+            "aws-instances-site-per-account": "false",
+            "aws-instances-site-per-vpc": "false",
+            "bacnet-ports": "46808,47808,48808",
+            "censys-exclude-unknown": "false",
+            "censys-mode": "targets",
+            "censys-query": "",
+            "clock-offset": "0",
+            "crestron-port": "41794",
+            "dns-disable-google-myaddr": "false",
+            "dns-disable-meraki-detection": "false",
+            "dns-port": "53",
+            "dns-resolve-name": "www.google.com",
+            "dns-trace-domain": "helper.rumble.network",
+            "dtls-ports": "443,3391,4433,5246,5349,5684",
+            "echo-report-errors": "false",
+            "excludes": "192.168.168.0/24",
+            "host-ping-probes": "arp,echo,syn,connect,netbios,snmp,ntp,sunrpc,ike,openvpn,mdns",
+            "ike-port": "500",
+            "ipmi-port": "623",
+            "l2t-port": "2228",
+            "max-attempts": "3",
+            "max-group-size": "4096",
+            "max-host-rate": "40",
+            "max-sockets": "2048",
+            "max-ttl": "255",
+            "mdns-port": "5353",
+            "memcache-port": "11211",
+            "mssql-port": "1434",
+            "nameservers": "",
+            "natpmp-port": "5351",
+            "netbios-port": "137",
+            "nopcap": "false",
+            "ntp-port": "123",
+            "openvpn-ports": "1194",
+            "passes": "1",
+            "pca-port": "5632",
+            "ping-only": "false",
+            "probes": "arp,aws-instances,bacnet,censys,crestron,dns,dtls,echo,ike,ipmi,l2t,mdns,memcache,mssql,natpmp,netbios,ntp,openvpn,pca,rdns,rpcbind,sip,snmp,ssdp,ssh,syn,connect,tftp,ubnt,vmware,wlan-list,wsd",
+            "rate": "1000",
+            "rdns-max-concurrent": "64",
+            "rdns-timeout": "3",
+            "rpcbind-port": "111",
+            "rpcbind-port-nfs": "2049",
+            "scan-mode": "host",
+            "scanner-name": "main",
+            "screenshots": "true",
+            "sip-port": "5060",
+            "skip-broadcast": "true",
+            "snmp-disable-bulk": "false",
+            "snmp-max-repetitions": "16",
+            "snmp-max-retries": "1",
+            "snmp-poll-interval": "300",
+            "snmp-port": "161",
+            "snmp-timeout": "5",
+            "snmp-v3-context": "",
+            "snmp-walk-timeout": "60",
+            "ssdp-port": "1900",
+            "ssh-fingerprint": "true",
+            "ssh-fingerprint-username": "_STATUS_",
+            "subnet-ping-net-size": "256",
+            "subnet-ping-probes": "arp,echo,syn,connect,netbios,snmp,ntp,sunrpc,ike,openvpn,mdns",
+            "subnet-ping-sample-rate": "3",
+            "syn-disable-bogus-filter": "false",
+            "syn-forwarding-check": "true",
+            "syn-forwarding-check-target": "13.248.161.247",
+            "syn-max-retries": "2",
+            "syn-report-resets": "true",
+            "syn-reset-sessions": "true",
+            "syn-reset-sessions-delay": "0",
+            "syn-reset-sessions-limit": "50",
+            "syn-traceroute": "true",
+            "syn-udp-trace-port": "65535",
+            "tcp-excludes": "",
+            "tcp-ports": "3306,8834,2083,2604,8028,8180,9443,10008,47002,21,1582,5061,5985,8883,8902,9300,264,512,5521,5903,17783,50013,993,2049,8800,9091,15671,17185,25000,5989,8000,2638,8686,42,1755,7879,27888,445,6661,9200,17,3033,6262,7579,50021,2100,5906,8471,8488,4443,7778,10259,28017,53,1091,8006,8020,8205,65535,5060,5353,1433,4949,6101,8090,9401,9418,500,1098,10162,10202,44334,65002,3050,6082,8445,8181,8888,34205,40007,1723,7144,5902,9593,32913,80,3001,8850,9000,41080,50070,61616,123,4343,6443,37,4322,6001,26000,5905,9001,8095,1801,3900,1521,5347,5901,9090,1030,1241,22222,38292,3200,16992,998,8023,4366,7902,8787,49,1533,5405,7070,61614,1514,2362,5907,8010,11333,17781,37777,3780,5093,17777,55580,9080,44818,1100,3389,2224,7210,9,623,111,19810,2181,110,280,6502,14330,37892,82,902,17791,32764,5275,8089,9855,46823,873,3268,2023,5988,6503,8081,9084,9152,636,903,5666,6504,9390,10250,1260,3071,5560,7510,7787,13838,28784,54922,102,137,7801,10001,17782,135,2103,1468,9002,7580,10050,139,4659,2375,3460,4092,4567,8172,9060,119,1000,50051,6106,12203,13364,20222,3502,5250,1199,8182,43,1035,50090,23,3128,1443,8903,8300,25565,79,1129,5631,20031,444,689,10628,4950,8127,4730,4848,7770,8503,10000,15672,1024,2381,13778,16993,17798,9809,10080,2380,5038,5040,1581,1611,40317,3000,28222,2376,2443,3300,3500,7777,515,1604,8099,25672,2074,6070,5351,6514,27000,34962,52311,69,587,2809,5800,7080,10203,20101,50000,912,1494,62514,5400,17775,26122,48899,1,1090,6050,20034,41025,52302,2533,3351,5683,6000,8889,1102,4369,5671,5672,6379,8082,12401,30000,1440,3628,3311,6161,6905,8444,9100,85,717,4433,4840,5355,6988,8880,9092,1220,3790,38102,54921,62078,9471,10255,10616,5392,7800,143,8088,10257,11234,6542,8443,4353,8008,9042,25025,402,2207,6112,1900,5938,540,1300,20010,20111,5555,8001,27018,54923,524,2002,37891,8009,20171,9099,9391,32844,921,7000,2525,2601,5601,17472,664,1128,7077,1270,5986,23791,2000,7001,47001,179,8083,4368,7547,47290,3299,3312,5000,8871,161,4444,34963,55553,442,9111,6667,31099,3269,5900,1434,1811,8098,10098,10443,105,1211,19300,33060,44343,513,1103,5432,5007,8030,13,1083,5814,5920,6556,8531,9081,9594,2105,5498,2947,4000,13500,88,1158,3872,11099,27019,109,1311,5911,5984,8400,8812,17778,38008,1099,1101,113,1830,4987,8333,9495,37890,7,22,5908,8649,17200,3037,5037,17784,2379,12221,5433,7002,9524,34964,19,2082,5168,34443,83,2222,2121,8222,8901,4445,5247,523,1352,5580,8012,222,1883,384,12174,5051,5909,8086,8500,830,1610,5222,8123,8983,20293,57772,1080,3220,7676,2323,2598,3260,41523,70,771,12379,910,12345,7373,18881,7474,8087,54321,631,7443,7700,8080,8890,2068,2967,5520,45230,23943,995,8545,6405,6660,7100,9530,18264,465,6060,9160,9380,1089,4679,11211,548,783,4365,16102,17790,20000,23472,49152,743,3057,443,27017,9999,888,8303,1583,3217,3273,8100,81,84,8161,17776,51443,2199,3817,9527,27080,46824,4786,5904,19888,3871,9440,15200,41524,8003,12397,617,2021,5022,7021,10051,37718,25,502,5910,6002,6080,8530,8899,11000,1530,3083,31001,705,3632,5001,50121,389,554,9595,9600,38080,1234,5632,7071,7181,8014,38010,990,3003,5554,16443,407,3690",
+            "tcp-skip-protocol": "false",
+            "tftp-ports": "69",
+            "tos": "0",
+            "ubnt-port": "10001",
+            "verbose": "true",
+            "very-verbose": "false",
+            "wlan-list-poll-interval": "300",
+            "wsd-port": "3702",
+        },
+        "scan_targets": {
+            "networks": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "enable_dns": True,
+            "enable_ip6": True,
+            "enable_zero_mask": False,
+            "enable_ip6_mask": False,
+            "enable_loopback": False,
+            "enable_multicast": False,
+            "inputs": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "dns_timeout": 2000000000,
+            "concurrency": 40,
+            "hostnames": [],
+        },
+        "seed_targets": {
+            "networks": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "enable_dns": True,
+            "enable_ip6": True,
+            "enable_zero_mask": False,
+            "enable_ip6_mask": False,
+            "enable_loopback": False,
+            "enable_multicast": False,
+            "inputs": [
+                "10.0.0.0/24",
+                "10.0.1.0/24",
+                "10.0.2.0/24",
+                "10.0.3.0/24",
+                "10.0.4.0/24",
+                "10.0.5.0/24",
+                "10.0.6.0/24",
+                "10.0.7.0/24",
+                "10.0.8.0/24",
+                "10.0.9.0/24",
+                "10.0.10.0/24",
+                "10.0.11.0/24",
+                "10.0.12.0/24",
+                "10.0.13.0/24",
+                "10.0.14.0/24",
+                "10.0.15.0/24",
+                "10.0.16.0/24",
+                "10.0.17.0/24",
+                "10.0.18.0/24",
+                "10.0.19.0/24",
+                "10.0.20.0/24",
+                "23.20.0.0/24",
+                "23.20.1.0/24",
+                "23.20.2.0/24",
+                "23.20.3.0/24",
+                "23.20.4.0/24",
+                "23.20.5.0/24",
+            ],
+            "dns_timeout": 2000000000,
+            "concurrency": 40,
+            "hostnames": [],
+        },
+        "disc_targets": {
+            "networks": [],
+            "enable_dns": True,
+            "enable_ip6": True,
+            "enable_zero_mask": False,
+            "enable_ip6_mask": False,
+            "enable_loopback": False,
+            "enable_multicast": False,
+            "dns_timeout": 2000000000,
+            "concurrency": 40,
+            "hostnames": [],
+        },
+        "version": "4.0.240607.0 (build 20240607195406) [da7d44913ffb8b6f9d39f7e7700122613e4a4e96]",
+    })
         # create scan data for HQ assets
         hq_asset_cache = create_assets(
             subnet_start=0,
@@ -1720,13 +1891,21 @@ def main():
         # writes new data to scan_output.json
         with open("scan_output.json", "w") as scan_output:
             for l in OUTPUT:
-                scan_output.write(json.dumps(l) + "\n")
+                scan_output.write(json.dumps(l, separators=(",", ":")) + "\n")
             scan_output.close()
             print("SUCCESS - created task for rz scan")
 
         # creates supported integration tasks
-        for integration in ["crowdstrike", "nessus", "aws", "azuread", "jamf"]:
-            if integration in ["crowdstrike", "nessus", "aws"]:
+        for integration in [
+            "crowdstrike",
+            "nessus",
+            "aws",
+            "azuread",
+            "jamf",
+            "qualys",
+            "wiz"
+        ]:
+            if integration in ["crowdstrike", "nessus", "aws", "qualys"]:
                 success = fudge_integration_data(
                     asset_cache=(
                         asset_cache
@@ -1745,6 +1924,8 @@ def main():
                 success = fudge_jamf_data(
                     asset_cache=remove_random_assets(asset_cache=asset_cache)
                 )
+            elif integration == "wiz":
+                success = fudge_wiz_data(asset_cache=asset_cache)
 
             if success:
                 print(f"SUCCESS - created task for {integration}")
@@ -1793,33 +1974,36 @@ def main():
 
     # upload task(s) to rz if enabled
     # python3 demo_data.py --upload
-    if args.upload:
-        print("STARTING - uploading tasks to runZero")
-        last_task_id = "d8781eaf-b98c-4013-8d8c-5d2a424026ac"
-        for filename in [
+    for filename in [
             "scan_output.json",
             "integration_crowdstrike.json",
             "integration_nessus.json",
             "integration_aws.json",
             "integration_azuread.json",
             "integration_jamf.json",
+            "integration_qualys.json",
+            "integration_wiz.json",
             "scan_output.json",
         ]:
+        if args.upload:
+            print("STARTING - uploading tasks to runZero")
+            last_task_id = "d8781eaf-b98c-4013-8d8c-5d2a424026ac"
+            
             gzip_upload = gzip.compress(open(filename, "rb").read())
             upload_url = RUNZERO_BASE_URL + f"/org/sites/{RUNZERO_SITE_ID}/import"
             params = {"_oid": RUNZERO_ORG_ID}
             headers = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
             resp = requests.put(
-                url=upload_url, headers=headers, params=params, data=gzip_upload
-            )
+                    url=upload_url, headers=headers, params=params, data=gzip_upload
+                )
             if resp.status_code == 200:
                 last_task_id = resp.json()["id"]
                 print("SUCCESS - uploaded", filename)
 
-            if args.compress:
-                # create compressed version as well
-                os.system(f"gzip {filename} -k -f")
-                print(f"SUCCESS - compressed {filename} to {filename}.gz")
+        if args.compress:
+            # create compressed version as well
+            os.system(f"gzip {filename} -k -f")
+            print(f"SUCCESS - compressed {filename} to {filename}.gz")
 
         if args.verify and last_task_id:
             wait = True
