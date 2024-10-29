@@ -204,17 +204,27 @@ def import_data_to_runzero(assets: List[ImportAsset]):
             f"task created! view status here: https://console.runzero.com/tasks?task={import_task.id}"
         )
 
+def get_access_token():
+    token_url = f"{JAMF_URL}/api/oauth/token"
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    payload = {
+        "client_id": JAMF_ID,
+        "client_secret": JAMF_SECRET,
+        "grant_type": "client_credentials"
+    }
+    
+    response = requests.post(token_url, headers=headers, data=payload)
+    
+    if response.status_code == 200:
+        token_data = response.json()
+        access_token = token_data.get('access_token')
+        return access_token
+    else:
+        print(f"Failed to retrieve access token. HTTP Status: {response.status_code}")
+        return None
 
 def get_endpoints():
-    get_token = requests.post(
-        JAMF_URL + "/api/oauth/token",
-        params={
-            "client_id": JAMF_ID,
-            "client_secret": JAMF_SECRET,
-            "grant_type": "client_credentials",
-        },
-    )
-    token = get_token.json().get("access_token", "")
+    token = get_access_token()
     if token:
         hasNextPage = True
         page = 0
@@ -232,9 +242,8 @@ def get_endpoints():
                 page += 1
             else:
                 hasNextPage = False
-
         # TODO: likely needs rate limiting in a real environment
-        # Needed to get extra info related to fingerprinting and networking information
+        # Needed to get extra info related to fingerprinting and networking information           
         endpoints_final = []
         for e in endpoints:
             uid = e.get("id", "")
@@ -246,11 +255,8 @@ def get_endpoints():
                 endpoints_final.append(e)
         return endpoints_final
     else:
-        print(
-            f"Unable to get API token - status code {get_token.status_code} - text {get_token.text}"
-        )
+        print("Unable to get API token")
         return []
-
 
 if __name__ == "__main__":
     jamf_endpoints = get_endpoints()
