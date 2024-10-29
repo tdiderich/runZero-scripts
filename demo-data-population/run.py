@@ -580,6 +580,13 @@ def random_ipv6() -> str:
     M = 16**4
     return "fde9:727a:" + ":".join(("%x" % random.randint(0, M) for i in range(6)))
 
+def random_serial_number():
+    letters_part1 = ''.join(random.choices(string.ascii_uppercase, k=3))
+    digits_part1 = ''.join(random.choices(string.digits, k=4))
+    letter_part2 = random.choice(string.ascii_uppercase)
+    digits_part2 = ''.join(random.choices(string.digits, k=2))
+    serial_number = f"{letters_part1}{digits_part1}{letter_part2}{digits_part2}"
+    return serial_number
 
 def check_for_replacements(key: str, asset_replacements: dict):
     match = None
@@ -1364,6 +1371,12 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
 
             if "snmp.sysName" in temp_result["info"]:
                 temp_result["info"]["snmp.sysName"] = new_hostname
+            
+            if "snmp.serialNumbers" in temp_result["info"]:
+                temp_result["info"]["snmp.serialNumbers"] = random_serial_number()
+            
+            if "snmp.engineID.mac" in temp_result["info"]:
+                temp_result["info"]["snmp.engineID.mac"] = new_mac
 
             snmp_macs = [] if new_mac == None else [new_mac]
 
