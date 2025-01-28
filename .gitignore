@@ -12,3 +12,4 @@ demo-data-population/tasks/*.json
 demo-data-population/tasks/*.json.gz
 demo-data-population/*.json
 demo-data-population/*.json.gz
+terraform/gcp-self-hosted-install/gcp-cred.json

@@ -314,6 +314,14 @@ IOT_DEVICES = {
         "os": "Linux",
         "mac": "B8:27:EB:E6:4D:41",
     },
+    "Linux-Raspbian-9.0-Exposure": {
+        "host": "192.168.0.8",
+        "filename": "scan_exposure.json",
+        "hostname": "RPI3-ACCESS-CONTROL|PIT.HDM.IO",
+        "type": "SERVER",
+        "os": "Linux",
+        "mac": "B8:27:EB:E6:4D:41",
+    },
     "Microsoft Windows-CE": {
         "host": "80.13.242.26",
         "filename": "scan_ups.json",
@@ -410,6 +418,11 @@ OT_DEVICES = {
     "Step Function I/O": {
         "host": "192.168.86.3",
         "filename": "scan_ot.json",
+        "type": "OT",
+    },
+    "Rockwell Automation 1769-L18ERM": {
+        "host": "10.10.103.5",
+        "filename": "scan_ethernet_ip.json",
         "type": "OT",
     },
 }
@@ -1377,6 +1390,10 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             
             if "snmp.engineID.mac" in temp_result["info"]:
                 temp_result["info"]["snmp.engineID.mac"] = new_mac
+            
+            if "tls.serial" in temp_result["info"]:
+                temp_result["info"]["tls.serial"] = random_serial_number()
+    
 
             snmp_macs = [] if new_mac == None else [new_mac]
 
@@ -2001,10 +2018,19 @@ def main():
         if args.upload:
             print("STARTING - uploading tasks to runZero")
             last_task_id = "d8781eaf-b98c-4013-8d8c-5d2a424026ac"
-            
             gzip_upload = gzip.compress(open(filename, "rb").read())
             upload_url = RUNZERO_BASE_URL + f"/org/sites/{RUNZERO_SITE_ID}/import"
-            params = {"_oid": RUNZERO_ORG_ID}
+            friendly_name_map = {
+                "scan_output.json": "runZero Scan",
+                "integration_crowdstrike.json": "CrowdStrike Integration",
+                "integration_nessus.json": "Nessus Integration",
+                "integration_aws.json": "AWS Integration",
+                "integration_azuread.json": "Azure AD Integration",
+                "integration_jamf.json": "Jamf Integration",
+                "integration_qualys.json": "Qualys Integration",
+                "integration_wiz.json": "Wiz Integration",
+            }
+            params = {"_oid": RUNZERO_ORG_ID, "name": friendly_name_map.get(filename, "runZero Scan")}
             headers = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
             resp = requests.put(
                     url=upload_url, headers=headers, params=params, data=gzip_upload
