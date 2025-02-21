@@ -3,7 +3,7 @@ load('json', json_encode='encode', json_decode='decode')
 load('net', 'ip_address')
 load('http', http_post='post', http_get='get', 'url_encode')
 
-SUMO_HTTP_ENDPOINT = os.environ["SUMO_HTTP_ENDPOINT"]
+SUMO_HTTP_ENDPOINT = "<UPDATE_ME>"
 BASE_URL = "https://console.runZero.com/api/v1.0"
 SEARCH = "alive:t"
 
@@ -26,7 +26,7 @@ def sync_to_sumo(assets):
             batch = assets[i:i+batchsize]
             tmp = ""
             for a in batch:
-                tmp = tmp + "{}\n".format(a)
+                tmp = tmp + "{}\n".format(json_encode(a))
             post_to_sumo = http_post(url=SUMO_HTTP_ENDPOINT, body=bytes(tmp))
     else:
         print("No assets found")
