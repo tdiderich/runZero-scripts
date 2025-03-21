@@ -1,0 +1,4443 @@
+The following text is a Git repository with code. The structure of the text are sections that begin with ----, followed by a single line containing the file path and file name, followed by a variable amount of lines containing the file contents. The text representing the Git repository ends when the symbols --END-- are encounted. Any further text beyond --END-- are meant to be interpreted as instructions using the aforementioned Git repository as context.
+----
+LICENSE
+MIT License
+
+Copyright (c) [Year] [Your Name or Organization]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----
+README.md
+# runZero Custom Integrations
+
+👋 Welcome to the runZero Custom Integration library!
+
+runZero is a total attack surface and exposure management platform that combines [active scanning](https://help.runzero.com/docs/discovering-assets/), [passive discovery](https://help.runzero.com/docs/traffic-sampling/), and API integrations to deliver complete visibility into managed and unmanaged assets across IT, OT, IoT, cloud, mobile, and remote environments. runZero can be used as a hosted service (SaaS) or managed on-premise. The runZero stack consists of one more Consoles, linked Explorers that run as light-weight services on network points-of-presence, and a command-line tool that can be used for offline data collection. runZero can be managed through the web interface, via API, or for self-hosted customers, on the command line.
+
+If you are not a runZero user today, [sign up](https://www.runzero.com/try) for a trial that can be converted to our free Community Edition.
+
+This repository includes **custom integrations** that run in the context of a runZero Explorer. These integrations are written in Starlark, a language similar to Python.
+
+To create a custom integration within runZero, you will need a user account with `superuser` privileges.
+
+You can find detailed documentation about Starlark-based integrations on the [runZero help portal](https://help.runzero.com/docs/custom-integration-scripts/).
+
+# Getting Help
+
+If you need help setting up a custom integration, you can create an [issue](https://github.com/runZeroInc/runzero-custom-integrations/issues/new) on this GitHub repo, and our team will work with you. If you have a Customer Success Engineer, you can also work with them directly. 
+
+# Existing Integrations 
+
+## Import to runZero 
+- [Automox](./automox/)
+- [Carbon Black](./carbon-black/)
+- [Digital Ocean](./digital-ocean/)
+- [Drata](./drata/)
+- [JAMF](./jamf/)
+- [Lima Charlie](./lima-charlie/)
+- [Palo Alto Cortex XDR](./cortex-xdr/)
+- [Tanium](./tanium/)
+
+## Export from runZero 
+- [Sumo Logic](./sumo-logic/)
+
+# Building Integrations and Contributing
+
+## The boilerplate folder has examples to follow
+
+1. Sample [README.md](./boilerplate/README.md) for contributing
+2. Sample [script](./boilerplate/custom-integration-boilerplate.star) that shows how to use all of the supported libraries
+
+## Contributing
+
+We welcome contributions to this repository! Whether you're fixing a bug, adding a new feature, or improving documentation, your efforts make a difference. To ensure a smooth process, please follow these guidelines:
+
+1. **Fork the Repository**: Start by forking this repository to your GitHub account.
+
+2. **Create a Branch**: Create a feature branch for your changes. Use a descriptive name like `feature/new-integration` or `fix/bug-description`.
+
+3. **Make Your Changes**: Implement your changes and test thoroughly. Ensure your code adheres to our coding standards and is well-documented.
+
+4. **Commit Your Changes**: Write clear and concise commit messages that describe what you changed and why.
+
+5. **Open a Pull Request (PR)**: 
+   - Go to the original repository and open a pull request from your fork.
+   - Provide a detailed description of your changes, including the problem your contribution solves and how it was tested.
+
+6. **Code Review**: Collaborate with the maintainers during the review process. Be open to feedback and iterate on your changes if necessary.
+
+7. **Merge**: Once approved, your PR will be merged by a maintainer.
+
+---
+
+## License
+
+This repository is licensed under the [MIT License](./LICENSE). By contributing to this project, you agree that your contributions will be licensed under the same terms.
+
+----
+tanium/custom-integration-tanium.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface', 'Software', 'Vulnerability')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+
+def force_string(value):
+    if type(value) == "list":
+        output = ",".join([str(v) for v in value])
+    elif type(value) == "dict":
+        output = json_encode(value)
+    else:
+        output = str(value)
+
+    return output[:1023]
+
+def build_vulnerabilities(vulnerabilities):
+    output_vulnerabilities = []
+    uuid = 0
+    for vuln in vulnerabilities:
+        uuid += 1
+        absoluteFirstFoundDate = vuln.get("absoluteFirstFoundDate", "")
+        affectedProducts = vuln.get("affectedProducts", "")
+        cisaDateAdded = vuln.get("cisaDateAdded", "")
+        cisaDueDate = vuln.get("cisaDueDate", "")
+        cisaNotes = vuln.get("cisaNotes", "")
+        cisaProduct = vuln.get("cisaProduct", "")
+        cisaRequiredAction = vuln.get("cisaRequiredAction", "")
+        cisaShortDescription = vuln.get("cisaShortDescription", "")
+        cisaVendor = vuln.get("cisaVendor", "")
+        cisaVulnerabilityName = vuln.get("cisaVulnerabilityName", "")
+        cpes = vuln.get("cpes", [])
+        cveId = vuln.get("cveId", "")
+        cveYear = vuln.get("cveYear", "")
+        cvssScore = vuln.get("cvssScore", 0)
+        if cvssScore == None:
+            cvssScore = 0
+        excepted = vuln.get("excepted", "")
+        firstFound = vuln.get("firstFound", "")
+        isCisaKev = vuln.get("isCisaKev", "")
+        lastFound = vuln.get("lastFound", "")
+        lastScanDate = vuln.get("lastScanDate", "")
+        scanType = vuln.get("scanType", "")
+
+        # take plain text severity and map to rz integer
+        severity = vuln.get("severity", 0)
+
+        rank_map = {
+            "Critical": 4,
+            "High": 3,
+            "Medium": 2,
+            "Low": 1,
+        }
+
+        score_map = {
+            "Critical": 10,
+            "High": 7,
+            "Medium": 5,
+            "Low": 2,
+        }
+
+        if severity in rank_map:
+            risk_rank = rank_map[severity]
+            score = score_map[severity]
+        else:
+            risk_rank = 0
+            score = 0
+        summary = vuln.get("summary", "")
+        output_vulnerabilities.append(
+                Vulnerability(
+                    id=str(uuid),
+                    name=str(summary)[:255],
+                    description=str(summary)[:255],
+                    cve=str(cveId)[:13],
+                    solution=str(cisaRequiredAction),
+                    cvss2BaseScore=float(cvssScore),
+                    cvss2TemporalScore=float(cvssScore),
+                    cvss3BaseScore=float(cvssScore),
+                    cvss3TemporalScore=float(cvssScore),
+                    riskScore=float(score),
+                    riskRank=risk_rank,
+                    severityScore=float(score),
+                    severityRank=risk_rank,
+                    serviceAddress="127.0.0.1",
+                    customAttributes={
+                        "affectedProducts": force_string(affectedProducts),
+                        "cisaDueDate": force_string(cisaDueDate),
+                        "cisaNotes": force_string(cisaNotes),
+                        "cisaProduct": force_string(cisaProduct),
+                        "cisaRequiredAction": force_string(cisaRequiredAction),
+                        "cisaVulnerabilityName": force_string(cisaVulnerabilityName),
+                        "cisaVendor": force_string(cisaVendor),
+                        "cveYear": force_string(cveYear),
+                        "excepted": force_string(excepted),
+                        "firstFound": force_string(firstFound),
+                        "lastScanDate": force_string(lastScanDate),
+                        "scanType": force_string(scanType),
+                        "summary": force_string(summary),
+                        "cpes": force_string(cpes),
+                        "absoluteFirstFoundDate": force_string(absoluteFirstFoundDate),
+                        "cisaDateAdded": force_string(cisaDateAdded),
+                        "isCisaKev": force_string(isCisaKev),
+                        "lastFound": force_string(lastFound),
+                        "cisaShortDescription": force_string(cisaShortDescription),
+                    },
+                )
+            )
+
+    return output_vulnerabilities
+def build_software(applications, installed_software):
+    software = []
+    unique_applications = {}
+    for a in applications + installed_software:
+        key_list = a.get("name", "").split(" ")
+        key_unique = (
+            "_".join(key_list[0:2]) if len(key_list) > 1 else "_".join(key_list)
+        )
+        if key_unique not in unique_applications:
+            unique_applications[key_unique] = {
+                "name": a.get("name", ""),
+                "version": a.get("version", ""),
+                "vendor": a.get("vendor", ""),
+            }
+    final_applications = []
+    for index, value in unique_applications.items():
+        final_applications.append(value)
+
+    for index in range(len(final_applications)):
+        name = final_applications[index].get("name", "")
+        vendor = final_applications[index].get("vendor", "")
+        version = final_applications[index].get("version", "")
+        software.append(
+            Software(
+                id=str(index),
+                vendor=vendor,
+                    product=name,
+                    version=version,
+                    serviceAddress="127.0.0.1",
+                )
+            )
+
+    return software
+def asset_networks(ips, mac):
+    ip4s = []
+    ip6s = []
+    for ip in ips[:99]:
+        ip_addr = ip_address(ip)
+        if ip_addr.version == 4:
+            ip4s.append(ip_addr)
+        elif ip_addr.version == 6:
+            ip6s.append(ip_addr)
+        else:
+            continue
+
+    if not mac:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+
+def build_asset(item):
+    asset_id = item.get('id', None)
+    if not asset_id:
+        return None
+    
+    eid_first_seen = item.get("eidFirstSeen", None)
+    computer_id = item.get("computerID", None)
+    eid_last_seen = item.get("eidLastSeen", None)
+    namespace = item.get("namespace", None)
+    system_uuid = item.get("systemUUID", None)
+    name = item.get("name", None)
+    domain_name = item.get("domainName", None)
+    serial_number = item.get("serialNumber", None)
+    manufacturer = item.get("manufacturer", None)
+    model = item.get("model", None)
+    ip_address = item.get("ipAddress", None)
+    mac_addresses = item.get("macAddresses", None)
+    primary_user = item.get("primaryUser", None)
+    last_logged_in_user = item.get("lastLoggedInUser", None)
+    is_virtual = item.get("isVirtual", None)
+    is_encrypted = item.get("isEncrypted", None)
+    chassis_type = item.get("chassisType", None)
+    os = item.get("os", None)
+    services = item.get("services", None)
+    installed_applications = item.get("installedApplications", None)
+    deployed_software_packages = item.get("deployedSoftwarePackages", None)
+    risk = item.get("risk", None)
+    compliance = item.get("compliance", None)
+
+    # create network interfaces
+    ips = [ip_address]
+    networks = []
+    for m in mac_addresses:
+        network = asset_networks(ips=ips, mac=m)
+        networks.append(network)
+
+    software = build_software(applications=installed_applications, installed_software=deployed_software_packages)
+    vulnerabilities = build_vulnerabilities(vulnerabilities=compliance.get("cveFindings", []))
+    return ImportAsset(
+        id=asset_id,
+        networkInterfaces=networks,
+        os=os.get("name", None),
+        osVersion=os.get('generation', ''),
+        manufacturer=manufacturer,
+        model=model,
+        hostnames=[name],
+        customAttributes={
+            "eid_first_seen": eid_first_seen,
+            "eid_last_seen": eid_last_seen,
+            "namespace": namespace,
+            "system_uuid": system_uuid,
+            "serial_number": serial_number,
+            "mac_addresses": mac_addresses,
+            "primary_user": primary_user,
+            "last_logged_in_user": last_logged_in_user,
+            "is_virtual": is_virtual,
+            "is_encrypted": is_encrypted,
+            "risk": risk,
+            "computer_id": computer_id,
+        },
+        domain=domain_name,
+        # firstSeenTS=eid_first_seen, # TODO: add parsing
+        deviceType=chassis_type,
+        software=software[:99],
+        vulnerabilities=vulnerabilities[:99]
+    )
+
+
+def build_assets(inventory):
+    assets = []
+    for item in inventory:
+        asset_info = item.get("node", {})
+        asset = build_asset(asset_info)
+        if asset:
+            assets.append(asset)
+
+    return assets
+
+def get_endpoints(tanium_url, tanium_token):
+    query = """query getEndpoints($first: Int, $after: Cursor) {
+    endpoints(first: $first, after: $after) {
+        edges {
+        node {
+            id
+            eidFirstSeen
+            eidLastSeen
+            namespace
+            computerID
+            systemUUID
+            name
+            domainName
+            serialNumber
+            manufacturer
+            model
+            ipAddress
+            macAddresses
+            primaryUser {
+                name
+                email
+            }
+            lastLoggedInUser
+            isVirtual
+            isEncrypted
+            chassisType
+            os {
+                name 
+                platform
+                generation
+                language
+            }
+            services {
+                name
+                status
+            }
+            installedApplications {
+                name
+                version
+            }
+            deployedSoftwarePackages {
+                name
+                vendor
+                version
+            }
+            risk {
+                totalScore
+                riskLevel
+                assetCriticality
+                criticalityScore
+            }
+            compliance {
+                cveFindings {
+                    absoluteFirstFoundDate
+                    affectedProducts
+                    cisaDateAdded
+                    cisaDueDate
+                    cisaNotes
+                    cisaProduct
+                    cisaRequiredAction
+                    cisaShortDescription
+                    cisaVendor
+                    cisaVulnerabilityName
+                    cpes
+                    cveId
+                    cveYear
+                    cvssScore
+                    excepted
+                    firstFound
+                    isCisaKev
+                    lastFound
+                    lastScanDate
+                    scanType
+                    severity
+                    summary
+                }
+            }
+        }
+        }
+        pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
+        }
+        totalRecords
+    }
+    }"""
+    cursor = None
+    hasNextPage = True
+    endpoints = []
+    while hasNextPage:
+        # set cursor if it exists (all but the first query)
+        if cursor:
+            variables = {"first": 100, "after": cursor}
+        else:
+            variables = {"first": 100}
+
+        body = {"query": query, "variables": variables}
+
+        # get endpoints
+        data = http_post(
+            tanium_url + "/plugin/products/gateway/graphql",
+            headers={"Content-Type": "application/json", "session": tanium_token},
+            body=bytes(json_encode(body)),
+        )
+        
+        # unnpack results and add to the endpoints
+        json_data = json_decode(data.body)
+        new_endpoints = json_data.get("data", {}).get("endpoints", {}).get("edges", [])
+        endpoints.extend(new_endpoints)
+        
+        # check if there is a next page
+        hasNextPage = json_data.get("data", {}).get("endpoints", {}).get("pageInfo", {}).get("hasNextPage", False)
+        cursor = json_data.get("data", {}).get("endpoints", {}).get("pageInfo", {}).get("endCursor", None)
+    
+    return endpoints
+
+def main(*args, **kwargs):
+    tanium_url = "https://<update-me>.titankube.com"
+    tanium_token = kwargs['access_secret']
+
+    tanium_endpoints = get_endpoints(tanium_url, tanium_token)
+
+    if not tanium_endpoints:
+        print("got nothing from Tanium")
+        return None
+
+    assets = build_assets(tanium_endpoints)
+
+    if not assets:
+        print("no assets")
+
+    return assets
+
+----
+tanium/README.md
+# Custom Integration: Tanium
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Tanium requirements
+
+- Tanium API URL (e.g., `https://<your-tanium-instance>/plugin/products/gateway/graphql`).
+- API Token with permissions to access endpoint and compliance data via the Tanium GraphQL API.
+
+## Steps
+
+### Tanium configuration
+
+1. Obtain the API Token from your Tanium instance:
+   - Follow the [Tanium API Documentation](https://docs.tanium.com/) for guidance on generating an API token.
+   - Ensure the token has permissions to query endpoint data and compliance findings.
+2. Note down your Tanium API URL.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify API queries as needed to filter endpoint data or compliance findings.
+    - Adjust data parsing or mappings to suit your organizational needs.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_secret` field for your Tanium API Token.
+    - For `access_key`, input a placeholder value like `foo` (unused in this integration).
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "tanium").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will retrieve endpoint, software, and vulnerability data from your Tanium instance and upload it to runZero.
+- Assets in runZero will be updated or created based on the data retrieved from Tanium.
+
+### Notes
+
+- Ensure that your Tanium GraphQL API endpoint is accessible from the system running the runZero Explorer.
+- You can monitor task execution and check for any errors or issues in the [tasks](https://console.runzero.com/tasks) page.
+- Customize the `build_assets` function to include additional fields or mappings as needed for your organization.
+- Search for assets enriched by this integration using the runZero search query `custom_integration:tanium`.
+
+----
+cortex-xdr/README.md
+# Custom Integration: Cortex XDR
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Cortex XDR requirements
+
+- **API Key ID** and **API Key** required for authentication.
+- **Cortex XDR API Base URL** (depends on your region).
+
+## Steps
+
+### Cortex XDR configuration
+
+1. **Obtain your Cortex XDR API credentials**:
+   - Log in to **Cortex XDR**.
+   - Navigate to **Settings** > **Configurations** > **Integrations** > **API Keys**.
+   - Select **+ New Key**.
+   - Choose **Standard** as the type of API Key.
+   - Note the **API Key** and **API Key ID**.
+2. **Find your Cortex XDR API Base URL**:
+   - Example: `https://api-{fqdn}.xdr.us.paloaltonetworks.com/public_api/v1/`.
+
+### runZero configuration
+
+1. **(OPTIONAL)** - Modify the script if needed:
+    - Adjust API queries to filter endpoint data.
+    - Customize attributes stored in runZero.
+2. **Create a Credential for the Custom Integration**:
+    - Go to [runZero Credentials](https://console.runzero.com/credentials).
+    - Select `Custom Integration Script Secrets`.
+    - Enter your **Cortex XDR API Key** as `access_secret`.
+    - Enter your **Cortex XDR API Key ID** as `access_key`.
+3. **Create the Custom Integration**:
+    - Go to [runZero Custom Integrations](https://console.runzero.com/custom-integrations/new).
+    - Add a **Name and Icon** for the integration (e.g., "cortex-xdr").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` and then `Save`.
+4. **Schedule the Integration Task**:
+    - Go to [runZero Ingest](https://console.runzero.com/ingest/custom/).
+    - Select the **Credential and Custom Integration** created earlier.
+    - Set a schedule for recurring updates.
+    - Select the **Explorer** where the script will run.
+    - Click **Save** to start the task.
+
+### What's next?
+
+- The task will appear on the [tasks](https://console.runzero.com/tasks) page.
+- Assets in runZero will be updated with **endpoint data from Cortex XDR**.
+- The script captures details like **agent status, policies, OS version, compliance, and IPs**.
+- Search for these assets in runZero using `custom_integration:cortex-xdr`.
+
+### Notes
+
+- The script **retrieves all endpoints** using pagination.
+- All attributes from Cortex XDR are stored in `customAttributes`.
+- The task **can be scheduled** to sync endpoint data regularly.
+
+----
+cortex-xdr/custom-integration-cortex-xdr.star
+## Cortex XDR integration
+
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+load('uuid', 'new_uuid')
+
+CORTEX_API_URL = "<UPDATE_ME>/public_api/v1/"
+
+def do_cortex_api_call(api_key, api_key_id, api_call, post_data={}):
+    """Perform API request to Cortex XDR, handling authentication"""
+
+    headers = {
+        "x-xdr-auth-id": str(api_key_id),
+        "Authorization": api_key,
+        "Content-Type": "application/json"
+    }
+
+    response = http_post(CORTEX_API_URL + api_call, headers=headers, body=bytes(json_encode(post_data)))
+
+    if response.status_code != 200:
+        print("API call failed:", response.status_code)
+        return None
+
+    return json_decode(response.body)
+
+def get_all_cortex_endpoints(api_key, api_key_id):
+    """Retrieve all Cortex XDR endpoints using pagination"""
+    cortex_filter = {"request_data": {"search_from": 0, "search_to": 100}}
+    all_endpoints = []
+    page_size = 100
+
+    while True:
+        result = do_cortex_api_call(api_key, api_key_id, "endpoints/get_endpoint", cortex_filter)
+
+        if not result or "reply" not in result:
+            print("Error retrieving endpoints")
+            break
+
+        fetched_endpoints = result["reply"].get("endpoints", [])
+        all_endpoints.extend(fetched_endpoints)
+
+        if len(fetched_endpoints) < page_size:
+            break  # Stop when fewer than page_size results are returned
+
+        cortex_filter["request_data"]["search_from"] += page_size
+        cortex_filter["request_data"]["search_to"] += page_size
+
+    print("Loaded", len(all_endpoints), "endpoints")
+    return all_endpoints
+
+def build_assets(api_key, api_key_id):
+    """Convert Cortex XDR endpoint data into runZero asset format"""
+    all_endpoints = get_all_cortex_endpoints(api_key, api_key_id)
+    assets = []
+
+    for endpoint in all_endpoints:
+        custom_attrs = {
+            "operational_status": endpoint.get("operational_status", ""),
+            "agent_status": endpoint.get("endpoint_status", ""),
+            "agent_type": endpoint.get("endpoint_type", ""),
+            "last_seen": str(int(endpoint.get("last_seen", 0) / 1000)),
+            "first_seen": str(int(endpoint.get("first_seen", 0) / 1000)),
+            "groups": ";".join(endpoint.get("group_name", [])),
+            "assigned_prevention_policy": endpoint.get("assigned_prevention_policy", ""),
+            "assigned_extensions_policy": endpoint.get("assigned_extensions_policy", ""),
+            "endpoint_version": endpoint.get("endpoint_version", "")
+        }
+
+        mac_address = endpoint.get("mac_address", [""])[0] if endpoint.get("mac_address") else ""
+
+        assets.append(
+            ImportAsset(
+                id=str(endpoint.get("endpoint_id", new_uuid())),
+                networkInterfaces=[build_network_interface(endpoint.get("ip", []) + endpoint.get("ipv6", []), mac_address)],
+                hostnames=[endpoint.get("endpoint_name", "")],
+                os_version=endpoint.get("os_version", ""),
+                os=endpoint.get("operating_system", ""),
+                customAttributes=custom_attrs
+            )
+        )
+    return assets
+
+def build_network_interface(ips, mac=None):
+    """Convert IPs and MAC addresses into a NetworkInterface object"""
+    ip4s = []
+    ip6s = []
+
+    for ip in ips[:99]:
+        if ip:
+            ip_addr = ip_address(ip)
+            if ip_addr.version == 4:
+                ip4s.append(ip_addr)
+            elif ip_addr.version == 6:
+                ip6s.append(ip_addr)
+        else:
+            continue
+
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+def main(**kwargs):
+    """Main function to retrieve and return Cortex XDR asset data"""
+    api_key = kwargs['access_secret']  # Use API token from runZero credentials
+    api_key_id = kwargs['access_key']  # Use API key ID
+
+    assets = build_assets(api_key, api_key_id)
+    
+    if not assets:
+        print("No assets retrieved from Cortex XDR")
+        return None
+
+    return assets
+
+----
+drata/README.md
+# Custom Integration: Drata
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Drata requirements
+
+- API Client Token with permissions to access the Drata public API.
+- API URL: `https://public-api.drata.com`.
+
+## Steps
+
+### Drata configuration
+
+1. Generate an API Client Token from your Drata account.
+   - Refer to the [Drata API Documentation](https://developers.drata.com) for instructions.
+   - Ensure the token has permissions to access the `public/assets` endpoint and related metadata.
+2. Note down the API URL: `https://public-api.drata.com`.
+3. Test your API token by querying the `/public/assets` endpoint using a tool like `curl` or Postman.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify API calls as needed to filter assets (e.g., by `assetClassType` or `employmentStatus`).
+    - Modify datapoints uploaded to runZero as needed.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_secret` field for your Drata API Client Token.
+    - For `access_key`, input a placeholder value like `foo` (unused in this integration).
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "drata").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will update the existing assets with the data pulled from the Custom Integration source.
+- The task will create new assets for when there are no existing assets that meet merge criteria (hostname, MAC, etc).
+- You can search for assets enriched by this custom integration with the runZero search `custom_integration:drata`.
+
+----
+drata/custom-integration-drata.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+load('uuid', 'new_uuid')
+load('flatten_json', 'flatten')
+
+DRATA_URL = 'https://public-api.drata.com'
+
+def build_assets(assets_json):
+    assets_import = []
+    for item in assets_json:
+        id = item.get('id', new_uuid) 
+        hostname = item.get('name', '')
+        description = item.get('description', '')
+        asset_type = item.get('assetType', '')
+        asset_provider = item.get('assetProvider', '')
+        employment_status = item.get('employmentStatus', '')
+        created_at = item.get('createdAt', '')
+        updated_at = item.get('updatedAt', '')
+        removed_at = item.get('removedAt', '')
+
+        ips = ['127.0.0.1']
+        macs = []
+        if macs:
+            #for m in macs:
+            network = build_network_interface(ips=ips, mac=macs)
+        else:
+            network = build_network_interface(ips=ips, mac=None)
+
+        device = []
+        device = item.get('device', {})
+        if device:
+            os_version = device.get('osVersion', '')
+            serial_number = device.get('serialNumber', '')
+            model = device.get('model', '')
+            agent_version = device.get('agentVersion', '')
+            macs = device.get('macAddress', [])
+            encryption_enabled = device.get('encryptionEnabled', '')
+            firewall_enabled = device.get('firewallEnabled', '')
+            gatekeeper_enabled = device.get('gateKeeperEnabled', '')
+            last_checked_at = device.get('lastCheckedAt', '')
+            source_type = device.get('sourceType', '')
+            created_at = device.get('createdAt', '')
+            updated_at = device.get('updatedAt', '')
+            deleted_at = device.get('deletedAt', '')
+            apps_count = device.get('appsCount', '')
+            is_device_compliant = device.get('isDeviceCompliant', '')
+
+            # parse Drata compliance checks; will likely need updated based on your configuration
+            compliance_checks = []
+            compliance_checks = device.get('complianceChecks', {})
+            if compliance_checks:
+                for check in compliance_checks:
+                    check_type = check.get('type', '')
+                    if check_type == 'AGENT_INSTALLED':
+                        deviceComplianceCheckAgentInstalledCreatedAt = check.get('createdAt', '')
+                        deviceComplianceCheckAgentInstalledExpiresAt = check.get('createdAt', '')
+                        deviceComplianceCheckAgentInstalledId = check.get('id', '')
+                        deviceComplianceCheckAgentInstalledLastCheckedAt = check.get('lastCheckedAt', '')
+                        deviceComplianceCheckAgentInstalledStatus = check.get('status', '')
+                        deviceComplianceCheckAgentInstalledType = check.get('type', '')
+                        deviceComplianceCheckAgentInstalledUpdatedAt = check.get('updatedAt', '')  
+                    elif check_type == 'PASSWORD_MANAGER':
+                        deviceComplianceCheckPasswordManagerCreatedAt = check.get('createdAt', '')
+                        deviceComplianceCheckPasswordManagerExpiresAt = check.get('createdAt', '')
+                        deviceComplianceCheckPasswordManagerId = check.get('id', '')
+                        deviceComplianceCheckPasswordManagerLastCheckedAt = check.get('lastCheckedAt', '')
+                        deviceComplianceCheckPasswordManagerStatus = check.get('status', '')
+                        deviceComplianceCheckPasswordManagerType = check.get('type', '')
+                        deviceComplianceCheckPasswordManagerUpdatedAt = check.get('updatedAt', '')                      
+                    elif check_type == 'HDD_ENCRYPTION':
+                        deviceComplianceCheckDiskEncryptionCreatedAt = check.get('createdAt', '')
+                        deviceComplianceCheckDiskEncryptionExpiresAt = check.get('createdAt', '')
+                        deviceComplianceCheckDiskEncryptionId = check.get('id', '')
+                        deviceComplianceCheckDiskEncryptionLastCheckedAt = check.get('lastCheckedAt', '')
+                        deviceComplianceCheckDiskEncryptionStatus = check.get('status', '')
+                        deviceComplianceCheckDiskEncryptionType = check.get('type', '')
+                        deviceComplianceCheckDiskEncryptionUpdatedAt = check.get('updatedAt', '')  
+                    elif check_type == 'ANTIVIRUS':
+                        deviceComplianceCheckAntivirusCreatedAt = check.get('createdAt', '')
+                        deviceComplianceCheckAntivirusExpiresAt = check.get('createdAt', '')
+                        deviceComplianceCheckAntivirusId = check.get('id', '')
+                        deviceComplianceCheckAntivirusLastCheckedAt = check.get('lastCheckedAt', '')
+                        deviceComplianceCheckAntivirusStatus = check.get('status', '')
+                        deviceComplianceCheckAntivirusType = check.get('type', '')
+                        deviceComplianceCheckAntivirusUpdatedAt = check.get('updatedAt', '')  
+                    elif check_type == 'AUTO_UPDATES':
+                        deviceComplianceCheckAutoUpdatesCreatedAt = check.get('createdAt', '')
+                        deviceComplianceCheckAutoUpdatesExpiresAt = check.get('createdAt', '')
+                        deviceComplianceCheckAutoUpdatesId = check.get('id', '')
+                        deviceComplianceCheckAutoUpdatesLastCheckedAt = check.get('lastCheckedAt', '')
+                        deviceComplianceCheckAutoUpdatesStatus = check.get('status', '')
+                        deviceComplianceCheckAutoUpdatesType = check.get('type', '')
+                        deviceComplianceCheckAutoUpdatesUpdatedAt = check.get('updatedAt', '')  
+                    elif check_type == 'LOCK_SCREEN':
+                        deviceComplianceCheckLockScreenCreatedAt = check.get('createdAt', '')
+                        deviceComplianceCheckLockScreenExpiresAt = check.get('createdAt', '')
+                        deviceComplianceCheckLockScreenId = check.get('id', '')
+                        deviceComplianceCheckLockScreenLastCheckedAt = check.get('lastCheckedAt', '')
+                        deviceComplianceCheckLockScreenStatus = check.get('status', '')
+                        deviceComplianceCheckLockScreenType = check.get('type', '')
+                        deviceComplianceCheckLockScreenUpdatedAt = check.get('updatedAt', '')  
+                    else:
+                        print('unrecognized compliance check: ' + type)              
+
+        owner = []
+        owner = item.get('owner', {})
+        if owner:
+            owner_id = owner.get('id', '')
+            owner_email = owner.get('email', '')
+            owner_first_name = owner.get('firstName', '')
+            owner_last_name = owner.get('lastName', '')
+            owner_terms_agreed = owner.get('drataTermsAgreedAt', '')
+            owner_created_at = owner.get('createdAt', '')
+            owner_updated_at = owner.get('updatedAt', '')
+            owner_roles = owner.get('roles', [])
+
+        assets_import.append(
+            ImportAsset(
+                id=str(id),
+                hostnames=[hostname],
+                networkInterfaces=[network],
+                os=os_version,    
+                customAttributes={
+                    "description":description,
+                    "assetType":asset_type,
+                    "asset_provider":asset_provider,
+                    "employmentStatus":employment_status,
+                    "createdAt":created_at,
+                    "updatedAt":updated_at,
+                    "removedAt":removed_at,
+                    "device.os":os_version,
+                    "device.serialNumber":serial_number,
+                    "device.model":model,
+                    "device.agentVersion":agent_version,
+                    "device.macs":macs,
+                    "device.encryptionEnabled":encryption_enabled,
+                    "device.firewallEnabled":firewall_enabled,
+                    "device.gatekeeperEnabled":gatekeeper_enabled,
+                    "device.lastCheckedAat":last_checked_at,
+                    "device.sourceType":source_type,
+                    "device.createdAt":created_at,
+                    "device.updatedAt":updated_at,
+                    "device.deletedAt":deleted_at,
+                    "device.appsCount":apps_count,
+                    "device.isDeviceCompliant":is_device_compliant,
+                    "device.complianceCheckAgentInstalledCreatedAt":deviceComplianceCheckAgentInstalledCreatedAt,
+                    "device.complianceCheckAgentInstalledExpiresAt":deviceComplianceCheckAgentInstalledExpiresAt,
+                    "device.complianceCheckAgentInstalledId":deviceComplianceCheckAgentInstalledId,
+                    "device.complianceCheckAgentInstalledLastCheckedAt":deviceComplianceCheckAgentInstalledLastCheckedAt,
+                    "device.complianceCheckAgentInstalledStatus":deviceComplianceCheckAgentInstalledStatus,
+                    "device.complianceCheckAgentInstalledType":deviceComplianceCheckAgentInstalledType,
+                    "device.complianceCheckAgentInstalledUpdatedAt":deviceComplianceCheckAgentInstalledUpdatedAt,
+                    "device.complianceCheckPasswordManagerCreatedAt":deviceComplianceCheckPasswordManagerCreatedAt,
+                    "device.complianceCheckPasswordManagerExpiresAt":deviceComplianceCheckPasswordManagerExpiresAt,
+                    "device.complianceCheckPasswordManagerId":deviceComplianceCheckPasswordManagerId,
+                    "device.complianceCheckPasswordManagerLastCheckedAt":deviceComplianceCheckPasswordManagerLastCheckedAt,
+                    "device.complianceCheckPasswordManagerStatus":deviceComplianceCheckPasswordManagerStatus,
+                    "device.complianceCheckPasswordManagerType":deviceComplianceCheckPasswordManagerType,
+                    "device.complianceCheckPasswordManagerUpdatedAt":deviceComplianceCheckPasswordManagerUpdatedAt,
+                    "device.complianceCheckDiskEncryptionCreatedAt":deviceComplianceCheckDiskEncryptionCreatedAt,
+                    "device.complianceCheckDiskEncryptionExpiresAt":deviceComplianceCheckDiskEncryptionExpiresAt,
+                    "device.complianceCheckDiskEncryptionId":deviceComplianceCheckDiskEncryptionId,
+                    "device.complianceCheckDiskEncryptionLastCheckedAt":deviceComplianceCheckDiskEncryptionLastCheckedAt,
+                    "device.complianceCheckDiskEncryptionStatus":deviceComplianceCheckDiskEncryptionStatus,
+                    "device.complianceCheckDiskEncryptionType":deviceComplianceCheckDiskEncryptionType,
+                    "device.complianceCheckDiskEncryptionUpdatedAt":deviceComplianceCheckDiskEncryptionUpdatedAt,
+                    "device.complianceCheckAntivirusCreatedAt":deviceComplianceCheckAntivirusCreatedAt,
+                    "device.complianceCheckAntivirusExpiresAt":deviceComplianceCheckAntivirusExpiresAt,
+                    "device.complianceCheckAntivirusId":deviceComplianceCheckAntivirusId,
+                    "device.complianceCheckAntivirusLastCheckedAt":deviceComplianceCheckAntivirusLastCheckedAt,
+                    "device.complianceCheckAntivirusStatus":deviceComplianceCheckAntivirusStatus,
+                    "device.complianceCheckAntivirusType":deviceComplianceCheckAntivirusType,
+                    "device.complianceCheckAntivirusUpdatedAt":deviceComplianceCheckAntivirusUpdatedAt,
+                    "device.complianceCheckAutoUpdatesCreatedAt":deviceComplianceCheckAutoUpdatesCreatedAt,
+                    "device.complianceCheckAutoUpdatesExpiresAt":deviceComplianceCheckAutoUpdatesExpiresAt,
+                    "device.complianceCheckAutoUpdatesId":deviceComplianceCheckAutoUpdatesId,
+                    "device.complianceCheckAutoUpdatesLastCheckedAt":deviceComplianceCheckAutoUpdatesLastCheckedAt,
+                    "device.complianceCheckAutoUpdatesStatus":deviceComplianceCheckAutoUpdatesStatus,
+                    "device.complianceCheckAutoUpdatesType":deviceComplianceCheckAutoUpdatesType,
+                    "device.complianceCheckAutoUpdatesUpdatedAt":deviceComplianceCheckAutoUpdatesUpdatedAt,
+                    "device.complianceCheckLockScreenCreatedAt":deviceComplianceCheckLockScreenCreatedAt,
+                    "device.complianceCheckLockScreenExpiresAt":deviceComplianceCheckLockScreenExpiresAt,
+                    "device.complianceCheckLockScreenId":deviceComplianceCheckLockScreenId,
+                    "device.complianceCheckLockScreenLastCheckedAt":deviceComplianceCheckLockScreenLastCheckedAt,
+                    "device.complianceCheckLockScreenStatus":deviceComplianceCheckLockScreenStatus,
+                    "device.complianceCheckLockScreenType":deviceComplianceCheckLockScreenType,
+                    "device.complianceCheckLockScreenUpdatedAt":deviceComplianceCheckLockScreenUpdatedAt,
+                    "owner.id":owner_id,
+                    "owner.email":owner_email,
+                    "owner.firstName":owner_first_name,
+                    "owner.lastName":owner_last_name,
+                    "owner.drataTermsAgreedAt":owner_terms_agreed,
+                    "owner.createdAt":owner_created_at,
+                    "owner.updatedAt":owner_updated_at,
+                    "owner.roles":[owner_roles]
+                }
+            )
+        )
+    return assets_import
+
+# Build runZero network interfaces; shouldn't need to touch this
+def build_network_interface(ips, mac):
+    ip4s = []
+    ip6s = []
+    for ip in ips[:99]:
+        ip_addr = ip_address(ip)
+        if ip_addr.version == 4:
+            ip4s.append(ip_addr)
+        elif ip_addr.version == 6:
+            ip6s.append(ip_addr)
+        else:
+            continue
+    if not mac:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+    
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+def main(**kwargs):
+    token = kwargs['access_secret']
+        
+    # Get assets
+    assets = []
+    filter = 'assetClassType=HARDWARE&employmentStatus=CURRENT_EMPLOYEE'
+    
+    page = 1
+    page_size = 50
+    hasNextPage = True
+    
+    while hasNextPage:
+        url = '{}/{}?{}&page={}&limit={}'.format(DRATA_URL, 'public/assets', filter, page, page_size)
+        results = http_get(url, headers={"Content-Type": "application/json", "Authorization": "Bearer " + token})
+        if results.status_code != 200:
+            print('failed to retrieve assets')
+            return None
+        
+        total = json_decode(results.body)['total']
+
+        if total == 9999999:
+            results_json = json_decode(results.body)['data']
+            assets.extend(results_json)
+            page += 1
+        elif total == 0:
+            hasNextPage = False
+        else:
+            print('unexpected value returned for total')
+            hasNextPage = False
+
+    assets_import = build_assets(assets)
+    if not assets_import:
+        print('no assets')
+
+    return assets_import
+----
+jamf/README.md
+# Custom Integration: JAMF
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## JAMF requirements
+
+- API Client ID and API Client Secret with appropriate permissions.
+- JAMF API URL: `https://<your-jamf-instance>.jamfcloud.com`.
+
+## Steps
+
+### JAMF configuration
+
+1. Generate an API Client ID and API Client Secret in your JAMF instance.
+   - Refer to the [JAMF API Documentation](https://developer.jamf.com/) for guidance.
+   - Ensure the credentials have permissions to access the `computers-inventory` and `computers-inventory-detail` endpoints.
+2. Note down your JAMF API URL (e.g., `https://<your-jamf-instance>.jamfcloud.com`).
+3. Test your API credentials by retrieving a bearer token using the `oauth/token` endpoint.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify API calls as needed to filter inventory data.
+    - Modify datapoints uploaded to runZero as needed.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_key` field for your JAMF API Client ID.
+    - Use the `access_secret` field for your JAMF API Client Secret.
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "JAMF").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will update the existing assets with the data pulled from the Custom Integration source.
+- The task will create new assets for when there are no existing assets that meet merge criteria (hostname, MAC, etc).
+- You can search for assets enriched by this custom integration with the runZero search `custom_integration:JAMF`.
+
+----
+jamf/custom-integration-jamf.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+
+JAMF_URL = 'https://<UPDATE_ME>.jamfcloud.com'
+
+
+def get_bearer_token(client_id, client_secret):
+    headers = {'Content-Type': 'application/x-www-form-urlencoded', 'accept': 'application/json'}
+    params={'client_id': client_id, 'client_secret': client_secret, 'grant_type': 'client_credentials'}
+    url = "{}/{}".format(JAMF_URL, 'api/oauth/token')
+
+    resp = http_post(url, headers=headers, body=bytes(url_encode(params)))
+    if resp.status_code != 200:
+        print("request bearer token returned status code", resp.status_code)
+        return None
+
+    body_json = json_decode(resp.body)
+    if not body_json:
+        print("invalid json body for bearer token")
+        return None
+
+    access_token = body_json['access_token']
+    return access_token
+
+
+def get_jamf_inventory(bearer_token):
+    hasNextPage = True
+    page = 0
+    page_size = 500
+    endpoints = []
+    headers = {"Authorization": "Bearer {}".format(bearer_token)}
+    url = JAMF_URL + '/api/v1/computers-inventory'
+    while hasNextPage:
+        params={"page": page, "page-size": page_size}
+        resp = http_get(url=url, headers=headers, params=params)
+        if resp.status_code != 200:
+            print("unsuccessful request", "url={}".format(url), resp.status_code)
+            return endpoints
+
+        inventory = json_decode(resp.body)
+        results = inventory.get('results', None)
+        if not results:
+            hasNextPage = False
+            continue
+
+        endpoints.extend(results)
+        page += 1
+
+    return endpoints
+
+
+def get_jamf_details(bearer_token, inventory):
+    # Needed to get extra info related to fingerprinting and networking information
+    headers = {"Authorization": "Bearer {}".format(bearer_token)}
+    endpoints_final = []
+    for item in inventory:
+        uid = item.get('id', None)
+        if not uid:
+            print("id not found in inventory item {}".format(item))
+            continue
+
+        url = "{}/api/v1/computers-inventory-detail/{uid}".format(JAMF_URL, uid=uid)
+        resp = http_get(url=url, headers=headers)
+        if resp.status_code != 200:
+            print("response returned {} status for request {}".format(resp.status, url))
+            return endpoints_final
+
+        extra = json_decode(resp.body)
+        item.update(extra)
+        endpoints_final.append(item)
+
+    return endpoints_final
+
+
+def asset_ips(item):
+    # handle IPs
+    general = item.get("general", {})
+    ips = []
+    last_ip_address = general.get("lastIpAddress", "")
+    if last_ip_address:
+        ips.append(last_ip_address)
+
+    last_reported_ip = general.get("lastReportedIp", "")
+    if last_reported_ip:
+        ips.append(last_reported_ip)
+
+    return ips
+
+
+def asset_os_hardware(item):
+    # OS and hardware
+    operating_system = item.get("operatingSystem", None)
+    if not operating_system:
+        print('operatingSystem key not found in item {}'.format(item))
+        return {}
+
+    hardware = item.get("hardware", None)
+    if not hardware:
+        print('hardware key not found in item {}'.format(item))
+        return {}
+
+    macs = []
+    mac = hardware.get("macAddress", "")
+    if mac:
+        macs.append(mac)
+
+    alt_mac = hardware.get("altMacAddress", "")
+    if alt_mac:
+        macs.append(alt_mac)
+
+    return {
+        'os_name': operating_system.get("name", ""),
+        'os_version': operating_system.get("version", ""),
+        'model': hardware.get("model", ""),
+        'manufacturer': hardware.get("make", ""),
+        'macs': macs
+    }
+
+
+def asset_networks(ips, mac):
+    ip4s = []
+    ip6s = []
+    for ip in ips[:99]:
+        ip_addr = ip_address(ip)
+        if ip_addr.version == 4:
+            ip4s.append(ip_addr)
+        elif ip_addr.version == 6:
+            ip6s.append(ip_addr)
+        else:
+            continue
+
+    if not mac:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+
+def build_asset(item):
+    print(item)
+    asset_id = item.get('udid', None)
+    if not asset_id:
+        print("udid not found in asset item {}".format(item))
+        return
+
+    general = item.get("general", None)
+    if not general:
+        print("general not found in asset item {}".format(item))
+        return
+
+    # OS and hardware
+    os_hardware = asset_os_hardware(item)
+
+    # create network interfaces
+    ips = asset_ips(item)
+    networks = []
+    for m in os_hardware.get('macs', []):
+        network = asset_networks(ips=ips, mac=m)
+        networks.append(network)
+
+    return ImportAsset(
+        id=asset_id,
+        networkInterfaces=networks,
+        os=os_hardware.get('os', ''),
+        osVersion=os_hardware.get('os_version', ''),
+        manufacturer=os_hardware.get('manufacturer', ''),
+        model=os_hardware.get('model', ''),
+    )
+
+
+def build_assets(inventory):
+    assets = []
+    for item in inventory:
+        asset = build_asset(item)
+        print("asset: {}".format(asset))
+        assets.append(asset)
+
+    return assets
+
+
+def main(*args, **kwargs):
+    client_id = kwargs['access_key']
+    client_secret = kwargs['access_secret']
+
+    bearer_token = get_bearer_token(client_id, client_secret)
+    if not bearer_token:
+        print("failed to get bearer_token")
+        return None
+    inventory = get_jamf_inventory(bearer_token)
+    if not inventory:
+        print("no inventory")
+        return None
+    details = get_jamf_details(bearer_token, inventory)
+    if not details:
+        print("no details")
+        return None
+
+    assets = build_assets(details)
+    print(assets)
+    if not assets:
+        print("no assets")
+
+    return assets
+----
+lima-charlie/README.md
+# Custom Integration: Lima Charlie
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Lima Charlie requirements
+
+- Organization ID (`oid`) for your Lima Charlie account.
+- API Access Token with permissions to access sensor data.
+- JWT Endpoint URL: `https://jwt.limacharlie.io`.
+- API Base URL: `https://api.limacharlie.io/v1`.
+
+## Steps
+
+### Lima Charlie configuration
+
+1. Obtain your Organization ID (`oid`) and API Access Token from your Lima Charlie account.
+   - Refer to the [Lima Charlie Documentation](https://www.limacharlie.io/docs) for instructions.
+2. Test your credentials:
+   - Use the JWT endpoint (`https://jwt.limacharlie.io`) to generate a bearer token with your `oid` and API Access Token.
+   - Use the generated token to query the `/sensors` endpoint (`https://api.limacharlie.io/v1/sensors/{oid}`) and verify access to your sensor data.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify API calls as needed to filter sensor data.
+    - Modify datapoints uploaded to runZero as needed.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_key` field for your Lima Charlie Organization ID (`oid`).
+    - Use the `access_secret` field for your API Access Token.
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "lima-charlie").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will update the existing assets with the data pulled from the Custom Integration source.
+- The task will create new assets for when there are no existing assets that meet merge criteria (hostname, MAC, etc).
+- You can search for assets enriched by this custom integration with the runZero search `custom_integration:lima-charlie`.
+
+----
+lima-charlie/custom-integration-lima-charlie.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+load('uuid', 'new_uuid')
+
+LIMACHARLIE_JWT_URL = 'https://jwt.limacharlie.io'
+LIMACHARLIE_BASE_URL = 'https://api.limacharlie.io/v1'
+
+def get_token(oid, access_token):
+    url = '{}/?oid={}&secret={}'.format(LIMACHARLIE_JWT_URL, oid, access_token)
+    token = http_post(url, headers={"Content-Type": "application/json"})
+    if token.status_code != 200:
+        return None
+    token_json = json_decode(token.body)
+    return token_json['jwt']
+
+def build_assets(sensors):
+    assets = []
+    for item in sensors:
+        sid = item.get('sid', new_uuid)        
+        hostname = item.get('hostname', '')
+
+        ips = []
+        int_ip = item.get('int_ip', '')
+        if int_ip:
+            ips.append(int_ip)
+        ext_ip = item.get('ext_ip', '')
+        if ext_ip:
+            ips.append(ext_ip)
+
+        mac = item.get('mac_addr', '')
+        if mac:
+            mac = mac.replace("-", ":")
+            network = build_network_interface(ips=ips, mac=mac)
+        else:
+            network = build_network_interface(ips=ips, mac=None)
+
+        # handle additional attributes collected for asset
+        custom_attrs = {}
+
+        custom_attribs_to_ignore = [
+            "sid",
+            "hostname",
+            "mac_addr",
+            "int_ip",
+            "ext_ip"
+        ]
+
+        for key, value in item.items():
+            if type(value) != 'dict':
+                if key not in custom_attribs_to_ignore:
+                    custom_attrs[key] = str(value)[:1023]
+
+        assets.append(
+            ImportAsset(
+                id=sid,
+                hostnames=[hostname],
+                networkInterfaces=[network],
+                customAttributes=custom_attrs
+            )
+        )
+    return assets
+
+def build_network_interface(ips, mac):
+    ip4s = []
+    ip6s = []
+    for ip in ips[:99]:
+        ip_addr = ip_address(ip)
+        if ip_addr.version == 4:
+            ip4s.append(ip_addr)
+        elif ip_addr.version == 6:
+            ip6s.append(ip_addr)
+        else:
+            continue
+    if not mac:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+    
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+def main(**kwargs):
+    oid = kwargs['access_key']
+    access_token = kwargs['access_secret']
+    token = get_token(oid, access_token)
+    if not token:
+        print('failed to get token')
+        return None
+        
+    # Get sensors
+    url = '{}/{}/{}'.format(LIMACHARLIE_BASE_URL, 'sensors', oid)
+    sensors = http_get(url, headers={"Content-Type": "application/json", "Authorization": "Bearer " + token})
+    if sensors.status_code != 200:
+        print('failed to retrieve sensors')
+        return None
+
+    sensors_json = json_decode(sensors.body)['sensors']
+
+    assets = build_assets(sensors_json)
+    if not assets:
+        print('no assets')
+    
+    return assets
+----
+automox/custom-integration-automox.star
+## Automox!
+
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_get='get', 'url_encode')
+load('uuid', 'new_uuid')
+
+AUTOMOX_API_URL = "https://console.automox.com/api/servers"
+
+def get_automox_devices(api_token):
+    """Retrieve all devices from Automox using pagination"""
+    headers = {
+        "Authorization": "Bearer " + api_token,
+        "Content-Type": "application/json"
+    }
+
+    query = {
+        "limit": "500",
+        "page": "0"
+    }
+
+    devices = []
+
+    while True:
+        response = http_get(AUTOMOX_API_URL, headers=headers, params=url_encode(query))
+
+        if response.status_code != 200:
+            print("Failed to fetch devices from Automox. Status:", response.status_code)
+            return devices
+
+        batch = json_decode(response.body)
+
+        if not batch:
+            break  # Stop fetching if no more results are returned
+
+        devices.extend(batch)
+        query["page"] = str(int(query["page"]) + 1)
+
+    print("Loaded", len(devices), "devices")
+    return devices
+
+def build_assets(api_token):
+    """Convert Automox device data into runZero asset format"""
+    all_devices = get_automox_devices(api_token)
+    assets = []
+
+    for device in all_devices:
+        custom_attrs = {
+            "os_version": device.get("os_version", ""),
+            "os_name": device.get("os_name", ""),
+            "os_family": device.get("os_family", ""),
+            "agent_version": device.get("agent_version", ""),
+            "compliant": str(device.get("compliant", "")),
+            "last_logged_in_user": device.get("last_logged_in_user", ""),
+            "serial_number": device.get("serial_number", ""),
+            "agent_status": device.get("status", {}).get("agent_status", "")
+        }
+
+        mac_address = ""
+        if device.get("detail", {}).get("NICS"):
+            mac_address = device["detail"]["NICS"][0].get("MAC", "")
+
+        # Collect IPs
+        ips = device.get("ip_addrs", []) + device.get("ip_addrs_private", [])
+
+        assets.append(
+            ImportAsset(
+                id=str(device.get("id", new_uuid())),
+                networkInterfaces=[build_network_interface(ips, mac_address)],
+                hostnames=[device.get("name", "")],
+                os_version=device.get("os_version", ""),
+                os=device.get("os_name", ""),
+                customAttributes=custom_attrs
+            )
+        )
+    return assets
+
+def build_network_interface(ips, mac=None):
+    """Convert IPs and MAC addresses into a NetworkInterface object"""
+    ip4s = []
+    ip6s = []
+
+    for ip in ips[:99]:
+        if ip:
+            ip_addr = ip_address(ip)
+            if ip_addr.version == 4:
+                ip4s.append(ip_addr)
+            elif ip_addr.version == 6:
+                ip6s.append(ip_addr)
+        else:
+            continue
+
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+def main(**kwargs):
+    """Main function to retrieve and return Automox asset data"""
+    api_token = kwargs['access_secret']  # Use API token from runZero credentials
+
+    assets = build_assets(api_token)
+    
+    if not assets:
+        print("No assets retrieved from Automox")
+        return None
+
+    return assets
+
+----
+automox/README.md
+# Custom Integration: Automox
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Automox requirements
+
+- **API Key** with permissions to retrieve device inventory.
+- **Automox API URL**: `https://console.automox.com/api/servers`.
+
+## Steps
+
+### Automox configuration
+
+1. **Obtain your Automox API Key**:
+   - Log in to your Automox console.
+   - Navigate to the kebab menu (3 vertical dots in the upper right) and then click on **Keys**
+   - Generate a **new API Key** with read permissions.
+2. **Note your API Key** for use in the integration.
+
+### runZero configuration
+
+1. **(OPTIONAL)** - Modify the script if needed:
+    - Adjust API queries to filter device data.
+    - Customize data attributes stored in runZero.
+2. **Create a Credential for the Custom Integration**:
+    - Go to [runZero Credentials](https://console.runzero.com/credentials).
+    - Select `Custom Integration Script Secrets`.
+    - Enter your **Automox API Key** as `access_secret`.
+    - Use a placeholder value like `foo` for `access_key` (unused in this integration).
+3. **Create the Custom Integration**:
+    - Go to [runZero Custom Integrations](https://console.runzero.com/custom-integrations/new).
+    - Add a **Name and Icon** for the integration (e.g., "automox").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` and then `Save`.
+4. **Schedule the Integration Task**:
+    - Go to [runZero Ingest](https://console.runzero.com/ingest/custom/).
+    - Select the **Credential and Custom Integration** created earlier.
+    - Set a schedule for recurring updates.
+    - Select the **Explorer** where the script will run.
+    - Click **Save** to start the task.
+
+### What's next?
+
+- The task will kick off on the [tasks](https://console.runzero.com/tasks) page.
+- Assets in runZero will be updated based on **Automox device inventory**.
+- The script captures details like **OS version, agent status, compliance, and IPs**.
+- Search for these assets in runZero using `custom_integration:automox`.
+
+### Notes
+
+- The script **automatically retrieves all devices**, including paginated results.
+- All attributes from Automox are stored in `customAttributes`.
+- The task **can be scheduled** to sync device inventory at regular intervals.
+
+----
+carbon-black/custom-integration-carbon-black.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface', 'Vulnerability')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+
+CARBON_BLACK_HOST = "<UPDATE_ME>"  # Example: https://defense.conferdeploy.net
+SCROLL_API_URL = "{}/appservices/v6/orgs/{}/devices/_scroll"
+VULNERABILITY_API_URL = "{}/vulnerability/assessment/api/v1/orgs/{}/devices/{}/vulnerabilities/_search?dataForExport=true"
+PAGE_SIZE = 1000  # Max devices per request
+VULN_PAGE_SIZE = 100  # Max vulnerabilities per API call
+MAX_VULNS = None  # Set to None for all, or an integer for a limit (e.g., 50)
+
+def get_devices(org_key, api_key):
+    """Retrieve all devices from Carbon Black Cloud API using _scroll for large datasets"""
+    headers = {
+        "X-Auth-Token": "{}/{}".format(api_key, org_key),
+        "Content-Type": "application/json",
+    }
+
+    devices = []
+    
+    # Step 1: Start the scroll session
+    payload = {
+        "criteria": {},
+        "rows": PAGE_SIZE
+    }
+    url = SCROLL_API_URL.format(CARBON_BLACK_HOST, org_key)
+    response = http_post(url, headers=headers, body=bytes(json_encode(payload)))
+
+    if response.status_code != 200:
+        print("Failed to start scroll session. Status: {}".format(response.status_code))
+        return devices
+
+    response_json = json_decode(response.body)
+    batch = response_json.get("results", [])
+    scroll_id = response_json.get("scroll_id", None)
+
+    if not batch:
+        print("No devices returned or missing scroll_id.")
+        return devices
+
+    devices.extend(batch)
+
+    if not scroll_id:
+        return devices
+
+    # Step 2: Continue fetching batches using scroll_id
+    while scroll_id:
+        payload = {"scroll_id": scroll_id}
+        response = http_post(url, headers=headers, body=bytes(json_encode(payload)))
+
+        if response.status_code != 200:
+            print("Failed to retrieve next batch. Status: {}".format(response.status_code))
+            break
+
+        response_json = json_decode(response.body)
+        batch = response_json.get("results", [])
+        scroll_id = response_json.get("scroll_id", None)
+
+        if not batch:
+            break  # No more data to retrieve
+
+        devices.extend(batch)
+
+    return devices
+
+def get_device_vulnerabilities(org_key, api_key, device_id, MAX_VULNS):
+    """Retrieve vulnerabilities for a specific device, with optional max limit"""
+    headers = {
+        "X-Auth-Token": "{}/{}".format(api_key, org_key),
+        "Content-Type": "application/json",
+    }
+    
+    vulnerabilities = []
+    start = 0
+
+    while MAX_VULNS == None or len(vulnerabilities) < MAX_VULNS:
+        remaining = VULN_PAGE_SIZE
+        if MAX_VULNS != None:
+            remaining = min(MAX_VULNS - len(vulnerabilities), VULN_PAGE_SIZE)
+
+        payload = {
+            "query": "",
+            "rows": remaining,
+            "start": start,
+            "criteria": {},
+            "sort": [{"field": "risk_meter_score", "order": "DESC"}]
+        }
+        
+        url = VULNERABILITY_API_URL.format(CARBON_BLACK_HOST, org_key, device_id)
+        response = http_post(url, headers=headers, body=bytes(json_encode(payload)))
+
+        if response.status_code != 200:
+            print("Failed to retrieve vulnerabilities for device:", device_id)
+            return vulnerabilities
+
+        response_json = json_decode(response.body)
+        batch = response_json.get("results", [])
+        
+        if not batch:
+            break  # No more vulnerabilities left
+
+        vulnerabilities.extend(batch)
+        start += VULN_PAGE_SIZE
+
+    if MAX_VULNS != None:
+        return vulnerabilities[:MAX_VULNS]
+    return vulnerabilities
+
+def build_vulnerabilities(vuln_data):
+    """Convert Carbon Black vulnerabilities into runZero vulnerability format"""
+    vulnerabilities = []
+
+    for vuln in vuln_data:
+        vuln_info = vuln.get("vuln_info", {})
+        cve_id = vuln_info.get("cve_id", "")
+        description = vuln_info.get("cve_description", "")
+        severity = vuln_info.get("severity", "LOW").upper()
+        risk_meter_score = vuln_info.get("risk_meter_score", 0)
+
+        # Map severity to numeric risk rank
+        severity_map = {"CRITICAL": 4, "HIGH": 3, "MODERATE": 2, "LOW": 1}
+        risk_rank = severity_map.get(severity, 0)
+
+        vulnerabilities.append(
+            Vulnerability(
+                id=cve_id,
+                name=cve_id,
+                description=description,
+                cve=cve_id,
+                riskScore=float(risk_meter_score),
+                riskRank=risk_rank,
+                severityScore=float(risk_meter_score),
+                severityRank=risk_rank,
+                solution=vuln_info.get("solution", ""),
+                customAttributes={
+                    "fixed_by": vuln_info.get("fixed_by", ""),
+                    "created_at": vuln_info.get("created_at", ""),
+                    "nvd_link": vuln_info.get("nvd_link", ""),
+                    "cvss_score": vuln_info.get("cvss_score", ""),
+                    "cvss_v3_score": vuln_info.get("cvss_v3_score", ""),
+                }
+            )
+        )
+
+    return vulnerabilities
+
+def build_assets(org_key, api_key, devices):
+    """Convert Carbon Black devices into runZero assets with vulnerability data"""
+    assets = []
+    
+    for device in devices:
+        device_id = str(device.get("id", ""))
+        hostname = device.get("name", "")
+        os = device.get("os", "")
+        os_version = device.get("os_version", "")
+        ip = device.get("last_internal_ip_address", "")
+        mac = device.get("mac_address", "")
+
+        # Fetch vulnerabilities for the device
+        vuln_data = get_device_vulnerabilities(org_key, api_key, device_id, MAX_VULNS)
+        vulnerabilities = build_vulnerabilities(vuln_data)
+
+        # Build network interfaces
+        network = build_network_interface(ips=[ip], mac=mac if mac else None)
+
+        # Manually build customAttributes for compatibility
+        custom_attrs = {
+            "activation_code": device.get("activation_code", ""),
+            "ad_domain": device.get("ad_domain", ""),
+            "av_engine": device.get("av_engine", ""),
+            "compliance_status": device.get("compliance_status", ""),
+            "deployment_type": device.get("deployment_type", ""),
+            "device_owner_id": str(device.get("device_owner_id", "")),
+            "organization_name": device.get("organization_name", ""),
+            "os_version": device.get("os_version", ""),
+            "sensor_version": device.get("sensor_version", ""),
+            "status": device.get("status", ""),
+            "target_priority": device.get("target_priority", ""),
+            "virtual_machine": str(device.get("virtual_machine", "")),
+            "vulnerability_score": str(device.get("vulnerability_score", "")),
+            "vulnerability_severity": device.get("vulnerability_severity", ""),
+        }
+
+        assets.append(
+            ImportAsset(
+                id=device_id,
+                hostnames=[hostname],
+                os=os,
+                osVersion=os_version,
+                networkInterfaces=[network],
+                vulnerabilities=vulnerabilities,
+                customAttributes=custom_attrs
+            )
+        )
+
+    return assets
+
+def build_network_interface(ips, mac):
+    """Build runZero network interfaces"""
+    ip4s = []
+    ip6s = []
+
+    for ip in ips[:99]:
+        if ip:
+            ip_addr = ip_address(ip)
+            if ip_addr.version == 4:
+                ip4s.append(ip_addr)
+            elif ip_addr.version == 6:
+                ip6s.append(ip_addr)
+
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+def main(**kwargs):
+    """Main function for Carbon Black integration"""
+    org_key = kwargs['access_key']
+    api_key = kwargs['access_secret']
+
+    devices = get_devices(org_key, api_key)
+    
+    if not devices:
+        print("No devices found.")
+        return None
+
+    assets = build_assets(org_key, api_key, devices)
+    
+    if not assets:
+        print("No assets created.")
+    
+    return assets
+
+----
+carbon-black/README.md
+# Custom Integration: Carbon Black
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Carbon Black requirements
+
+- API Key with permissions to access the **Devices API**.
+- Organization Key (`org_key`), required for API requests.
+- Carbon Black API URL (e.g., `https://defense.conferdeploy.net`).
+
+## Steps
+
+### Carbon Black configuration
+
+1. Obtain your **API Key** from Carbon Black Cloud:
+   - Navigate to **Settings** > **API Access** > **API Keys** tab in the Carbon Black Cloud console.
+   - Generate an API Key with access to the **Devices API** and **Vulnerability API**.
+   - Note down the **API Key** and **Org Key** (`org_key`).
+2. Find your Carbon Black API URL:
+   - This depends on your region (e.g., `https://defense.conferdeploy.net`).
+   - Refer to the [Carbon Black API Documentation](https://developer.carbonblack.com/reference/carbon-black-cloud/authentication/#hostname) for a list of hostnames it could be.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify API queries as needed to filter asset data.
+    - Adjust which attributes are included in runZero.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_key` field for your **Carbon Black Org Key**.
+    - Use the `access_secret` field for your **Carbon Black API Key**.
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "carbonblack").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will update the existing assets with the data pulled from Carbon Black.
+- The task will create new assets for when there are no existing assets that meet merge criteria (hostname, MAC, etc).
+- You can search for assets enriched by this custom integration with the runZero search `custom_integration:carbonblack`.
+
+### Notes
+
+- The integration automatically retrieves **all device attributes** available in Carbon Black Cloud.
+- Data such as **sensor version, status, policy, network details, and security attributes** are included in `customAttributes`.
+- Use the **runZero search queries** to filter assets by key attributes.
+
+----
+boilerplate/README.md
+# Custom Integration: <INSERT_INTEGRATION_NAME_HERE>
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero
+
+## <INSERT_PRODUCT> requirements
+
+- <INSERT_REQUIREMENT_1> - example API Client Credentials
+- <INSERT_REQUIREMENT_2> - example API URL
+
+## Steps
+
+### <INSERT_PRODUCT> configuration
+
+1. <INSERT_STEP_1> - example get API URL
+2. <INSERT_STEP_2> - create API credentials
+3. <INSERT_STEP_3> - example update `API_URL` in the code
+
+### runZero configuration
+
+1. (OPTIONAL) - make any neccessary changes to the script to align with your environment. 
+    - Modify API calls as needed to filter assets
+    - Modify datapoints uploaded to runZero as needed 
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials)
+    - Select the type `Custom Integration Script Secrets`
+    - Both `access_key` and `access_secret` are required, but not all scripts will use both
+    - Input a placeholde value like `foo` if the value is unused 
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new)
+    - Add a Name and Icon 
+    - Toggle `Enable custom integration script` to input your finalized script
+    - Click `Validate` to ensure it has valide syntax
+    - Click `Save` to create the Custom Integration 
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/)
+    - Select the Credential and Custom Integration created in steps 2 and 3
+    - Update the task schedule to recur at the desired timeframes
+    - Select the Explorer you'd like the Custom Integration to run from
+    - Click `Save` to kick off the first task 
+
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration 
+- The task will update the existing assets with the data pulled from the Custom Integration source 
+- The task will create new assets for when there are no existing assets that meet merge criteria (hostname, MAC, etc)
+- You can search for assets enriched by this custom integration with the runZero search `custom_integration:<INSERT_NAME_HERE>`
+
+----
+boilerplate/custom-integration-boilerplate.star
+# This script demonstrates how to import and use all of the runZero custom Starlark libraries.
+# 
+# The libraries are:
+#
+#   1. runzero.types (ImportAsset, NetworkInterface, Software, Vulnerability)
+#   2. json (json_encode="encode", json_decode="decode")
+#   3. net (ip_address)
+#   4. http (http_post="post", http_get="get", url_encode)
+#   5. uuid (new_uuid)
+#
+# The main() function also shows how to use the Credentials stored in runZero with the **kwargs input. 
+
+load("runzero.types", "ImportAsset", "NetworkInterface", "Software", "Vulnerability")
+load("json", json_encode="encode", json_decode="decode")
+load("net", "ip_address")
+load("http", http_post="post", http_get="get", "url_encode")
+load("uuid", "new_uuid")
+
+
+# -------------------------
+# runzero.types (3 examples)
+# -------------------------
+
+def create_asset_example():
+    """
+    Demonstrates how to create an ImportAsset object, which is used
+    to represent a device or endpoint for ingestion into runZero.
+
+    Returns:
+        ImportAsset: a populated ImportAsset object
+    """
+    # Minimal example: single network interface, hostnames, OS, etc.
+    # Normally, you'll populate these from real data.
+    netif = NetworkInterface(
+        ipv4Addresses=["192.168.1.10"],
+        macAddress="AA:BB:CC:DD:EE:FF"
+    )
+    return ImportAsset(
+        id="asset-12345",
+        networkInterfaces=[netif],
+        hostnames=["sample-device"],
+        os="ExampleOS",
+        osVersion="1.0"
+    )
+
+def create_software_example():
+    """
+    Demonstrates how to create a Software object, which can be attached
+    to an ImportAsset for software inventory tracking.
+
+    Returns:
+        Software: a populated Software object
+    """
+    return Software(
+        id="software-456",
+        vendor="ExampleVendor",
+        product="ExampleProduct",
+        version="v2.1.3",
+        serviceAddress="127.0.0.1"
+    )
+
+def create_vulnerability_example():
+    """
+    Demonstrates how to create a Vulnerability object, which can be attached
+    to an ImportAsset for vulnerability information tracking.
+
+    Returns:
+        Vulnerability: a populated Vulnerability object
+    """
+    return Vulnerability(
+        id="vuln-789",
+        name="CVE-1234-5678",
+        description="Example vulnerability",
+        cve="CVE-1234-5678",
+        solution="Update to the latest patch",
+        severityRank=4,          # 0=Info, 1=Low, 2=Med, 3=High, 4=Critical
+        severityScore=10.0,
+        riskRank=4,
+        riskScore=10.0
+    )
+
+
+# ---------------
+# json library
+# ---------------
+def example_json_usage():
+    """
+    Demonstrates how to use the json library for encoding and decoding.
+    """
+    sample_data = {"key": "value", "numbers": [1, 2, 3]}
+    # Encode Python/Starlark dict to JSON string
+    encoded = json_encode(sample_data)
+    print("JSON-encoded data:", encoded)
+
+    # Decode back to a Starlark/Python object
+    decoded = json_decode(encoded)
+    print("JSON-decoded data:", decoded)
+    return decoded
+
+
+# --------------
+# net library
+# --------------
+def example_ip_usage():
+    """
+    Demonstrates how to parse an IP address using the net library.
+    Returns a net.ip_address object (either IPv4 or IPv6).
+    """
+    addr_string = "192.168.10.55"
+    ip_obj = ip_address(addr_string)
+    print("IP version:", ip_obj.version)
+    print("Compressed representation:", ip_obj.compressed)
+    return ip_obj
+
+
+# ---------------
+# http library
+# ---------------
+def example_http_usage():
+    """
+    Demonstrates usage of the http library to construct a URL-encoded
+    parameter set, then perform a GET request.
+    """
+    params = {"search": "alive:t", "limit": 10}
+    encoded_params = url_encode(params)
+    print("Encoded GET parameters:", encoded_params)
+
+    # This is just a sample. If you hit a real URL, you'd typically do:
+    #   response = get(url="https://example.com/api", params=params)
+    #   or
+    #   response = post(url="https://example.com/api", body=...)
+    # For this demo, we'll just return the encoded_params
+    return encoded_params
+
+
+# ---------------
+# uuid library
+# ---------------
+def example_uuid_usage():
+    """
+    Demonstrates how to use the uuid library to generate a unique ID.
+    """
+    unique_id = new_uuid()
+    print("Generated UUID:", unique_id)
+    return unique_id
+
+
+# -------------
+# main function
+# -------------
+def main(*args, **kwargs):
+    """
+    Main function that demonstrates capturing parameters from kwargs
+    and printing a simple welcome message.
+
+    Example usage in runZero:
+        def main(*args, **kwargs):
+            client_id = kwargs['access_key']
+            client_secret = kwargs['access_secret']
+            # Do something with client_id, client_secret
+    """
+    # For demonstration:
+    if "access_key" in kwargs:
+        client_id = kwargs["access_key"]
+    if "access_secret" in kwargs:
+        client_secret = kwargs["access_secret"]
+
+    print("welcome to runZero custom integrations")
+
+    # If needed, you can call any of the example functions here:
+    # decoded = example_json_usage()
+    # ip_obj = example_ip_usage()
+    # new_id = example_uuid_usage()
+    # params = example_http_usage()
+    # asset = create_asset_example()
+    # software = create_software_example()
+    # vuln = create_vulnerability_example()
+    # ...
+
+----
+.github/pull_request_template.md
+# Pull Request Template
+
+## Description
+
+Please provide a brief description of your changes and the context for this integration. Include any background details or links to related issues.
+
+## Checklist
+
+Before submitting your pull request, please ensure that you have completed the following:
+
+- [ ] **New Integration Folder:** A new folder has been created for the integration.
+- [ ] **Updated README:** The README has been updated based on the boilerplate to reflect the new integration details.
+- [ ] **customer-integration.star File:** The `customer-integration-<name>.star` file has been created/updated as required.
+
+----
+.git/ORIG_HEAD
+9fce7764c7dc979c41822cefc50e240aa8b5af76
+
+----
+.git/config
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = git@github.com:runZeroInc/runzero-custom-integrations.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[branch "carbon-black"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/carbon-black
+
+----
+.git/HEAD
+ref: refs/heads/main
+
+----
+.git/description
+Unnamed repository; edit this file 'description' to name the repository.
+
+----
+.git/index
+DIRC      gt Zgt Z           og]їfƘJTSa|ڞ  .github/pull_request_template.md  g_ɷg_kY  
+9[         >ty/$VzQu1 LICENSE   gȨ"gȨ"           ^3K||RM4;Ue 	README.md gȨc1gȨc1  #9P         	@Bfnv?# automox/README.md gȨc1^egȨc1^e  #9Q         	C( 'automox/custom-integration-automox.star   gX(RgX(R  
+8         hJb9Z}hvg boilerplate/README.md     g\/g\/  
+8         'k'LiD"~zc /boilerplate/custom-integration-boilerplate.star   gȞ++ngȞ++n  "f<         F;8fW}1r'@ carbon-black/README.md    gȥ3gȥ3  #         |"o-vHBRE 1carbon-black/custom-integration-carbon-black.star gȨc1gȨc1  #9T         	:@6Ҁdƹ#IIb cortex-xdr/README.md      gȨc1ϲ{gȨc1ϲ{  #9U         8CX{>IE<F -cortex-xdr/custom-integration-cortex-xdr.star     gȞ?1LgȞ?1L  
+9         	ǔWf5ʋiӨ digital-ocean/README.md   gȞ*gȞ*  "f>         jJ ]60[ė. 3digital-ocean/custom-integration-digital-ocean.star       gȞI$vgȞI$v  
+9         	=7t|ju`Lͤ drata/README.md   gi+(&{gi+(&{  
+9         ;xe6Y(5X #drata/custom-integration-drata.star       g`gg`g  
+8E         	~"Qpz jamf/README.md    g`{	g`{	  
+8         ڬ x91onuh& !jamf/custom-integration-jamf.star gȞ`+(}}gȞ`+(}}  
+9         
+a 6ȗH6+VT}: lima-charlie/README.md    gZ8gZ8  
+9d         Б;,Q/j+܆K 1lima-charlie/custom-integration-lima-charlie.star gȞ4}gȞ4}  "f?         
+.(P%uS-MU2_ sumo-logic/README.md      g_mg_m  
+8         Q(#Z9w{ 'sumo-logic/custom-integration-sumo.star   gȞtzNgȞtzN  
+8[         
+fXmp3".rH~ tanium/README.md  gȞCqgȞCq  "fA         1^GB-::In %tanium/custom-integration-tanium.star     TREE   23 11
+qCXU__k1wtjamf 2 0
+7l̄s&!Li蛳drata 2 0
+Hc	?20#1ǲ@']tanium 2 0
+̐G}_Hvjl.github 1 0
+pنzD{+XjEhautomox 2 0
+;;^ժgψ]cortex-xdr 2 0
+'k.sc&=u3
+sumo-logic 2 0
+6w+uKʰ}]^e$fboilerplate 2 0
+[̪gʵM)cmmcarbon-black 2 0
+ZHjjD!q lima-charlie 2 0
+Du	s4G;u0digital-ocean 2 0
+JtG8y`,f|f"Y93U涵w
+----
+.git/COMMIT_EDITMSG
+add new integrations to the main README
+
+----
+.git/FETCH_HEAD
+8336259993307d9c6c8e5b009acad8b26036f8ed		branch 'main' of github.com:runZeroInc/runzero-custom-integrations
+
+----
+.git/objects/92/ee592c607b42a146ec473a605ed579a9bd72be
+xVMo7YbbIz꤅$";Ek;b"+{ᕔ&ɰ3y.K?>	]V>
+]SA[sA-_KGr%ǟ*x&Ֆ]ّJSb;)&E\*N%'3HRsX?#m:X԰ʣf^ȍ
+ZQxw=]B9BS.+>^M{2ʭ%t"9}N9)	-~3xF&gub8,Κ恷 ۃo4z2(RʡrBb/K[e#":jX6GmYrp{\؍46ΆA42F'E|J^R#"ef*=7N(CҒ~Hګ%f=6'@q|=`""/mZE=NC;.-1b)3gI>6)Oxt
+SUtMOV6|u>ͩݓ*3Zr3Z5WtLjߧNoJ]f#lvY#}'"Ig3GSN#g"ee*.pNWBpzYve%	]:
+;\T1>Gb:}Tcx~\rqCLc+yМS/[-!$۴s^;H{G2zqBrS=<,#ڈ2=ɰ'}[%zeuF mUCH
+h;.KiP(xt%J
+wrDƼ>Dծ PKF?}X_]ppjv=N{8Z2hxY5<2kv+4FAjYF5hf
+b7zf!ǗG-毠l.QKLZxySa\T!"l)K<I%wmUMn(:ylK~|crxmG8e2TI/@}Іavh_ՊN07	qH!۳rpX%'6r5w=4ۏYl:xa|Ţ/Ls-a
+\ʲaؘ-6K@.M`HZ})Jd}tc'O	y,Ohk֭q_%d` .?XFm~]s<>@݈߄^Ǔtp[2	
+----
+.git/objects/92/52a57f94533c5a991a93c3ac87e81b87c2c38f
+x}KH gͯ=
+Te(*;ph@3e*gUM]@^$.M8b!ED+	(Cb>
+I$AHdd|F8N08d@$0@\XIڕqC,E1i<.}UG^b>@Q%̃o<y~ͧ_FIC-}oJՍN	;R<Ī8c>gsjg
+8/*EQlp=v뼐z3ۅOʀQ
+dNWsG)>-Àyg[T8ezx,vȹ@fE*1?a}RVa}5>*LiϞwyRG/=B,00<}fN9$+Jcm /'-*U?-BA٢;^POӘok֙}
+8=!fHP٢Ҷ]xjx¶>?NK/	C.LOչiϜah\ӲQtЏ
+h]=QyOV_'.}W5-# gR-7.rˬUenJ7t6A̆b>6թJkqn>-W|`U{ȵ~>>L\nJ-9'77n!,uqY-VTy8kXgwxTͧӣ駯aXf ͼs+S]1osЭ$)8OxVw
+----
+.git/objects/66/e295581bef6d709c33b7222e72a8de06487e18
+xV]o7~?Ha-)NZ9-ڠQՉ5Ea[%N(M'	'q9;3;{Kw/9/Sn#.m˨=괙O/NxMӆlىX|
+l
+AD'zA4ήtJ1vl>U#7Ή	GBGA|{o/Ż^CXuo]'15ü3vyRüv6*5
+YqZd{
+ȪVMg4_!Ri	A}ͅKOH= _6}[7([
+̈́'3q|'$V3KD&T`g=y&r+Ί,EGdbrۅ
+S-?k>6ߊL'U!TJ\ݽ}&73{;v囫G yCص8-]d;K^L/;er\)f)2h)R\bMĈ<n|Ṉj#P<IgȮcBjH:*o!Ǭ4B*`kҝ>;cq(@dQ(zX2xY]Cȿנ ~>.7]؉Ȇ(~'M"a4W0Y4k9FzV!&WϭsJn~J\Q	!|2vmkɅK| qk6H`<PFԿGSTF}HON-]9UGU͞Re2<دH|{3qa4klh]'ZJ`Tzj\Qd
+<İ
+Cg᧪3' 	>)ajѭG40i})C.aA#Mks=W_=HtgCᴟW5 Ӗ/Ɯ#h̼c*KOǙdx,q[b?7X>@x9בC@ nP ,I_Jp^e3o964cRLvti9R5Xa,ԍ:rL3 ;Yf8YMM$aoS]b"IAf~6B$SJ3^)Ƹv+fަo\ͺRt$5ϝXnq<P
+WI lp
+----
+.git/objects/3e/80c90d8d3c7002604ba2c06c0d3c4dde9be7ee
+x}ɮV D+$u\&clv<>/I/HU͉ۺ.&@@m4G3DilĄ	̨!G3,$%pv J I:q~4ǐ4KS90~5v*|,2G73}/<Gڟ[{uxGO\dp``X@HҼ+Mmvi/Bw؉%%pEc[qy;_UW-&+[18(kfPJrAAl46[@"֚Z]2>C~X)bbQEe׎u6?MMgxչӟ(QCɜldc^$sB\%nbx.a(J&'JZ7:H+ûJ8YOCKgeCB1 GK%3ŷIQ 2h|OTk검'/Rsf]S4cm= =W+]d4,9`ٸcXgN}
+(wm2s"MN~.f\XXNʋ^>{|Ĺ;Qʩ{huOK^Ze顴B<vx2-hdj!M#h>Us/}+˶D'|9Fky%EJeɣ"/ٹʞ{bs;
+ka:!CN)pd$W6H
+----
+.git/objects/68/ba4afb62395a7fe317f4ca7d68918f1dfd7667
+xV]o6~yH&E
+Z'mPXˤJR}CQGCb&3#K=uzECxaZҏ$Og4uܟFQ>(:9!Sh2o-
+X9E4+6eC"MZr\||T\.p?sluɗ3L60/=#:
+ᗧ\a4h:XU%SqHR.Ei{'ߞ|jpLW 4u綐Z4~<D` ull.O
+P͛7@*g:CēnPOJ,ڐfl(-Zv65r^Eѵ!V/hesIuA:8eiIXF[yUYP	4$*
+iXRDǮgw3\tdorYj%MŌ17g$8%omlk;eg4)pIo&9
+NAU)R.t1f*%ZC
+y:KP$:rtݞ׎~H2Bw$z-X9C@۬j[NBda#\*(3JZ`tI͛9 T:* .('և&%ȶ:b"˯Jz6zQ{SyD
+7mSO!x*814¢"H8c|s!uCa;wYPTcz|ZQn.tKc#B:Y8:r0uy[ZH:͖3Ģ57}+wN=`axmL.K0{B֐E8LGwk>^nڃ~}((! hxؠ/RT
+:-u
+<إg-dXhR1$.Ho |vۖIݓq"v
+----
+.git/objects/57/a59392c3cdc963202ceb1542c330f22df664e3
+x+)JMU01d01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'M%7Y3=%nUlwĮ
+QZTX}f?ɓv\Ģ<ݤlRtg+ܦn给!R2>KONMc	>]i0Ρ{{Y<
+ӖPuE%5=ς,#f:LLzvf|VbnÆ?9gZn)nɜb/!9E9A\$}^p>~vq|;W!ʊKsus3}+پݺY>᳿ J2Ks|Ok;r(;e].[#k#7 p\
+----
+.git/objects/3b/b69d1a1d9be307ae81d8d284e7dc4eed7c6791
+xM
+0F]seLL".<d6`[	q	\Oޖ4ZU4R|Lar9ML"$xl\um4`(A\&DqHl3"W
+C+\h-ySr_<y[p$G{uNL-
+----
+.git/objects/9e/b4709e90c0bc267d7cbc9aecf6f520599d09c8
+xmUR7|Exb8Υ7)BJThao OiiY;PKNs?=f)yJ=Sݟ<1N\EPxԴA5ϧUGqɰ!IǌUM7o$eczQ{8wgl}Pü윚Aq5,'+rJ93r/<]h/L'!jv4(U9Mޥ`Q
+<XK[́z԰l[
+]]M߼=6;)S|Yσemwr71UU$|cdR֒ggq)̱&}`8rpʹX	'D
+$_u0]	 <Ŋqq@Jg9^ќU72{}7R6聤	s0"
+I."
+}	:񀠊BE)h4[82M&|l̶UL&&j"Ν KJI-KMUA8:uzɸNh=es&x-86D)5(v}
+woA!+t&!|!,|b6H qD>quCBt50j(]/i;ՅVAǜ<~ԕ5|)`q9,&H Rg
+ȨTs_%;pz13{^\jziYa39/9#lr䡓4%ՅxY05Id\g̝k&;۱=*q
+HtʬXX37ʦDRG!/
+"1wC#\2h3Vuwmndki=|QOt,@Ѯ7}}1&	<d:Sӡѹ>C̖3M,%ޜ\cdxOYb@Ztc,sQ?㖟
+----
+.git/objects/67/5dd3d19766c6984a0e540e53f4fe617cda9eb9
+xmKK1]W\j[pRW"ItBdǿf>{wNjk\_bIb0N%	]F$`>h|Z!Fj	ʻD_	<:b\)F-f|EMI;ָMDT4LL[-51	qG|s5)p0O
+9TThGT.[?J	^>xOx[8~-&rPz!:I7}t/ZnbtʿAûRl(RTpZϪRdMwo&NnWa7َ(@?5
+----
+.git/objects/0b/89463b38ee046657119d0f7d3193c11f722740
+xVMo7Ybb*Mz꤅$";Ek;b"+{ᕔ&ɰ3y.KϞ?.+솮L©KЯJף	ΒOvahtNjˮH){ORX1gZj.t_Lےw$LXԹ~,ʟ6]I,jXQewWtÊPF{b](t<~;	q])N\/&=IL}W޾MɄ]l<Ox[:1gM[[{72(RʡrBb/K[e#":jX6GmYrp{\؍46ΆA42F'E|J^R#"ef*=7N(CҒ~Hګ%f=6'@q|=`""/mZE=NC;.-1b)3gI>6)Oxt
+SUtMOV6|u>ͩݓ*3Zr3Z5WtLjߧNoJ]f#lvY#}'"Ig3GSN#g"ee*.pNWBpzYve%	]:
+;\T1>Gb:}Tcx~\rqCLc+yМS/[-!$۴s^;H{G2zqBrS=<,#ڈ2=`
+InlQQKmW5\V
+6gȢ90,uB``ѕ)
+rp5W&\:--\~uj8Hn jkʌeHċۭ`gPSՠS 37;x4}_D-1=kyLkZsS<N,>'Iu'gU7-YDp#c/ŋG,#'biP-㔭0R]&{tŊKCnء
+8lU+:V.'!Rlo`8X.]ָ]^rl,o?fb0y=[Te
+=0=
+[re)]F.(V_
+5"<fɋqB;ZD=½uk܆W4lHvQVh:j"ܖf
+----
+.git/objects/0b/d8024284868b660c6e7699dd3fb9f61823068b
+xV]o6DHlRE^
+#F$s-Р8ZfM:~8IIvm>ő˙]-Y~愮fCsmWi#2
+l
+Y
+7ލF4-ؒ*v!bz:N2R!t}&<vFw|l&Usx1N:Gb0yWqвLb݂1pM1_oʯVM+3@>+wc\tv&!n@~5"5u
+Y_;UܫX ̫Jhƻ
+-D!?#X*5 +71	h9Ise!EG~wG2Kc	~a8Iw?	vz8ޞjK~sU'YL!d*ρQdK8E|o)	,1eqwБ~HHAH2vqLM(ڟvotp;QYs<Y9Wp}gyƲ6
+*?tr8jQh$[VkriL׼+44(yίT0e@2ZSv4xLAȩwbl=@N<$5ĸi(;$M٭e4jYΓTש'r߭\l>*8V,
+ӣpݬvJ1H4;RzGَ@jŶ7g]?Jm
+^c7/FO8Wl3n<+cP	!;/lCn[k[\!<Wo8.Q+je`̋8#SI[%~w|":h}RQ݈3?sG>sMh*ƛuTُ+Sf_:h<8WԢHAF;:bGȀr*d	ڡ56 $Kq*[h(;욪:haSC[?gI#
+----
+.git/objects/60/68ec9aaeeae6869b9a0a53aa0c6936fc5b1489
+x+)JMU4f040031QrutuMaXQ!SKTۃNNj($?W73$5($3?O47_$ᾙ	+^ggx5 O&
+----
+.git/objects/9d/468fd2c81f4825721d6576165cbe7657e5487e
+x+)JMU016f01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfzOee-vVV U_TZ[R~e^_j;^ATd}Mݢ0K>DkҠK=?s^72rc!Yii/V'sٛHd&&g$d2l?{^}S)g	|Ceť9fW˵KOmcM"qꔒļ\Eg&^{Q.Kߵr ]Y
+----
+.git/objects/9c/84b1e562a596ccf9a2aa8b2df3275f53500e0a
+x}ɮV D+ˌԉdl13ƻˌ<K(<RjQm[/ 29 I2@<sϓIph>e
+OL2l@S- "&)̒<`Q4Cs r)!a2u	{O@|
+Q,OK4uUK&_i @#I~_z9	ʡ[,`6N%1m>$Ɋ$9svCWו
+Ft$)ΝM-ŨZϛx
+wWƈOL}xˁ
+^OC7
+([^>~_V#0dk}+h¹~EטmBڂpy/<"Si^$T̯LVah9G
+gi5D`(WvdC{ԄO~}tH-,$
+V9{6{(d'fӏAgj.țj<O[h+`ib	Sw]u>NI8R|=M,2oU,+.iԎpcyKV>HGDS4c2umAۿnn9
+t(q;LӬ26l	lB|.g~LnJlW̾Ȇ#o/=ob?91^3.On.fe4V,Tv8k[enw-Ԋ`\mG"p5&ַyϷPyeרcs BOhߏ!CK\MR/Waء~9GSZ6Y}
+----
+.git/objects/b5/79f776b9a78f3cbfa7dd979dbad09eb463a58a
+x+)JMU062b040031Qtvve(_?_%l՛3*	rutuMa`ބ{jkzB\&@ZTX}f?ɓv\̒<U[1TZ'q7ĒDXggѾja"4
+sδR9_Bs2su3r2SʃI|rr.wBg&3$dճٳWd(*I,eh;ӾӶ?(`N9p (M
+----
+.git/objects/b5/09b3e4860b633a1e31d245d34833b487a2bd57
+xV]o7~?Ha-)NZ9-ڠQՉ5Ea[%N(M'	'q9;3;{Kw/9/Sn#.m˨=괙O/NxMӆlىX|
+l
+AD'zA4ήtJ1vl>U#7Ή	GBGA|{o/Ż^CXuo]'15ü3vyRüv6*5
+YqZd{
+ȪVMg4_!Ri	A}ͅKOH= _6}[7([
+̈́'3q|'$V3KD&T`g=y&r+Ί,EGdbrۅ
+S-?k>6ߊL'U!TJ\ݽ}&73{;v囫G yCص8-]d;K^L/;er\)f)2h)R\bMĈ<n|Ṉj#P<IgȮcBjH:*o!Ǭ4B*`kҝ>;cq(@dQ(zX2xY]Cȿנ ~>.7]؉Ȇ(~'M"a4W0Y4k9FzV!&WϭsJn~J\Q	!I}2vmkɅK| qk6H`<PFԿGSTF}HON-]9UGU͞Re2<دH|{3qa4klh]'ZJ`Tzj\Qd
+<İ
+Cg᧪3' 	>)ajѭG40i})C.aA#Mks=W_=HtgCᴟW5 Ӗ/Ɯ#h̼c*KOǙdx,q[b?7X>@x9בC@ nP ,I_Jp^ezZy䷜q HlQH)yyBsUf;la
+hxt
+Y9Rz,3[,y|&&y7.]f1ˤ 3d!KcB)c\QX3oE7.Hf]z):N,@8EkpJ](ʫD]$HϊX9@0
+----
+.git/objects/ac/20e5c1d878b63931c96f90a16e17756826b084
+xXmo6z=$8kM}	^qmZI%EjvR@9pīRoey'16YrmwaLk1o@@T:7iO^Xta0#kjۥ	W
+ޓ-E)~x}?T%lW|ozYu/69::FARvetkڬoM5_J~ZnMw|~wctnZ?5Qu'\%ibVߟlv{+9"9٬kt.NC[.,Ff=6׭I"p!.mz`Wْ,ǐmUfC  U
+!Ⱔ\:H:c@4gߎb-mfU~zʱ&uM[T|֚{c;ũR"0w}[\ EfLVƶz[W!+3=<rf%mV5{yEu"w2B<GΞ a-j>8DP&gۇyl`mߚ?w@7:~:dDOyTyS#lJT nOs5+*akdLA:JVoV(ѦG'7(	^Dɐʙ5p6c	y#K3ϠF7 1-) v֐/1	.᛾V鍢L Ԑ5AC6}:0-)	6д`~/Ul(/=
+ËoYT%P=RQש7 W >s颴#/B@^1G+3@AyAX;յi]K*W8$W~08A,F:+!=zO8u5FTB %uS1Vj#`Yza.O	gjMN ,@]R\?YvpS(PTA9EfB9>[e!5hكCU6Gӄeq^צ2ã?5#)$Owm_6<Qp|&n54)Y/Z#ާFDLZfQmv8?Zt!D:*=ٰۃ塸$
+On^ɓcgB(U~~obm:`͠Aa=XEb<[R.D$<!UXK1vé ;?Mˮ&x1bȄI>ٟn1;Niu#7EN
+Z`(>r5vADrFͫ(Esq'Uc?g:̡@v(YJ<TWAnq A)8ۗqksT
+TR@ؔLܝkg\MBeB].3n݇#
+8y& ȸBH?7ϴI%^hzƼPτp ɡ޼PxST\p,C>hM7iFx,{GPJzyT@"Wt
+	|q|hpŃ<t=alڦ_jwϕTy8W#16jSxnF\N"0V%..xuH٤hXK93ޭDc.kQaqbjR˗0q..@0kJȗ`u~7w}[zP,$P³fIr'6=wi[2M̨ ir_hi't;!0g݁ʄb&^CN6^?0
+----
+.git/objects/df/3645340090383cd49a1ec1d706be31c3456276
+xmTo03ŉ= mtJ4jӗurIXl.lk]ﻻeY%}+9}OlOծwP)U/\<]3EŊd[r e<g4Ԯ#*%y.eTzI+.Uw{x/{(?ܦW<.׳$~}_Nfz:ip]t|93K?F*0vەƓxc:NNWRՑ
+65PWZ(%-7Ƙ/k`)司XGj]SQ	O|utfdSTjP#p%%"۸cw<A0ꄘT3:C1BeKIˡ̷1q85TՂ5!BKI{P%
+|)EΗZ?%+.D
+h6qFme.]ÿ)l#=>ǱJ|uE akǣ!kԆkk61jXj ԶBk[=Yjz-[uol'"-PO`+fӴOaF7:mVfl&lK
+#89yz_:bAJOTw5?z$$4ÞB  NjU8!]*xpgvҺq~	f
+t
+----
+.git/objects/da/f9a84eab9a833b9d5a3f98201d5a0c01f419cb
+x+)JMU04e01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,%<U[1TZ'q7ĒDgAW3K&&~Tk3D>+17a3-jd~1{DĢT ii>/8\?8qeť9l_ؿn],_jE%ymg"vw>q݉w! ;Y
+----
+.git/objects/a2/cc90477dd35f0ee14876ee6a1dc2fdadda6cd7
+x+)JMU4e040031QrutuMaH{45B}nJzE+yI@%f敤%d$e$14,{iF]V &
+----
+.git/objects/a2/e08856858c19ee005229fdc69be8fb56c9ff91
+x+)JMU4c040031QrutuMaXpmo[~<ԙ2TQriqI~nf^IjzQbIf~nb)P$B$fJY #+-
+----
+.git/objects/bc/10f7087c2e34aaa5732e463a05101e8688c545
+x+)JMU016f01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,$B"HA(mBkN||v>DUJ&w9ɩy:+9to/gZaڲ($YetR	IJMc<L->_޼%D:'37Q79#('3<Hk'.7r\~*DYqinnN~zf2v¿o%[W#'|DQIb^fi.imGvKesdm v
+----
+.git/objects/d8/1c68301ac9cc063dc25e8d9d06e1343bf4d74e
+xA
+0E]s%ӤDD=$-X+q\x{+x<OӨ~MH~`:L6ǀ=%![b5Q&w28tvb)ՂN|\?bD/
+48Eژ//M yĮw8kͲ.pyΠTsOH
+----
+.git/objects/d8/d63b03bb3bbb945eb8d5aa0667fbcf885da8fb
+x+)JMU4c040031QrutuMa֝ƓW6olPEɥ%y%E%y@
+"z5*sgݲ 'a
+----
+.git/objects/d8/ce3a40983690d28064c6b923060cf8494962d8
+xVMsD_ѵ9[fEpRQx,!ʌ23９l/Nׯ_ֲKz?9Im~r\V#hxK{띝կl4~GVzڲ!el-9MntwRJuLڹʎC<9> Ga 
+ Zi ux+I7Sw4}$$TNGݔJy
+,$Wzs*tm cqb@Y'QNsg(mzD4+]Ao\L<B8TnW|a2lι!g4㍧sj$܁\ar2ڏ޻]ŤWԄkj}8KhU{VcЉ˭xJѢՓSLIkVԢtZh`ĪzYϯп?ֲl|ubjj#"]8BL<l$YabJC'KF~``<!#&}F1Aўl$aH5ݵC}m_}Chdq摕9C΂xCmbsZn~rozvK^R
+Yo|S*9$3ASH
+5{':Gi^eP}[]%R%F<E𭖪]JWNu۔	f?%ȋ 
+x-A[O<[s^#ڱ6U[ڂ_Lc}|V枹SɁGh
+sbaJɦm߳m8A^+_=
+s^ngzf+o}#үb$,1	w }ja[_(οOT/H.JZ[-b%7u֠Ȁhe
+pD#LT6pJK|MAVx
+uS!$\b7RQ7ax&[B'k[0gع3,])mp'	j[/q
+ÙXWII	E`_^;u	_*+
+----
+.git/objects/e5/b208a10ae922801885e7db591343c877af7b22
+x+)JMU040d040031QrutuMa?}ح9ꮰ\g TQriqI~nf^IjzQbIf~nrbQJIL+.I,bS111N<CwLzn e*h
+----
+.git/objects/c7/f6c74b78fd263f84d91a622ae5313b1f2b7546
+xV]oF~"~K:~pA$7h"<+*ꎹ;ZE>oofvvN~*nLSA[sAR\BswrB2[/Ѩ*U,c)X
+sê2kzV՗ٟP{[p;pG06
+$<@vfHnQ?:O4ֶr;LH@
+]dvV:	4{9nztG
+JeL&/-p6$ZY-jm\*Ç78 .	`G^MBYd䇌xA$":<Eۛ~@ygJ,6zZmJOU'C
+"sVŻLFKb
+}L&\v8&c$77rԕbamCw͉߰?`x`hE;>hOۏ u&2
+haG3vl}t*lcx)F%KV&4E;`ѻ98)jsfr,ߍqGuxiKACggºdJ#F>#%@֌;u,|]: \3\=;(TIm(e9LݡU+ect>(H۶dҫn(jlV@k&[G=?T0iSVuSOpWu#UKX)rt9| __#NC}
+muZeiYmV:}*<vmC
+js^AeH8S9{qL^ԡ<׏LID
+8>n~7`s46i%^HtKLChqЗ
+%@f񻭰y	րɽT/Pf\S8-K5l̾/ZCy~J KQY[S><77C֔]F@~} jђY~9B.!m`SpyuJ283Sp
+^6Siq	MdyihۤLZ?Ew葐Q%k
+----
+.git/objects/ee/57799eebdcfd9ac1a3ae1125167342f115f239
+x+)JMU01d01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'M%tHc{la'OHI-*I,Ie>fNmIx;wb.DUrbQR~nRNbr6C
+cv\	nS[Le)@%'&14wVнWAji~ĒDgAW3K&&~Tk3D>+17a3-jd~1{DĢT ii>/8\?8qeť9l_ؿn],_jE%yާ9ڝ.Y-Α *
+----
+.git/objects/fc/73689153415e113764c3a470c2dc35608cdac2
+xWo6g7µ.PcY$M$@KtE5rwGR?ЭIf$Kþ#*R'O՜%?9?,^1/nݮ{7,ʘZ7'cJdW\Jm>=uR{ˋ|z|rys?~z?=? Xz2|G,\j.?g'rLp.U<^ƟωeRs	X=픻X'JfY0K3n0Ơw5pߜ~>Aoɚȫ*qr^2Tϊk롍.aJ?`Ap͍|ɁeY#bdkgJ-JC(^prQgzZ[ȋ`^aKp,gy}hD !1!-p/=Rݽݰ=17|3e,88oF(KVy]D	Ĺ`xKG/%45^\J
+jC!f2]E:dP11X:#mtL9GvEJ%
+?3$FCP oxOqSFSfIs4<Fd3c&Y Y}dF0*C1iY.d[7Ҁ	!ItKǛ.C\ 8
+(<Fb6
+^! D0of] tTo4,H߂hr@9_\AkpgXZ	MbhM$NtZ6tb̥͠rrvUkWTgҘQ+סmK?"sɱHb9A3$ԕݭݢKhEk;riʸ" RL vTR#-Gڔ'I
+K#EVRߢ68DA1mbtWvn2)v	׃φ%AصG]3tCRE~LY.D9rCk#R1K/awT[_a<7gɇFS	>0;X%6&6FcBcrA'Iw,XB!NGBg!<!u\?A)#57Qg^?CF
+QNWc\ߦ:zxZt|tvܴ5̗'7SʲP>mq(+蠵*< "CQ41- b&ݷQKOQ&+b5ͮQS "8Xc]Ϭ[w:ܖeMN
+13Rr:/yv5F@Dz#nca^	v_TJI=dY_6:<AT s{\`MA'{2\Pw}X'o=,7U٨r;ε1nw]Mn}
+
+----
+.git/objects/f5/3aa3fce9bb9fcb3b09b1df8aa38b7fe0c299e5
+xVMo7Ybj/l	{ҡ`P6*jYjwbM~V~}]i5z,9y32Kp
+Λ
+͵
+/,+2
+,	w-B68$#oȯtTMyu_;x_c\ͤJx.;#{x(fswEAү	79J -{+yTVVwcnFyS|ӯ7E1["$(elṅ<'^#nLyCWaf9Vle#<ǰXR7tE1΁Y3g88,ZчJοve,	
+>T`b~zw0ݜbj%֓\fN2 dVK$_|+<ձ^$_Qd|K£q
+F\Gܝ;W ~BQ$|f"JLxC}n7,OzV\y*"
+Fٯ!6ssU2wgn/~BJT6#[OLʘ2o?ӠQ_K7,:(\Ft*_ю[χ	rVb9lؕNy܌]ת<QZ%4$M٭e4m,+/Օ2Pʅ2*CTpQ5dz_m7
+;ߎP@L7['{bTQc#BD8kbad܁殇\kB9Cl2zy*ky7RQYD6!P7|~_y?= r =BՊ&+NK!gԊ㚘96L;5-Eld8&匭c[!U3Vr)9;u*)t8>܏.Pj>6beσv	}ZiB%ڡy:¿DsHTPLAyB"z0W?C)ø-JhBz֝?v7~#%@4A	b])
+----
+.git/objects/ca/dc519928fe022398edc75a398d97db1f777bfd
+xmTQo036#dJִjӗurIXl.wH`}w;\˻BT%v\lKxWR*3њq"ӕ0\-Yʽ%"=v
+	2ŵ,kcJt%)6GvgqUhsp}\tvq{s5Cׇۋ|\O\|r?MpJeCI͐yFs?}$<+g>6d|	 aלe\` ^FBUP!1_7tN?$PТCRحU;>F,Y6^l
+jLkw zJ	!/F
+3N1
+.|{:n gYH3MD#Z
+B#T0۔	<!M+K6h6ImV	ߔyLO	JHr(&V܏}(֨
+ׄ'6tjj ̦Dk[ݤNG-[u'6StZg=ȓƱUsvZSOb&ڛ՝ɶKYűmr089yzF*K 'N-k͏KS$`
+DIeR;fr18\Ae^	ǁhua+w-&=P
+----
+.git/objects/fe/e9e5bdd95eacf91fbb949bf12107a94139c25f
+x+)JMU04e01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfzOee-vVV Q	twbn~rjbC6w,	toLI+J,IdHy`ʵorPg%1lcsXv/fo^"XʰyM&lɗ@g&3]-.>66N5X=SJ2Ks^{9Gٻ,Cʹ 99
+----
+.git/objects/fe/78d7d4cbc4fafbef65d2061acc36592835ee58
+x[{oF)xPڭ<AuQG1dE\[S$A.8A{gvHz)%s#js7޼}8
+C///$O9#wx,ٸ(aOip0!E $	ӈ<^Q#"]	&B1 rRj䞱҂<[Q\{eKJ,iC	y8`$tؓ xp2_3r<4[_ʛ?DyA.:7%#?)W{4<p%) ɷiPFM*EȠ9ޡ8rdHaC8ȃaN3Fb55	8Y>҈"r&FY>/H,,I=zkaNF`%%c
+c,jb%,e풬^y
+R/j
+Da1lt`B N^څ*Oln&6:<!l4jo\m$y! *A>,HNO
+)'f|At)LNk
+v[Vp,1Le)$&&Li0
+Ҝ<1&p;(d$oQsv%qP0?'C8pt"^	^EZ!))FrZ9j
+(deS-7c
+Ɂƨ,+0-LYLް+HB4-NTRڰ'8'
+T`5*<8vb@g'!<sp_ϰ( һf,hbk9hb1Asp퇙<P$%
+ٹ0+?p
+rB lX:Hp0u:Og㳳鉷자2D[H&h4oD|͍2S]㻘NdbN1΋2gfկJ.#>lv=<fk^zN}Mkѷ朐x㋋??O{.`Aߙ>P]3XL5vn]S;hŶ	Uɉ?M_~Z<Lս>n[msH-!=]q:XG>JnnAJzuѿ:?_NGkR~Z0̎qZα{q1Ok6#>2־jַOj+Eֻ;j[b~\{ÑW&9j~?t<O#S~M{)G	qEĜR;_lpO4"fdP<59SQ8Cg%m*ƃeA$wAlQlZ\tc>x(܆dے!YCR;$4&xgq-g+Xůq$:T8FeA
+±UdDU*[bhdjX,]MH1ĂrQVsŲ]!xV	T-BB;YxkT0ri-
+8PcWܡ.p<VfZen#[7Ye0KD݂XoNLZV~$<P$ϴI4;乒PkAB V"kJU]S%@*u,uaC1[R[0pt	&U%bγEŽӨhg=Ғ²keRnad{YB-\U^ZkG
+-&طϦbffnI[%M;cK4pnyTkٴWm-,*i[T[Xl5-laWdun
+c+,3nBvTkYT۫2fv[RvfvZt%gAvUftB[yl-W\5Wq=;{%X7X7Վemd]4kI7ڷMPpmsmySk'%ז%ŹV`kkZZ8]Ža4֎mi-iiJWΘl$)IOPd5_tbE%	8)ZE%׫Y4VGJ$@SG\<J*9^pB_<7lY?/>儕j=/_ȁC<@-5T<`]ܧe%Wai;F3QckoME4{k<ZMw,gIdTnt &GapvzȖZAǻw]:IxѤ$|]$eu5: Ƿ51Τ2\y"&e+饘/+"x
+B!Kb	!
+!Wd'Wd4--0'~Oϧ邏H|OO?}k:b'jz.@'Ō|f2ǞiLC/t衇__}fFe x;T=x&Z^x#=^;"r4A2f#x ρah!$tAΝ ŗi<tv؅;diNp;t_HXƥ;AԠO#"οGΛWtwdqjP SH֞W|rQR0yh<Ik )6rދT[uC3]`]4 h`T8~ 6gI3./f6rgz~|H:cg6\bc{daSh+KR\\dKE
+
+----
+.git/objects/c8/b8f698356afb54d17c61b0c8ade97fdded816d
+x+)JMU062b040031Qtvve(_?_%l՛3*	rutuMa`ބ{jkzB\&@ZTX}f?ɓv\̒<U[1TZ'q7ĒDgAW3K&&~Tk3D>+17a3-jd~1{DĢT ii>/8\?8qeť9	of{m,U<fE:!J2KsD
+?}B 鯈C
+----
+.git/objects/c6/71a543cc5889555f5faf6b31c9d977c9741fc0
+x+)JMU013c01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+GkVM6M$bSbiI~n~Ík̻wOqu[+~CT$g$2DYu3}{j$;1*9()?O7)'19A"ҟy<aEXZTY~QIjnEJzG~%7ږ2zQ	~bn~rjbC6w,	toLI+J,IdHy`ʵorPg%1lcsXv/fo^"XʰyM&lɗ@g&3]-.>66N5X=SJ2Ks^{9Gٻ,Cʹ #~
+----
+.git/objects/18/5ae1a5f993fe48e401d66a6aa3441321d67120
+x+)JMU040d040031QrutuMatxǒ.8pA"u\̼Ē<Ģ$ W\XP*Fݽe|=&neq Dq$
+----
+.git/objects/27/dc6b27c317114cf4694422baca7e9c7a8ae163
+xXng}EzH% >dlg/&$BlY)&;SMY&J Uյ2/tvr1_gTRgUCܔjjHE򎚒MU
+"VIyN劚-uIIrC׍sQR-kQgRE1{vk$j9L4#jvDWZd3ײ+۫J$rB媹	}lBbY;܎#ʂB^")S7E*ͪ
+PUTʬFnB^Tj‿LH,m[YDmnaZb#"<U[$MuEJR0vgq63,㉲]֬5Ƿɍf6Fy)0:qq߼LSl\01sܱdcbVz3wٸ#XzĦʥvMGT(%c!8B\x0!){@s"@Lw,YO5$^-+"s%ʚdVeF*EX	Hx'.э$*6eRê4Ϙ^eE3Ԝ$ӆ3zt)Fb#Մ\OH6IuYGЮl88E)0  [Q|'_*/LJ
+fϏٓg,'F$,^|~q1|ivkm6&4맳ӳgo-*u4,-qf҄k>Z^,:r!lm
+^D&%j~ӈdG^s$:-Bw6"Ncѭ>5dg8hugԏۯ2mrk٣:oYщdiit;O9iPS=.xo#t
+^l}uXg=r:ݦgO>vSiPN
+=b..782oqBA-ugD=^J"$ ;މ6>p21W0f݄W2If=D]YrxkJ[+絞V/?42kw#aBwV#_nGk!5XK?FS\Q
+n.Sy+uo7K>`?cԈuYvh3͒7jK!*'ߔ
+0SwCt#-QX Q|0;182C_#w%ٵ
+܋ncA}g|
+ ÞD͐-Yhf|4"[Q]()c>90G]|"<wTUlf?N
+mfw][@_=E;t48e
+0[h}h
+79"=Z/|r
+Fz#
+0X-!ҹQ"϶r|mk#6ݹfm`Kԩi䳌*sDW+FxQH ͔0\rw	W0ą3ؠj~xhc*Cc
+̤mm){e(2K$Dó8	$Cd}K{8բ3QϤ?k	 UP[d/ƗY^`VQ5̰B7#.843DV"cw7ty0Dԃc'f{LQaǲk̈oRtg:DpƳ'#$ar>lA5&x(g`1#$@~YkfH;b%16w1p0NtB'N9o"fn/U U";s+-Vwv
+|@{
+QF-;"UH$b%4؝tB_%n 7K5H`<	(d4OF y%rsYOV!Ȓ2xP-*5i
+----
+.git/objects/27/dfe96b2e73c4fa6383268f853d75fa33880aea
+x+)JMUd040031QrutuMaqaلK
+)v*LU\Z\W^X_TZ[RW\Xİzjу +
+----
+.git/objects/7c/8ce652395b58d5697540901162eb5be27dbab3
+x+)JMU4a040031QrutuMa?DժӜ]=/[U\Z\W^XKU\rȯS/I10} '
+----
+.git/objects/7c/01752b6717e6a8c644ce11b626aeb9ee99119f
+x+)JMU040d040031QrutuMa.R'iw+*J.-.+IM/J,MN,JRI9z%E5Jj[ƷQ)hVW =(A
+----
+.git/objects/7c/22aa6fe09a812dbd760eb11f48425291b50445
+xYms۸g
+U\Qdl_z=OC"XY !N>H"`7,
+y2'u[k9kWS}d̕
+=NַeEq%+QfedYIxɜ͹54+*IJL?I%Uow7r1/<oua/,fя?x=8J)bv9]V?`w7^*>duΫBgnI2p|vBXiU)^DjWj97CjYǟON毎O/`|EйRK^6 P,K'uv<m7>L7uˣ󟎒_ =32׬hjIkj>(eiQlϱȩ,915<.d@7e[2Cƺzb)6ٔ}!0ibe@-_OTBv>Q|	miQ%;L+YWEݲB9#q[%kfFP5g:Xƾikg/msB2:pͰeLpI-δ<r<'YYDaKtgOz@A
+5{Ù10F6(MVkMɳZwE<jy0\#<ox06;Mk^8p%F p~; 5Sv%u|nxQcbws ݋ԀT6J(ޞj$zd 64#
+o(}j޴u٘cIHrUoI77
+n@Mi}a-`}S!6'rM<WS)W(Tv@Cpȥ),z|<g3l:6wPc‑l#Frex9طoLۜD	_5S*TdY	;JW5Oo=mk`J1Z۠d]ڄiNU16KdAZ/Nt#9( MU<Y)
+`Kbי+܆B&lhxSmGH)x9	`v؏z2%9|̨ya"z Yrғ?e,eAy	@*zMۦjOdSϮzZ+B`Y}iZdɑQ#Gу)tn&֢O'vDhg͐lx(".M/u0$n7}{aZǝp\m]zE>$yBynQ*8J?!0$W\k?&;@E[W)D!zt9Y`_-Fwh*B:΍zVܔrЛqrd9r	z `U_b8yhgVMz2)E5c>X.bE	dYJió	bK{w#<}|R8p|Xn`SR:yS:FvѣYoNѴcsx1tɿ8]  sJwfw$C$gPR5\SWBwlOˢ'@qcCV5r9oP_(|#Q~yrEY:X~@fn 0 (WyRvfcVJ>{bݣ(n@k^ a](NMF}VOs[oqig}׺uӅsKJV
+&rGrW
+Phy6V({%ܠHb"O#~zJ(CP1T5	qHiL#]:aoȋYߑk_ M<U1{D3+*'Ը&K2k໩>]R{"*_w,&
+^5]KZB,ZZ{\VhŐ"4AÑ4kJw
+u?pvĥ4OrI׬׍rL%+7Vtc\Beԓ1w.xB$pvZCGе͞z
+\Rfԯ}|S1az?vM)Kc'`eWTr`4$J
+ UuB%TFwl Wh8y5;`COirh? !ҧ/=OC*bƆ?|lT6_ڡ|Tֵa>nVFp48ܗ&ww>EDK{#uj?!ǢL@<O}/pg^~c4eD2h/Url"B0bi4x;ͫWuSȼzip5=+S)L+a-)5ݨ7n픖k\ӱU4j.oW6]mH8TzpdXkЖW{oO-$T]jjHA0cBXh{#мh
+?
+----
+.git/objects/16/0a64f534976ea75586b10f4b15d01836e5a509
+x}ˮXEW'wrr7Q{7
+SUJHL֚I4H2H1,#y2+MDX@$HsA2o38Nb$4&h&Ŝ%@Xv<Tz'dok2<|UTc9_IE2" @%&>|0iT9_}1T{ݰ5\ҷ7'Hm@zkvZ'A8M|P¨K<ekW{:fWvi7)rMB6|b1h,~f]:8;nis
+f*T8ȰR͏xY+1ydfz GOu=#_/d29۝rzĦ=Rc#ս'C?Zc[+tFBr`Ӽd7xa8M];]TS\;-NߒSN S}_zf!m%iىXh><R28whi%:G.R
+M\3ZmWu0mݬ;d&F۶b6O?uv]Pc5bw˰/*d;ux코״8}Et:Y3BXбQQ<:s;W)^d%>.ܢ=6fw[-}ywnCqMq!co|Uf'w-Hd[y3Ow#Oј'jIT
+----
+.git/objects/87/3d575b8170a153af47d62c4cdc37d88697d469
+x+)JMU065c01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅J:(1G7?951yE(?wu?+I
+($YetR	IJMc<L->_޼%D:'37Q79#('3<Hk'.7r\~*DYqinnN~zf2v¿o%[W#'|DQIb^fi.imGvKesdm (<>
+----
+.git/objects/74/9f792f9f245601fd1d7aec51e1c08295759e31
+x]R͊0YO1m/FԱld[U+Hr;r--F3߸l>~nkMG	Iՙc}?Z<P'
+ցpG5*;Rjw2^;ݼѩ1.8tW
+g<&(3
+Zd&z.il@yo[:N'=fBaQ&gN4ܟbBo NL
+$`v<19OPAԙvO=:O`|@g"t38D0; Aݳ׿枘f|\z{׉0)1,F63m`^֎~WBj|Rg/m69yVoOW /젻o gfm>"A%VJRg"b[vHZ{+"K}/%*Ms5^6,qKs	oP
+6LkDKz(T<TBg[b%mXQ?"+ր=5HE˨RQ%Zװyưd.svBSiN&nST'A $vkK\F*Z5A~%@%b +)6	q#zh2Fs{#^
+----
+.git/objects/17/12fa05f6d845851dab2bd094fe5e49f870e5a0
+xVn6~yhXMo[86lFk0%V%R%Ч~A3j-'Fdp.眙9_<'כY:}-kfןtMa[`)ѹSnl6jO
+jH;TLI|Y|3ʨ5lu
+u-Rp
+{QE&_(cYxQWUM{ %ίJ[U}a7p4Sst-f	NU.2ڮ1">?&=ɕd856\7:l݅YFIA+Gp{:Z-)ۗj-pzqkaF;k$e~	C9SY"=F_\*uy@]&`R{^դ> 
+lE֠N:Ģm/PosG]
+SPy:d0dp")>x$)3fItR4XY:D~]GE0.P)%%]HjĴv+"3vMOlv\c>upT[@뵡{ 0p >8
+$Q	@Kj	^:Rmo_GfW5H:A^%(4Hv>OHp}5(F|p:F.rrw ,5ʬ{pn5mQ&jp g/τS4Pç]61Ƀn H-0wMa{[wd:7`͚=^rT-9(-zaP;RgM+;CY֣^61Nt	=@4#&<Vސ̍2yZt`e>XBBfeau@Uܓiקdjr[E5Yv|gEN'}+{!ª8PcC㘺vٷNZr+k+^7n"Q y/y"rhJԼ(2``lՒ.*\~{zlK`bbH\~*Χ|m? pF	~ RЕfZqLî>8	ŔfXvB/!C+5XXt+f
+|CˍJٍ|Ą4G\A	؉LC,P܊|k-K{h$j"ckihbw${_Eʷw'J{~`j7j)Sbq0`KH t#"AH 2%vw{NI|+
+^!5p饸t*ك8a<$NMwb0;\؃굍.(%:%|,Q|1[X]`ϔʕ`4XW.71Eh:|51o0$Z r؊qEiĠ1Ȍ(E&o屳Ay_@r0#ie h%dng#*N̈dL%?
+MKcL coU1l"|F6)fU<|C	Ic
+?^&Ӹ⭑?Kz)dBeh%
+i+Zy>ݚő3ЕT'4g|B2QVΕ75qV,tx~b/e	vwD;O~<:@T[^j">blK]ecO
+qCtotw1_ܓw
+----
+.git/objects/10/f644831f2c02661b801c97f558ab242c2dc2ad
+x}ɮFE3+jnk
+%zLc[<+1}g0_
+֑2 4x^		#G"@pp˳&Vԑj mq[!s8ut`Ep
+~BN2Ϭ75뿪#MJ!/\o CCzKԇ~F=1?~o,i>KUtQ?p
+P`5,KH'{_?_Ǒ$I{U^~!tkL MM9w,M:0+J\rOF(nc5Cp[eY$e8ӣв\ĵE֧\:i&NyMimllxJ&i?͠˹ju2zol(?V>O	߈zby Q{`[C$q1t0 ;J+IS[74A`xгi+
+FPřqlyԌ^u4E=k5mip~DS?Z>x)WiBZKK8or4x%&LfH/G7̢d-nm[)[,-40уD7Z
+Ҝt~;h0I/ܤ}=t䘔wY>lbK#>n#S6Q#] 5BFzv9\1fWW&+>RD<KZ?djmH_b#ѕQŹI<,Υ"hGЮ綽a\@?+A9Q:64Ui_eDQv=7>R]a
+----
+.git/objects/10/e36a4ad5fc201bd85d369cc030ec105bc4972e
+xXmo6g
+V 0<T?x(bh,Y.($Ի3x<;Sg_W~Je̞y!)_0weJq\?ai^3"d <e7>ݝ4${MH(I
+TrudTzIpw,RiM.K`SC|9}~:%+0;QU2Y&(tʘG2ߣo(#@%H0BW9Be0ca6ALh~b"s$y"0"oF} ƌ"|fщw(@W?⩃"QWy:0#: vztGpq#ۺq#<6ˤvVg<vԢk_^<*g̮pFW+tl=QO aN6s)̵4vdv~o~ۦt=fxJu;\
+ A/pNKXZFyγdf#[[ ؑ3l?sjìwa*{(\6`(\ˌCTsz:~)Bf5Z:b93b
+Z0Ӏ)Ό!"BKUjt<4LrK $	<iS{C8M p*HޝF1qF, 1#&9-1"F}frK@G&KX<V3D\G@c;AȮ+0hܬf5ҥb#ӂUQZR婀c4 7t5]. Wfⓝc3\;ك3nELniFl`ErAmneUڊF:Riyj
+
+\m^ơH@$Cif/'x'@&s`~x Pnt QxM3j2/h'>6ݙQ5^54[bԁ	0P|>=Ԗ%cTw$|>vN#9vi6JHfYZfk^- b{#i
+=֠rd6A7.j+ASL
+ɼWLժFJHXtؔC9sȃnjkH<KLRfpؖeer
+[50``.Zt:}s:A,3-y|]jvN{7Zml舖/jݖoO),gFRllcTFoޘ~|ؑ֏JPqYڿ,Ak\âC
+h6a:^׫WI	[۲Ťy
+-kk]{ʠ
+.(y>$LAIɠۖ^Hy7Cu!(f>{j^Hh/
++nɘQf	ܟF !|cam٦Ƞ <-wmWHfҍh;ٿ5f 
+----
+.git/objects/4c/7b432221cd9ac71191d8918386745c7154c820
+x}KFWn2`1h0cweZ~RN~ c*9&8U%"R	CZ +r<$WUE#9R4=kP(%J2KUH" CEPRrtmNsz`U9
+~HXUdLd~YWe5\=k IҐ
+xQwS
+1?~~GUe؎끃s x)88z2C
+S׏qn)#G^k]םz7;eH>jvPQQM2푟ތ[W[TOyM$~+2_8-Mfm Gz-YD˶,Ğ垷k5%S!:QګZ&ʁ|>[ItdWÒ<R
+]s:a\0/K06s
+!1il+mp
+_n@UٖAR?'QzH8l޲lHD+*W[NivM0W+6kre}TR/7EFViu
+!E*d>va7{>MoQYyU?𺾇/.#7qDqx^B%[̶ߠ	ulGԢikIsmٯ˶QS`_~VJq35r-+מm4IQN+k.ۊӹ+&^x_pmρhkA$TS>Ywȓf&aqC*<
+W:[L0'ʋe}wkk'?\Hλ=qqn^v9ߪf`eOmT1'H[
+----
+.git/objects/26/c50bdb10fb12ac434b0ec970f31a1e51e6c5df
+x+)JMU0`040031QrutuMa8iTen@ۑp_EPEE%)Ez%Ewqnۮ6n= q"
+----
+.git/objects/4d/4bcb2b41082087426ad23b76a22b6c1d3c1e97
+x+)JMU4e040031QrutuMaʹIw%[
+*J.-.+IM/J,-I,+.I,bhfY鍺V<-~ ,&
+----
+.git/objects/86/cc58b93f893d8f5250bf9791aec8ee54c0c58f
+x+)JMU4e040031QrutuMaʹIw%[
+*J.-.+IM/J,-I,+.I,bH%}iQv92~ $
+----
+.git/objects/2f/0c50655e5afbd587f41332321387d95466a8c7
+x}ɮF D+zokn^ f26cfMf0
+_,H%UTrƞ )A"Y$!IJ'piB҈p`KzҌ@Jty^L!K%6cXJ|R?9exQ7sH?|5mOU}Jp[3,M3 ~"MS;Hz`9翶?VtP/)a95\[#_7 ރYVTYo,^R*xheYZ'k36{
+7?p.r$(nl)8ȏ`!KWGb-#!5{A3XҩɹEk<	R6FʷT&ċ;6Zr-}l;zrxr
+|[<D+X.][aٔ<76Ms^zCg窑q}>'Ke7ۖc_>'$78
+9IA
+4sg/WD[X|&W&x$_?ٞQIR;xyNWQgamGqZߺZ;:G{{*rt{[}߈q(*߇WW=Zs\7_EgޚW͠=ÎP@N}58z{C3f7n^QJSϋX~4B̒R P;\
+ﬥ¯XkyXVOn!JrA՞2R6bFEč9lXJ)1OOhA=IFΚ;j_uUeR
+----
+.git/objects/88/11696e2c6f0f6445c11a5b865d5515db92d124
+x}SXg&h岓LEQXe.mMR/uRrN%'j* "c 
+LKr Pbh$cA@
+$BRm@P= r(Y!CHPXY1a c@D(##I1T0iCm#E)yI`xY
+o#rdC:_@P$/@>٠!iIY,U6{Kq ~nQC{sǑRQE^=E\?HQUJi.Xj^3/0x2ky<2!SXʞMZ=Px<lm60:#]u<+uhiwӡ
+W1G^/={OJ9ҋ!(A+㭇9W$w%'s֩(hznONq9q+/E5c=\X|N}NJ}C7no!.I-ksgcϥɮ*.S$xzI<8I V0gٹuH-(<밑A~~N,r}ܛuKB'ʝڏНq7p;Y	pHshum(\5)H"l} |]M=ZS=V&wJ%xBszMW	gzi҅[&gI꒼Z:/]n,MUmV.AVRLHw?N3ڱMW̚N!]?sWU@ҟ/]۽F:7Kp?Ь':! Ўe	FO0i*@Hc:
+H_2
+ԟx
+----
+.git/objects/9f/97d8912283f97b250f96434549a0731fa71ea8
+xV]OGUxH`7IKbhբ*;^#g68>
+} [kϝs9\wKo{tBt+:^E15O/<MmMS>C(.nvy*_؆3<pǸvI
+p@8TNBrKt sC@[cPK6]іԸᘪdHz+*0[JG}Fo[)&esGf]q`s񈈎3nOk@wuT2cm<`/DjQ6tlH`1SPBD1TĶi$BW
+d0hGAcpq6Y}7+"
+5}MsjOR(s^2Uu"pB\){WOW.N>@
+5]ekyp|nw˪Y+.\glZ[L(i}ǇjrUkZO'Y@	_U%D7gnN=OeAYLO~=;C0Dᆈ.ڍ
+2\{qZu(Ȫ2_Balrk7s,y]b2SkTgL:3*O9HŅx<I ߅Z	:׃&[@z1j8~sϬk	6D74]>!(ё$CƩ5ɩ+' ƣQ*,_B 1-@ǖ<.>c3$m]u+;Zp2H!UpĀ<,)4s){~r`{X:a2T!?*y.%Jc(V?C
+XNH2+Ԫy7Be
+c#JR@h
+C!^R0/q_d̛S>[Byv>`e9/CA bga' "rc
+!/P,<'ı
+5}`E.z-.LY@9ݕi_x<ӎ"Oe]
+----
+.git/objects/9f/ce7764c7dc979c41822cefc50e240aa8b5af76
+xM@Fgݧ8tt
+Dҍ+c 1txd籁UU(1Ee)%g
+:)'qW7 T(D%22y,]sĉݖ
+I+u?o<<N߲Yag5ۺ\ϧr>BN>
+----
+.git/objects/6b/ba8b3a4940a0ed54b643032eb33031b29a8393
+x}ɮF D+z5 Da2
+Lf&y(<RJ%U޷m=H!y0T2g(r&qp7FSs3F1#fӘ/8
+\9F(p0C$e@<y~BNi\b.|z+? D,4
+x"w;QÒlʩ.%kaGwo' ^>%IV$ɕcLhYj$Iĕ$Ur9T%?ʩm+>J$ J{yދfl߯Ï#t~AgB7^2tMȒ%n
+ә&h.&T*U\Lu~k5i86a_GJ#}
+^4=Y]ОXΝA׶}PK_kOצ=0JQ"">d%|[{_wÁ73	(]aD _%ݺqx_bʲ
+;`v.N9MV~yD~1>HcvtdDIlfYW(ErZr]|ڷW`UR0k~)_m[rg[^sUw0<>k`9~e'|(0%Թ|zݷ߽QoA'}!}Aner`e7[IL@uT[rc,E0<;QۢEa-GiCĆv%+QO}PQ8CVni|{)'4KGP3&g-S
+----
+.git/objects/36/d5772b754bcab07d5d5e1e0565d7241688de66
+x+)JMU4f040031QrutuMaXwjiFN*J.-.+IM/J,-.+.I,b8u'p?&oGYN-_^ '4
+----
+.git/objects/09/7f05c843a00328ff9af51bf9b2f9e68b1dd3f5
+xVo6޳
+Vyyfj@^h`atvHFRIӢHl~$}ۖj޽{旓jԷWIxOu#VsT+c5G/9L(@檀tj~?;EE`Lsgm`).NiDA[3L&ۛWV.X"2\IJsyS^S&veA"+A`bʬ,'Q}< eɂiUerj[$*9;C~oSZ|K\fug\H
+f,Bq^ץȝ)eÛ9q4JQ	K/ ux@{7Nnt>"tLc!f/>H՟>
+Hʤ}zcn$P]=7dTTU.$[k!mѿYv`/l͎'6Z@s[N瀯|A̩jK>Sɥb@65"EEaY"\r7諱:0,7 `"(FadEFEƩ/rvd3L1lIcKb픮mkoºz?P-_DkDJlT22 ёx[Q̟Sr/hx%ʧ:aX\ΈKT+C_=yxj"2k8~L)xɦ>8c?~&>#aQ?PJ^R
+ݜ6` k:ˋ/Q;H~c4Ff9:r:b]Z] "Tvr.?aQ2'\b)-xވ+:`HoЦ(Iڻ:N!-FI׾
+,0x0fL5SfxkGtzfC~٧1ez;ϥ}{YawƢ~3
+sG',ZIgb0.Ʒ_g>_,33lhQ/IUZ1K"YDzm+Aop'DzNn:/KSv6Fhgנ1FXPCq´B6@zS|֭
+.֊~})ekdN&=h<̧IÝJwmnx8@
+
+'8`8iQ+;FW(xhȱ+  a0ݑќ
+p,QU"M
+----
+.git/objects/5d/27e9cdc36adaf1b6e2be975126158556786b14
+x+)JMU4a040031QrutuMa?DժӜ]=/[U\Z\W^XK~ߐaPR9xSzuN ޥ%c
+----
+.git/objects/65/fa100bc17ecdcb1524071e31760f38c5a75eaf
+xZkoF\rGQ\ 4Y hq$HC*u={H8@l3e}_|uaW>!MSk)EGWTU'UDWݧ?e%(虲+Hүu.CPsUעYdy
+)-(ӯES.=
+e-@>R;\U.BvmQ۬YbP5-IdR(.I}]䏺sؙnhM*a7GlP#&b9j!H cbggoTso[od
+!ѷվX߰/r|7fաy0k|&B}ʺ;hem	XN0jɸ8LTǲJ,;ydh!bFBfujspƴz1u}DD3uDZfh&V䯗]QWŐ=}Ve[4bEccty6S|%b+HP? 3Kfr+.%Jli++(xEHJy(ڭBMOP*+o9*Z:h!F
+9/t6H-uDzUA
+H@
+y {4e,ۉDh$Y'I:iF:ZVъfe۬_4l4,7T,r2K^#D^0." i~=St?DdˈBB5Ct-X)#17jj 1&A6mDN.GZ:|{*&kihьNAJ,4dH>wv2qB~c|v͸puX?a7^lJ vOi_@]7mA1+__xYGstGH7N!4vlbIp:9',{՛-0Lì&ŘiB嘿ćDF񘶁L#py gGjH( 39z*QS٫N4Eާi!Ijt=i;> RD|>fDWW-"\JԈOgi(2../DsmOH8d-c6`p:eCbp֎\bPgn+#SؑNWJvYY|a|ǘvUً/TBߍw^<,+:k:Q D"JM= Mblf7GTE)E55ԣyB.huAsZPk̈ܙN	7}64!1zX%k
+t"{D\fQee@Ĭg
+tQcU]#'E'6r'j` ]URk˯Ŕp|䙦CC9GzO.[S*xDUE]㎃᱾3`YfTh
+I*TNШUJ6.hBR<E窌Z+EɖzYL,WOf
+qRlꪷ:ל;iYɻ,-,puuƫƫ}6s粮ZR?uhSO{%Ñ''xQoR6ЃKDyX(SUJn62?Qj)	X.u
+7(v21˷8 0=bdk K
+X肶^=
+F;'G`^oPZ*R.~s+,+3q:3B
+\
+Q<0Ɣ4W1\~uQyeX7M[Pmfѣ]yY HЁ3(r-ڮf kA[]c
+
+;,h-Q͠ZfPStvkPA0b  c|V6#hl`~
+lQ	$h	ZeUjtd+	 YF]E1Jch-)
+mJړҙ <n6c\}H<nRvt7vHMӁ&ֻMuf%7Q]: dPt;as2Lk@B^G|o&Lt{.?ݥ3i.7Ĕe:_^*minP,,m7.-l#Y,ٿ#o[
+Iߑl8 |G~In(P#=!>R6]+9Ir2B1X&/'Uޝz[;Gi4!/oi1ϓ&֜h䂲>8&֎4fiB 
+'n|p%PڲY?uV52* d_\dIk괝'%&Y_!tVx5<o".pˏc]}/*`TTh2?Uu 'd+BMʺ=EI*DK+-#M9A}H	5
+6{T3/dr2dYD
+~6;ՇCQQo
+. }R$1FT:tUbv0F8`( p#l;4)&^A.РE2>|u}
+=P-p@mx1#`u5j|7I!cSy0
+U
+m`HxnˡĢߨPpi[B\};^ov
+~nҸ$nqh^A\s6M֍(n]^G>l3ـ5W\xIĭcدVW?KbՆn!]Ds8'mX @% :0
+DZa8R$CA@]S0d#7
+&dL9
+`t['
+`%(ָ="szYA, *f1Sv`оuRj|w)uQ겻<]){8]Ys'
+`,)߉,3<y/\șO\-N$^ [z2IOob%wuf:]VE/<Mm4vYGϩD:aVPFwZUu8'
+շ	̂?'XlFh$5'*{++5Iogwn']v9MyCE_M}8CYF5o~-śxNANOﳦ8
+A(#aDQĎ[wx.=
+O<`& +\4qە;U[o|XUU/uC@ئ>́xj}Ƅ?,B
+----
+.git/objects/62/e56886d56e9af7d5de53901985e121b748b981
+xuYˣX_qCC{L;}1~3/T5M5☿cI,sdi&B2ugS<x$Qf,(be;'hnN]7b̚_Ҿ}Oo@MS2CK%Pr3Qr?O_E5/ ~K
+\ea X}@zwh_R}F,|T¤<M=	*j)|*'&.B^XZYo?fLsu"BXcv84F}D%muv|#W-Zsb-gt5S]]=`QP[(CUGͩ'UqL]{qHy^Nu/^z&V0?s/~Qp~LKX^y!rgV]A,{EɊ|qơ/6	ɣhOq;f ;g_<)$-TNxQ6
+Mxz2+
+2"η}5><_M-X`GT((KI9 -*Q	SuSˠQkZ;\wVCC BCzpͳǺ>`EF9Ä_;A?ijRO,R5
+W?qҙ}~quYؠmݯH V9pJmĠl!}$ց[Yꎎk|B27~9rӦYzjmW{MgAD}f|j'{G
+----
+.git/objects/30/d43e64819573b83a6ea35f399a209c11b5f0d8
+x+)JMU062b040031Qtvve(_?_%l՛3*	rutuMa+[cgk;߶{Vdb 
+I9E9%gVLé<oN̅JL,IONMch^:|ѹ5
+]OJuw+J,Idydq5a`G6Cs619_vKqO7/|	MMH,Le(&ˍ߹
+QV\̠[	QTYv&b}mPםxrh? `<
+----
+.git/objects/5b/ccaad967b3ef07f0cab54d290c63f1db6d916d
+x+)JMU040` b3 WG_W]^,9U1_oY:TQriqI~nf^IjzQbIf~nR~fNjQANbI^qIbl>_2]vS0 B
+)
+----
+.git/objects/5b/be7876dd6faaeab0a6c45413bfb67b07e355ac
+x+)JMU016f01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,$B"HW4W2ɨ)Zs)*%<ӕ3H0mUWXP,2:jfяjwmg%1lcsXv/fo^"XP$5Mgw9.s47_7'?=3A;{߷׭>K
+$1/4#BS%E96rZ
+----
+.git/objects/08/3e6dd91a56a11ede9f5aa02a14b38a211258ec
+x}IVFW=zy:Q06rf4NRtJ*}kr-+L RFBϤ(I%Iefxz Ggl=p;L%YPD̈|J(Ye RTRDy*pZ9]~p"G<m7~T7ꚿ #K"//ZiC?Ox f9WZcߥu 2j9HSUMWU_mӦ~K,DEj|Eja3cƛ7/	?ǷS$:ȅ-`q]qv%uȔt}ȤlH4m({d]OwmpOcEӝiFG&I#ɤסɲ.چ稳Yϵ\f6Đ,Nq]oQV7(L},MpqnB~xrͮ~OUd-WƊEjZ	|>ؽt۩~ ^cuFuw[
+*y}][1tlB \xb>]+ee?^+fFxHo0sj"eJwr4Jf8&~Y3!~Mu2rZ=_[WOˇ6
+j{֊
+p6Lwe/+J-\R}?xb
+<k_|?~Q5qj,ҭ8C&=yv'*{b06MO{Cf)R*Gb`A)lzռIe68*3*AWNRyAx!=
+TL'Pyl'p*q/Aq[
+----
+.git/objects/6d/60b1bb115ec0baaedeba557e89a5c918fc257d
+x}IϪX{ͯ`O0$;EeTasN'o%JڶF$HhsYY\irASˢ,C  OH` `D rR!<R ASJDQ
+>]H'cY~1g7c.kT7ڿHVXaXY aG@5rʾ}iooqc(Ϳ9A<ZPSUMW@u;
+zi aꡪ*[@UIUѐ~O/~5]gvtgyͫ&nuYYqLك:&x/\\}z{&00+_1W1mҼ
+,&Hm~Ot9V#ƵzelJ
+<!f㽦)ʾdnKp69aݙ0
+.a/A50t]Q5seSd6$)ĦAA W0J=tDV6@5ۗ-Vg@rzíᩤ6u8Jx9'%	|kE=AFۛu[+e嶏7~CJh0E`|z"j3o0/11O
+s۩`GdO[FYo{~jt.Va21vtee?dNx)}=r1pnb_?⫏whԮ,vtɧQŲ)C5I+dy)ab\ v/.zwngR4JzTXIY%gE('a7|Z{DFTo
+----
+.git/objects/39/8dc15e5fee9e9c32731f3ee2546a71f6886243
+x+)JMU065c01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅J:(1G7?951yE(?wu?+I
+($YetR	IJMc<L->_޼%D:'37Q79#('3<Hk'.7r\~*DYqinnN~zf2v¿o%[W#'|DQIb^fi.CۙAO\w]ȁ N:
+----
+.git/objects/55/8561e89ea657b6ad0f3c1905c7434c67907de1
+x+)JMU06g040031QrutuMaظ]L t&8t|S -
+----
+.git/objects/0a/c9def4a7470416ed7cab5a57e29e870ffce33d
+xNIj1YIPd-`B1t؂Y,ȐTUoR!>
+BS΍Y䦜Y8y<+U]HBY$68aIؠ'/ѫ{l~fp,O*o+`9kMw04emzʶ>OǏܯf~Wu
+----
+.git/objects/0a/fbd81c00247a24c1c0f268277b6c6bc1e53b6b
+xYmo6:6u^.au0n6}AEpg-11YD*i6!ER8-ֶf!p**_YS1Ry#j&z0&tӼNOOϏNAsU
+XQQAeĊ"YD@^R\_uRUEM]
+VrG54(JԲ\?J<9_ 2^|w҂v8ua7\)Yk]Z*=O<p'mSFmE?gp2y]d?|QnUz|\R_Z
+M2>Z,2=55_v0DX;	7:Dh1	مy4[Cg+=c`hOMYLp{ c׍|ov!f!ˆW:SV^y-ppʊ4إmn;
+ȧ]V_&gL5qOB?hviA9 .*hd}Dʦ9:K/wײ80H|
+$rL=Zccy? '%10//F5ئ`eV%]3kR
+@7ЃB[	:Ghg
+v;#=y5lVlUfݏ\@ϬnE#5o@`8KtѭpPK
+/Z%&"f`BhoOQvvoo@wO^VY.
+KLP19BytXTܐޜ[5,NW<I,	X$Z.c9\06&@W
+ О׻go2wQC)[T/H;&^a%A8@eA6D0A8@KE!pbeĴnĪ esxUpмUZn
+6+iJ6xqfEOl9'J;PS˶p
+C2%@
+뤟F1.Z;ҍmu^
+`󪘺ÀGB]G|۵rcHeps?	
+ˮG2w2N'cYG9;@M)K,݃t/NcV\E8sݯӱɱ#mҠ8F)}[!$K@$G|p4bi'8"wԋ0txz4޾<0L3k!(x`@8B4a8q:@}l38]z%E;!&s2%.{2L:[z5w(c$r
+(jtRˌnf\2
+̗ћK){p6b
+2(}W`ZlˢJ+iH
+j@7r[v"
+ 
+B5Z-w<e/` }A;V3syt=x`/}\l]deEr ,O;'[Cӹ#s,jCUd7>GК`E!4pᨦ̚ePG%4#\&,ϡ)@ k[# ʀ%	i\u7WyvbJ`˟ono}rL5ԽdJ|BW'$Z3umc'tk>Sퟯoa3s.Fh y7LO]jbzl:׈{|BU-5b.gPPT	0_?N(2c4>EײHF_sPl3S{upvr⻏kn`?&p5sF'ah=]6B-5ܚ
+n.,^	@29gl3O?@*,Sa7U[__t	H6\d[$
+nAq[js4<3JiP3ԎVJzL={?6
+d5C۰w
+----
+.git/objects/0a/004680977e6f770bbb666a37c4f01f470cf1bd
+x+)JMU016f01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,$B"HAl#[mKwpJ.1G7?951A'tô:eR+L[C%$2<Y0A0u]!Yii/V'sٛHd&&g$d2IsMy]\(+.OLf^dujdyR(*I,e>ȡuɺlvt (
+----
+.git/objects/90/ffd091f93b2c51c4c0eefb2ffb6ae82bdc864b
+xVmo6g
+N&s	2Ԁ0EyHF IF{xԛ xץ^*5/0z*a	JV8|$ܽ6wK儹Ṉ#jɄu!Ҙ~j!J"`Ye(=8W0d.
+ ǵ)VeGJgx4Z~\sj!/?XbT`{7-nJ)Rw?JvѨ7˜*Ѳ0p;#؍gKŊF-w	'ymغ,
+Aalkr@x9xU2Nj5Ec$oǚZ]m39eorbaꄠֺx  ɞkrۺeq8X66EL:eRٙgex<H$1CB40K5DL%ȭYV3rD
+ȃx蝡\)C"ctL'wN$
+S#:A&,Gh=76PCq
+ܒ:HL3a §C?ٻ(N#1yɸsFk',uY܉a^\kmc
+#hʣ+"h2$5uH?H)9بJBUÄxY,_ePVs~YXq!scܐ ʔvPmWr
+7P7z)!SHo<nU+$ڲRtEIiúܦd	1Ebc].a΂ϻ%
+ftC)sA{!4!s蒪Q
+0J:fl(płVZ
+.KK`=ڂ)2R%/_ssی3"@E$D'c>k3[9<fp\W+I|e	i\]hӸH/毧t{
+6O265@k]20h#waX~uNPs&pb'?-~ҪuGhsj1pZb?4pn#BJ">
+----
+.git/objects/d3/dbc4334b7cab0c7c52944d0b343b5565b21ab0
+xWrܸ|Eo!pnMIk7Qm@9
+ //r\r%Iht>}4߽"?ؿwt5:Zv6fITcb ]z_f:UDaw;Sp6RoTlpKm9Ѓ2JYm}xZl%XbvUX:Tn[ǰXCg1svWM"70&V˛53
+l{q7:RMa`sxK?qC
+=wnwV cN LC`1[" 珮8[0/,!%t\C"Oɺ¢3ȷ}]o3B.7zbd YG矨w %jP	 .`_hD@8դrG}z7l˔D2$FL6M1W@xj?ٺH"P?yV{P/荥?ng~.GxF&@-%xxYRu~]:>ݷ(:Ϩ,UfQByo|$MwQr~
+ĒlGcd.*oa(Pt(c4UGg:#YjF[4H 0H-4(
+
+La#^oQ5ȏGQ5G/xp THRI+
+pȯHh!o~Yrxř"T^K/#l)M@"V '6@h(DNm£(gJrYuq( 	#@jRe\$4Fj1HPUwfpwk6%	P;( >_|yEN!;dhVv^T~\]%zkЖcދRw?UlBdaڃf7yk,&|oQYދ*784
+1~~w+;Vj+NU	)7=<smt%G
+#o_`)
+"*A:] ͡t(/!TF&[(=9Ba<g?,.廏ˮLANWt>okqf{/֍p
+S2BpCE3<L4D(Nr}nS'$l҇'5me3QJ4%N=IպiKǄ;iR:砂$յ,)'/^693՛iioF*ҒıD*#FPI!f|~u^٪ǥ)p´OrAt:^60"Kz(ptq<#\Z\(xDHf<y`&҈9@LZtjX#әbr)1 )y| BGI[P|"lZ4iqbe\g#CqٟO=`FD<tBNNl~'!"<YfS7e	E񝃽@%%r29b"rAEhSBی*.1qF2#;F?YA~$eNgIoRȀQ<:tÏ ]"
+#Pz)sL殉uzSgJQI>`0ɬ4Xe	3W?]_ P(Gg^62_	4x<!Z=½s;]
+----
+.git/objects/d4/101bd91f5878679d2cbe1204edbb5bcd80b60e
+xVn8gŢy
+$2.KrrC6	^pi%II9qȱC2tÇ_sެJ{3]E7=l
+YWLNhѵl;ǖDQs
+aJ]i}s<vFq;㎬0yQTnFRoqd=hWt$ҝY-[g4:OX=Iߐh[kZ+gBK+pz?<|X2+G&P!Oyµ܂#q׌dIAtTY'2`DĎZQ?erb: ;tلNRr3F`i?rOw?).I8g@fI+^dӌ
+z-͓wݱ'
+R:4|s7FKX5ί`Zզo#NE]\OEސ~a7T4B<V>ҤdbL
+t%XJ*X~u$Q*##[u.,ͅm	@K|#PͶ@۸oZH,hށ@½Ko.~}Vey@U@3
+KHIDQ%\q/ʘF!j|#^XDow?K~5?
+0]UTIW0rVgf'\eL]xMQ:( JS%;OoDKPSp 6ڋWbN`ƃh&Y-CW|c$ő4`tGn}8H PpفePiB"d=	W#;sZ~[&v`AX[,`aN"JZ$` O/oC<j:RxPHBcWfq)B cхMz /^g|n)%!ר*<07V>7 a4iCx៭a"+RдИ1}:8&,O[4ʠ¦r'Hw}g;GjSe
+----
+.git/objects/a0/f6ff43587b98cb3e9d49bcdb453c46fde2e0f8
+xW[o6޳>n- ͦF md)P0Z6T.-,i:?Xy;\-;Uڊ+ͭTE+
+*	?bu	1煰JߞS/y*ըHDL}W3Wa,`Y&<˴0ٹ3=R^Y	,JAi\U2B'}uu}%^'>E|0>K>yXV\	/èĒe*I]h=IyV<XxIdiw$ߟ'=_EkL+a,j#Y.㕽{NʍfwNC@f	3V®ᨥFi=ߠ8Uja{xY" 9aOdT0I`+o`}#Pcx6@3h7"c\"b^Xn+dw0ѕxDaRɖ\";F{هMd.؅*D[pVyjE !TH+awذJE /p)s 
+@rhC¾GFp$KXbN&OOm2U-CHFI
+Ȯu%P#UnA5)lr*dEe)uIio1rIp5V
+4ŲVg6DЂz/s)lz#:*5ǰ~:gVf'cj;RNC  dt}t63mU(`= a?Z`a\
+.N;ב<5Gs&n6Us-~4_qA t7tC+qQ<K8Q/TZܝv_1t$*CIdԷ6L @W`Eչ(h 
+*징jpk2+R'9%Qu=l !$w}NF-^ M;&4nwsq|!
+aF=n#6CjUK_A#I+h-~|-|;ض(+T_Rj}또Jq'<? ܵEɻ$OP-$w'@z]sT~k>ʍ=]͇ɜztC&rTD*\1
+#hkc|nЦbXWW	6 H;*30va|/
+	-%Xao<ݱmFn8U~AP$J|2ur.{Cv6o>*1ƊsMoNCտͮiY&v[%"c,R9J(S"m,h(,WeI
+N޿eIAk>Y;"s3u%yiGM$;vdu,*.Kk,J}@ܺ;
+֭o0j9׷\LOXf˪Hu*| ;/{i;(N9MZnVa-M[	DtJ+wƮ<,~-L/2N#gms0&*
+8s	{|
+----
+.git/objects/a0/d6bd866f7dec1001efeff4c011c2896857ecd3
+xVMo7Ybj/l	{ҡ`P6*jYjwbM~V~}]i5z,9y32Kp
+Λ
+͵
+/,+2
+,	w-B68$#oȯtTMyu_;x_c\ͤJx.;#{x(fswEAү	79J -{+yTVVwcnFyS|ӯ7E1["$(elṅ<'^#nLyCWaf9Vle#<ǰXR7tE1΁Y3g88,ZчJοve,	
+>T`b~zw0ݜbj%֓\fN2 dVK$_|+<ձ^$_Qd|K£q
+F\Gܝ;W ~BQ$|f"JLxC}n7,OzV\y*"
+Fٯ!6ssU2wgn/~BJT6#[OLʘ2o?ӠQ_K7,:(\Ft*_ю[χ	rVb9lؕNy܌]<QZ%4$M٭e4m,+/Օ2Pʅ2*CTpQ5dz_m7
+;ߎP@L7['{bTQc#BD8kbad܁殇\kB9Cl2zy*ky7RQYD6!P7|~_y?= r =BՊ&+NK!gԊ㚘96L;5-Eld8&匭c[!U3Vr)9;u*)t8>܏.Pj>6beσv	}Z)*K&2CJ:fvhP
+у鼲/M/ut7lQTB
+;U!)	JpD
+----
+.git/objects/a7/98749a748f31b0c86157ba06bd0d70168fb78e
+x+)JMU04e01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfxc!K#OV(K;1G7?951yE(?wu?+I
+($YetR	IJMc<L->_޼%D:'37Q79#('3<Hk'.7r\~*DYqinnN~zf2v¿o%[W#'|DQIb^fi.CۙAO\w]ȁ -
+----
+.git/objects/a7/c1eefc059296a8044cd5983177e2328b48783d
+xAj0E))ekd!2j
+LBO}x%`ЪDqB`0:tS KBԝl
+PQ[c=qvux).>0u
+&^~9Ot?5 Z?mcp}[6.A~T
+----
+.git/objects/b1/b716105590454bfc4c0247f193a04088f39c7f
+xKOR0e, u
+----
+.git/objects/dd/7bfdce769528532c6c678bb0ef912fe78c58c1
+x+)JMU013g01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'M%7Y3=%nUlwĮ
+QZTX}f?ɓv\Ģ<ݤlKNZVbak
+PeE%)E
+_fܬj[˸DUJ&9ɩy=^ۄJ-*$|Y1M&
+($#3e{#Y+>>A="ưyΙb[}2gyKtNfnnrFbQNf*/\7rϷ>$_j QV\`v\Ԇ89*bN)I,eXtf{xed]{+: W
+----
+.git/objects/af/d1c28eeb60906c7916df1e1144a7a8ee48c55c
+x+)JMU065c01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅J:(1G7?951A'tô:eR+L[C%$2<Y0A0u]!Yii/V'sٛHd&&g$d2IsMy]\(+.OLf^dujdyR(*I,e>ȡuɺlvt #ώ
+----
+.git/objects/b7/cfe8440b9e7f827509733406479f3bc21f7530
+x+)JMU040d040031QrutuMaU0[ybYv؅wCzk[A%f敤%dd&&g$d$1LaOk#BN7 +:
+----
+.git/objects/db/b4acc03475f1683e50a175b7541b281fc57381
+x+)JMU01d01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'M%!,Y$ۘ[t6BT$g$2DYu3}{j$;1*9()?O7)'19T;]يc.n|LstStOW;Ls^+ ´e?T]QbI"CMϳ 舫^G?ݵ"ưyΙb[}2gyKtNfnnrFbQNf*Cy44IO]nU|ݜdJ/_FO/5ļ\_ڎ
+NYiM ]$
+----
+.git/objects/db/cdf27f9dc4a3513a00bdbffa4b12c759a6a385
+x+)JMUd040031QrutuMa8iTen@ۑp_EPEɥ%y%E%yE%)Ez%Ewqnۮ6n= )
+----
+.git/objects/a8/781ce8e94277e91c653dc1b2c9945a80f1f07f
+xV]OHP@Qibh"E$j83|{Ǩ[x{9ѷ/[t3:U+#~LWxMxix`xˆDQ4fB|ڹ=3;BφE'אIp)8;Vt/]M3֢CH9ǗTCa-;}ZĪkܔN׍o4e2`:[e>
+hRKK־)#+M}͆ iبN:17LSmfPvPdPe#k"6a81<JYGyۭ9ZgtbX8&OGApp!
+!sD	"(}ЫnhV3>z7>.^D)@ Q{U*]o~x}x2v>:j[9wIh!}Dӯg;\r05kYRQUPQ4j1ZHUdL\rKNaB;"p\?qOjnZ&ąR4AҦ_透9!s9YicƴS6y,Of9Zb0luA<=2bW⎗;0E]Ժ)AB4Z>:m"Q(}/܇gm+LmP͂J:VSmΪY;ͪDWđTI~ DIT*Ih<idqGI+xQ-lPR9X,҉QpeJNػs+\o+:zBI="̸lSڏsеu=$UɊiH/brSyڮDv^
+D=-_f(
+zѳP;waNz:҄X 6{kJԾT~V5&T?=CBi6}х=?Av7PzȨ&cEf<ЋNeb]I7c82- EMϞoF~<>k	މJ$@f$?]/d+t0ct+5R`s8jhIf	;BԦ13k;ȡDS\m8vBY-5ngRcj!Kwo6[ۭ
+----
+.git/objects/b0/fc376ccc840f7326da21b74c699be89bb3a1e9
+x+)JMU4f040031QrutuMa8ϔ.N.xǽjAUf\̼Ē<ݬ4"5
+Oިfix2<
+- yi(5
+----
+.git/objects/c4/3da83774927c08af1cb39c6a75a260a34ccda4
+xV]OGUxH`7IKbhբ*;^#g68>
+} [kϝs9\wKo{tBt+:^E15O/<MmMS>C(.nvy*_؆3<pǸvI
+p@8TNBrKt sC@[cPK6]іԸᘪdHz+*0[JG}Fo[)&esGf]q`s񈈎3nOk@wuT2cm<`/DjQ6tlH`1SPBD1TĶi$BW
+d0hGAcpq6Y}7+"
+5}MsjOR(s^2Uu"pB\){WOW.N>@
+5]ekyp|nw˪Y+.\glZ[L(i}ǇjrUkZO'Y@	_U%D7gnN=OeAYLO~=;C0Dᆈ.ڍ
+2\{qZu(Ȫ2_Balrk7s,y]b2SkTgL:3*O9HŅx<I ߅Z	:׃&[@zj8~sϬk	6D74]>!(ё$CƩ5ɩ+' ƣQ*,_B 1-@ǖ<.>c3$m]u+;Zp2H!UpĀ<,)4s){~r`{X:a2T!?*y.%Jc(V?C
+XNH2+Ԫy7Be
+c#JR@h
+C!^R0/q_d̛S>[Byv>`e9/CA bga' "rc
+!/P,<'ı
+5}`E.z-.LY@9ݕi_x<ӎe
+----
+.git/objects/e1/4a044bfa1dbed1af5af703436b896a5328b4da
+x}IFG'%JhC((0f2ק_e#8y߶ZGr<+#AP!r3/,w3(2Sr	JC$g4RRyZe"[[?'ۀZO~ ?9exYoe.xT|[G޷ Ff8?ho.> ؟j+שrgz LFqp	@d*v)_4&eB}Z>42J7V?rt3{鑑Y/Dbgr53Lh[jxЍkA2YQ&',KyZG
+88lwz51BSijΧXg7\6x&IqٺP9Xc7&l
+g|JR@L:ig;?)"uz	K?ȶ#gwɽW< %I"חΒ.r<"ZTh0M'(ܝ_b
+]z71[=zi_mӓUuFkPtds-ٳE';މ5TXJm{}įVA󚣭Pamz;@6ɘxgC׸GBW[ vfQs4lLldEVgt[ϔnh'1
+x˄zqa!=_J^MX^:C+^삏4ML{.$nܧ#V{Is;_9Ɯ	{*&ߋ fԝG[RJ
+----
+.git/objects/cc/c79484fffc5766f235d4fcaf93ca8b69d3a808
+xV]oF~"~%~)-$-Z<tއmwiKH[ۛս2tÇ<8ot=Vxi)*[酢=
+o,5kfcZmplIT;Gސv:nd-;{wX3
+wY/X>r$G@ΕR1+4fF_gkz|Hw$ޚJZ:*\c/O",̑%'2Zzx{	Κ許Nb4H	ʄzb]H@fpc}kf1#c.XNwc	3f_O&_?ޑ5	Lɬi^bvRЕAyԩ1vRdFwXI݂B'րo{c)b*`UIҵq~- [l6;Wg'BoHsT:[*+{hRYlL*t5XF*X~u$QÑm:iw疣P	W4%=Iyu,B۸oz,hށ@­ʬ.}^}VuG£U~C3
++ޔGH>xWΨ\>xFcLIfuI1$%j7Gj:jKo͹h#z3Dqʠ7cӶpAy=^sN;,2*HD[&Պ?!T$f)ĩթx'0Qr;,yV!c11D=0]Lq:Ixm붏d]`TZFȪaO·r͍HGN\<:Y`eH*4MBH
+g''O2a93ր"X}ôr1
+N۩&qiKg.I::[Nx5Rr\{*޽c\6f2c ?m5 8-Ld%W
+wX<OgGľ2ca.ݒX[UBT)S2n{(}}둚f
+----
+.git/objects/cc/3de77741fa8e9a7dc9c9437e09aa9e8bc3877e
+x+)JMU4c040031QrutuMajO[snߵOKKsu3JRӋK2tK"z%E'0kU禟Ϻe/ F/,&
+----
+.git/objects/e8/df5e236b63cc6475786d9b1b84c7dd2e0f1b7c
+x}SٮF3_R;,YI4m6x{Ylֆ6_?(CtT*SR
+	@MEIR)|&*>,D	+"c	nFf˲$"9E"WA"JL#ELx%!PIH .!a.fb:-\a2ŤDCEj1tdִw-/ǂ&P[	xYn).eIǼ.Od?WwPkVx pplO LV5mڹͼF}NFEiZIŝ	s1[k (|&'m͊x`?,8˽INr9kN{I"MM/n,_49+LagFM:
+h=qRz9J\;р&mym]Pjr5rfW%:WǗ٥ZX2@Kŉ~L30v!?KE޹U}TnKt$7eS<|[MN)6jg{pxtq8Kz^YelQg7D"\s<Zs4ed SHmA/΍Sg9ܧ<+Iq̗vXqp%s@\!T;޷{6svcLwҥ4XUKkOI|ec;wu/
+!^BUٶxQYUFԟC2!飅#Y.Fg|p^8K
+ګnӏS:o;,z_#^;?īP3wn$ǠU)F 2րI4dϏgJFKS0Gٌ8'XͿ(?
+----
+.git/objects/fa/61c49763de29aa71033e1c26213ac646dbf252
+x+)JMU06g040031QrutuMa8iTen@ۑp_E #
+----
+.git/objects/fa/fa9c7b606309ce513b278a95cd0b96f5840688
+x}IFWK7f^l`O`~}KSJ[CBH D ʄ\<+&	,Q	1P!xH-yQ P!$fdXeXU9/GZͳJ䑠
+
+ϮȽ?c? C+o8
+]ʪ{l*tq7 r"uK/ LO;5M74-c=Zp,֭inŚ=	rW2dDPVZU_԰ul7DMւZ5:c1$:"l"ufc2Z0:)/\S-\KCl;vҷ=<GR}ȵ,v3֛ղDAFRLy{\m2fWc(0ࡔ[S5䉭r='zҲlC)7^)i&'KrQ훞2&wک{ߧ0Nt8=IB\lys%a仮"vexvP⁧0YyK;ff\+׶3kUv1]ȧ{+&g9ѲWF$o}/,(Y8p}YJ	[൨z뭾Stg#s^+a43d)+̎>v0#aW1Rm,$C#rZsé0@]/mx{ğ7'd$Z64L_7a3qlV cG5N%AZ;\YMX$7~.'='oMGI5`ǿ^a
+----
+.git/objects/ff/d17c341dcbd791d850143ed85fca30f10342f9
+x+)JMU01d01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'M%gl;U{sy݇ *3sR
+rKRϬ=S[}5y?ΝQXPX.l1s|7Sp>DYJ&g9ɩy:+9to/gZaڲ($YetR	IJMc<L->_޼%D:'37Q79#('3<Hk'.7r\~*DYqinnN~zf2v¿o%[W#'|DQIb^fi.imGvKesdm &	
+----
+.git/objects/c5/a5162ba2e7fee8c67f673cfbe42765da3aeafa
+x+)JMU062b040031Qtvve(_?_%l՛3*	rutuMa`ބ{jkzB\&@ZTX}f?ɓv\̒<U[1TZ'q7ĒDgAW3K&&~Tk3D>+17a3-jd~1{DĢT ii>/8\?8qeť9l_ؿn],_jE%ymg"vw>q݉w! E
+----
+.git/objects/c2/ebfd907e93e622d151951b70ee0baaa07a82b3
+xVn6ݳyh$2a
+A
+
+[0ԌtmqI_sIIVC8xy9wtۣ	p*hkN_G=r%ǟx&舦MͮH9{OR(nwyʭE_PV/8#jG0Gz6,t;N?L HsRʔsǁu(Iյ*0=]²u@Vs A߼M!g	4p
+z@\,~cpEh]OóG)Je5W
+G[GFR[q(UTGtɹ}&hMmfQfĦ-]YSaϭ";&MћهġtӼfAXH
+5^3Pq|;Jp=yu R]H!2-m(/Yp?8>wJ/LjZ;kD(orUAQbR`+iuBd,%橩+ڭݸ.gųK;uݳ3ޗVFGS8G8!lj#4MY'ddOK暫""܎ &/1)@
+ob7Ɔ{ZNƼR+qOA>n:^Iw_ŢFoVzJkFڨJ*kxp)-t@@xZ#Ó]SG܁	콴V6z+_~`\}{{:Xx}l	f!wTZ8H PUrрeP8Gdf'Sx$nB	uAF\<?Z~8
+/E';j:F֟
+%//reMUA?}
+8NJu+T$,vKZ\h7[.A{>Š/EuSURzRgp!,ciKD |c,=?V2=8pZ3qe@6NKO(5~%%q[f4xD)L^W
+----
+.git/objects/f6/ca7e3134f2eb86fbbfd13e4fce6359d7a44be8
+x}ɮHE{Wު$T*lJ6`/ww-[tB!hJ1B<9IH(0t 9OE,Ci)K%96Yb JS(%"#1D
+!>:w{87LO
+{(ZҏhiyHoOQěϟFK
+Xy/eptnA c2EU]5'|҉+,V,dϺYb/孶*+fFZ<3XgW+ƞe.+%p+(d{c쒦{6-_7	
+iGIp-͵n~5ju.פ.EN{)iٛ@ZOh#Q^ǅl:r֘/՚+䴏w2(FCgΌ=;!w5ĺxwc=AZ_nAם~`oa87_{'㟣d۩Uq]-8M'{ZlzP}ve1;
+MˉX.C(lˊ׳^Khn:Tz.#k?
+]e=cRQ0jWayқ*d(ujl8f1(C;mWávWz[Ʌ3va	r[3+O&$_Ϯ'iMlk"ƭp^ZX
+*%of뇚̔ FmTN^v>)duP-!/:9s\OcX!@N)؇%zb	9NnbܗѸi9޽GY
+----
+.git/objects/f6/678596e164d0d479938c3421cf05cac97d8fdc
+x}ΛH Soh(bv~83sRORI
+	4"}(8?i(ƈ!FF&!¬  A	NxC!>
+EA"AdMlr>dM 
+~C_um|9+l dhaMS)N91 |㏶M<~I֌#8mtڿx
+z(KH#;VXV\GtJƑ,ktn(`ގ@FNAvc7㡨7~sZ;O;q@B޸EټXct 9d$⎕=e~Rd]i̭.K^=vmUSE(*F{DBRޡzrF"xj"|R0M3h:1
+^,wDoE`}-5r߰P}6)s$^.%عH[/KL]5'sL9BȯS%/P`5~Tn>IsԅH+.lgfbl螭R ⒯lV0]*y8qkѧ7xKlo~VB/5Py`=h4z}6Q''aPhN"=1s!V!n+)l~<̊lyXVmy;'hr{؟NLd"XQЏ>9(֏VǽÍ5ټՠ@VߙTؐ7A)}W1Vc
+----
+.git/objects/ce/c0a55f4fddd75d9fe609360cef30c9a9112958
+xVMsD_ѵ9[fEpRQx,!ʌ23９l/Nׯ_ֲKz?9Im~r\V#hxK{띝կl4~GVzڲ!el-9MntwRJuLڹʎC<9> Ga 
+ Zi ux+I7Sw4}$$TNGݔJy
+,$Wzs*tm cqb@Y'QNsg(mzD4+]Ao\L<B8TnW|a2lι!g4㍧sj$܁\ar2ڏ޻]ŤWԄkj}8KhU{VcЉ˭xJѢՓSLIkVԢtZh`ĪzYϯп?ֲl|ubjj#"]8BL<l$YabJC'KF~``<!#&}F1Aўl$aH5ݵC}m_}Chdq摕9C΂xCmbsZn~rozvK^R
+Yo|S*9$3ASH
+5{':Gi^eP}[]%R%F<E𭖪]JWNu۔	f?%ȋ 
+x-A[O<[s^#ڱ6U[ڂ_Lc}|V枹SɁGh
+sbaJɦm߳m8A^+_=
+s^ngzf+o}#үb$,1	w }ja[_(οOT/H.JZ[-b%7u֠Ȁhe
+pD#LT6pJK|MAVx
+uS!$\b7RQ7ax&[B'k[ ;w%K<
+$z]_m~ S{}8޿B8qkj 44I2̷kb=3.])
+----
+.git/objects/ce/0989327a373843e02b4b4107c363c9fa336b72
+xVnFb?&d
+qH:n Աi"G.|}"u̙33\TzA'N^w@gufqiZҙ67FFO4蘲fX6$%ɭncZʵZʲ):\9W9>#GI =":i cÕ$$GVxIª5BS!Hui.m-5*kPr2DAjga>~a5XҊ1Uѣ9s\P:e
+<W'Pp10rÅ$*$#":]z~@澸|)ֲAIU޴OCvX1$L~1iH#T8NG'_$^VdOi[F<ҼΏPM)Lشӊݣ66(nD-'뗓yhC1xu}3^1ׅ\nCE67v$-(2L@ԧ0KY9v#3r8`
+'2 6>ӓ?g$fQm7}fvi,d"V(d]:9f%ɋ<;7%rhAM?	~
+Aj/m2Ӌ~n_責J,3'QsjƅKDyaixy&_y|E|.Ѝ**ٺl>ٕ˧-dۗxր l@{
+1KMkmty+LAXy;#`	['L$ށv{Uq?[y3)≺v%<[բdb"]p[g玖WZ<Z[l.jlq*KMAV\L;ZCHschčqౡP9qb<Nb|c}Qw8Bt^ĄϏ$] G.q
+y=w}d$q'|'V; k
+44MG A#:
+----
+.git/objects/2c/53cb793740967e408bb7768d1f001aa83584bf
+x+)JMU040b040031QrutuMa" }S>"}>!6l*J.-.+IM/J,ML,IONM+.I,bxuX9D (
+----
+.git/objects/41/4064064cca536d0b9fde943b764d703f42bde5
+x}SɮH3_ggԅ1`7
+(fʹ8<F*BȈk2 _c1䜂q&*+
+$T  r,%Ŝ=nGZL99R\@HQ+, 
+±T:U={W *'3?iv=Ք}]
+daXe]E)_Zy/R_fK{G-Ӆaq55ۺ`
+R_&1j!&a+!Pݡ
+.
+K֞TfFq9'!w:h1V-[8Gb%z^lEVT||a2~J[`YDMxPxbs|aߝ(gVen3^m-d,qsҜmxkq2\9ZŞv4t9&U}'-4"#߻%CXŘ	\BMv-6OC)XUpY+>]a[|d7=>j9p:j2f>5ܸ9
+=P
+zbeEGC"rjl[@N6IRi(2&챞4=1w(Ze3gbGhOˌYＹ4Aqf|G>|m!>x׾ZN/Js
+ͥw}_{Ѧ{kׯpI;&/S a"1vOvzuf	irzI'Ix+*C&̼P$+K~qWξ*tt>
+c|vekY*_]{N[
+----
+.git/objects/83/04a15efdde4742a997812d3ae03a49ae6ea3ee
+xZkoF\rW²@6ifݢN,Cő̚"Y
+;!%{ ysܔMr˿|z_OFbmZJ>EՉv-ѮU)k}Y6)ʢ?<z.
+k!eP6\(m+hYBJ˹kԲKCYN$dUK][T6+{q4{X%pMK4&Ku5}q<9.v#2lJɼXGGmH1 ؟X+tٳת7}Q拭72[j_,ίK9м5MsV>nd]xW{WU6RH'd\drL&cj%i_v21#e!3:5ȹ8cZ:>qYw":"[3IG4~E+ˮbѿ
++-Qʱ T1yo_fp>$G3d%Y
+$ZmVS!}'Vp(\֕UxΜZQD.Ei4Vv	Ҏ
+b[j$]fz}Җ:"}̪ Èt$? QڼqtٝH2Cğ]"VhʓM$]!ub-ZhiAmV-T|Dx*Y9%/Cֿ-#D^0E'P@z036C慀kzRc[ȻSFbnfAbMmڈ(]|nuUMއHѢ7dM6
+\Yh&"Oi/}(dO2:̣z\8w:s,ϟ0/6	%Tn;4쟙@]7mA1+__xYGstGHWN!4vlbIp:9OcY7;`.YMMP$1,1G7"3!
+$3!mF5!@ԐP!{A:!3fr U_W_iOBHz %v},}6,̈
+}[bUEާ$mΎPde\j]^4
+۞Yq1
+2i;4i[>mjta0:<OiMĠRWF%#10첲ӷ1__;#۝_PMV2u&t@҉D8}'!{! ,t	؜͞]QP]2p紪;j
+!&3sM6 wnli0ACbJt$FD̢ʠYşǪGNNlTO&A쥎<_)
+P3M}Bs:\Tc}fz2j
+6:T5
+dQ5zm\B+<ƅx<s+3Uw(ReWN)j-XX4/8
+(g?pBUoaEu9'vT䅳@aw3XZYꈍWWle]uE6% 3\G/40ЦБ+J#10OO68޾#:lQ
+1nkQQR#:l.$yeR*:ZQ]
+,_aYoP<"dboqrA(`{**huA<X=m[NwNޠ0*e,\ WFPYVKf6YuHgj)2nyEa )ibv˰nԛ̢G^С=gE5P.b[].GE
+<AP.'CXТ[-A@lTv]a>1@A klFrє;X+w:
+-آH4""VAlcs7[Ul[Sڔ6'sե3c x!i/ݸmƸ0yl`Oo,;L*w3<87|yP-|HKP}oͻu@w25=dj2
+|
+9\M2]~Kg\;-n)=tNU2Ҽ>$8YXn\Z~GmYG2V)+#`q@6dQ3IPFz.kC}lVr3d4+c0Lx_NΫ;v'vF9hB$ɇb'MH_9e}+RCqMNI?Zi
+9* N*]Ke17.PjdU 蟿ɒ6=i;9 O&;KLBTj [yEF']VmǸ3俻NT]d2QB'
+,A>;NV؅fɛu{ΓU:ǉVZF#re]	z$"5<3kmf_
+dx
+*(0l2w0#]@T%H,btt?7ʫ
+6	Ĉ{e3`p*QFH'whR(Mv\I?Ad|Xx
+{:[cFjj&o`4	B8&` xkÏ	;.0C}m5EQ`z
+w;vn'?t)%lpcqI3.<ӏFmɛ?e{Q.%ݺĽҏ|F8Sg˳/\
+k[8_/~p
+:CkpOT\
+b}`KF@:ta-ʉ,p QW?H<yDriaG8nvIw+MJ):s6CS	O3K0x!P̭q>i{DtS糂X0U)$cY}N0oiS:ewyFeSvnYRYgy_︐3CZ)H<PWA>N
+dK#(t
+3	^x%F^9h$*ASOt.h%>9pN
+ūo+ jiO1
+6sy+Hk4
+O*4<UlVWk*2NrxË
+\-q*ӧYF5;_K}x&:^j
+N|?tdq?Qы0[(Q_G;V7ZFG،C@n׸V-Nɪ7>yw枅*w:! UiSg֧D>CW>`?P?s
+----
+.git/objects/83/36259993307d9c6c8e5b009acad8b26036f8ed
+x}SǮF_1>q	%)fY7qf(^Qj
+]oj
+oHXr(<#,$R$!QB 5\F̀H8	
+"$p"/J3I1fLD@_.YNry^2H\yLCi,sُ y5d
+B%?|Ռa?W׏dh^_E5KO E24q"F4M}ЏsѬfk_++b
+Qu@` MOI TEQ5E	^nj/,lE"T!*׀>sp~<
+Bamxs{r%>^}n]wܡgK
+S\;d%߼JCu?`F1$Do:׬q3^U@MCcƊgĕŒcꝜd{۝N!z|X-ys#㧵Eoom5s_
+eo#Fjg
+Sm+P8'F^WO 7C$Mkv#E["&]Vy[FN&W7u}?ܿhM
+We1!4	pN,?TXS_È_p4m*J.p6"+k
+8فig.ik.\uqi(<[_
+_\?)='-#kdjG)7^iNU!2|]K
+<^Vbs~fޘQ&I99q4쏋jn
+54I/A}EGMYP~BFP;2KӀ2wc߂qR2v֟m(/me
+----
+.git/objects/83/aaeb57a2ceac206fe745415fca6d1bad421746
+x+)JMU040b040031QrutuMa" }S>"}>!6l*J.-.+IM/J,ML,IONM+.I,b.oT~tLޛV\< #
+ )
+----
+.git/objects/1b/62dd89a12b820e9f41aace0cefa8a8401f11f3
+x+)JMU04e01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,%<ӕ3H0mUWXP,2:jfяjwmg%1lcsXv/fo^"XP$5Mgw9.s47_7'?=3A;{߷׭>K
+$1/4#BS%E96r(
+----
+.git/objects/77/521b0a96194ce809e4d7cda7335f8a41a7dcd5
+x+)JMU040d040031QrutuMa8w_5RIZO
+KݠKKsu3JRӋK2ts2su3r2SK&0N~z} ,m+;
+----
+.git/objects/48/397f82c8397d39778a920112cffd0a68c260b3
+x+)JMU062b040031Qtvve(_?_%l՛3*	rutuMakjSy(x 3sR
+rKRϬ=S[}5y?ΝQYмusk:Ɵʕ^$UWXP,2:jfяjwmg%1lcsXv/fo^"XP$5Mgw9.s47_7'?=3A;{߷׭>K
+$1/4LNN';.~ 
+
+----
+.git/objects/70/dbd986cd067a447b2b58b76aa2458f689d1d9c
+x+)JMU05b040031Q((ɉ/J-,M-./I-I,IMaH|qzڱ^|!|_%ܚ {U6
+----
+.git/objects/70/8403138c9f967c168c618e168e63b8ddb38d4e
+xA
+0E]s%ӦD\^`BkKH
+?2UhjQL<s!{L60z1}UhSQQbVB!iiTCD{ILyk\x/y]n
+ޑs[kxZ7l>O"
+----
+.git/objects/1e/01b4ff3acbdeae960e0f1f0aa41d72a38719f2
+x+)JMU016f01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,$B"HOs,bػe[!R2KONMc	>]i0Ρ{{Y<
+ӖPuE%5=ς,#f:LLzvf|VbnÆ?9gZn)nɜb/!9E9A\$}^p>~vq|;W!ʊKsus3}+پݺY>᳿ J2Ks|Ok;r(;e].[#k#7 ;
+----
+.git/objects/15/2036a9c8974836841f2b56d0d8dd548d7dcf3a
+xV]oF~"~K:~pA$7h"<+*ꎹ;ZE>oofvvN~*nLSA[sAR\BswrB2[/Ѩ*U,c)X
+sê2kzV՗ٟP{[p;pG06
+$<@vfHnQ?:O4ֶr;LH@
+]dvV:	4{9nztG
+JeL&/-p6$ZY-jm\*Ç78 .	`G^MBYd䇌xA$":<Eۛ~@ygJ,6zZmJOU'C
+"sVŻLFKb
+}L&\v8&c$77rԕbamCw͉߰?`x`hE;>hOۏ u&2
+haG3vl}t*lcx)F%KV&4E;`ѻ98)jsfr,ߍqGuxiKACggºdJ#F>#%@֌;u,|]: \3\=;(TIm(e9LݡU+ect>(H۶d+	MjlV@k&[G=?T0iSVuSOpWu#UKX)rt9| __#NC}
+muZeiYmV:}*<vmC
+js^AeH8S9{qL^ԡ<׏LID
+8>n~7`s46i%^HtKLChqЗ
+%@f񻭰y	րɽT/Pf\S8-K5l̾/ZCy~J KQY[S><77C֔]F@~} jђY~9B.!m`SpyuJ283Sp
+^6Siq	MdyihۤLZ?Ew葐C
+----
+.git/objects/12/34514428b58abd63f941b4d1cf71aa7cc8ab7c
+x+)JMU016f01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,$B"HA[\xħ^SV˵Ffm҂J.1G7?951A'tô:eR+L[C%$2<Y0A0u]!Yii/V'sٛHd&&g$d2IsMy]\(+.OLf^dujdyR(*I,e>ȡuɺlvt <
+----
+.git/objects/8c/bd1d6d75f8b97c35f8d69f89ed841f4bab22f2
+xWے6g}E(nn[~іOLʕJՀdSD G<d\$4O>*+<#?wzu^El~_uLQl/ѥW~lv)ʐQUߨIٚwxgU[FꍊRpq-UU;P)k𼍱/VM}?#%jWUCv챵P!px3j]Au1"ܐ>JЩ{Ñi.q/{f6ʻhs8S7ps`N{g<P4u!9iZr芳E:nβR*@5,䐬Xt~
+>s\FoX,!K=5A`[M*휙p(VQO8 [mX<rȸ@t!Ј)&T_m:<'r64w)`c]#j4'/Q1r% /=K*n¯uSMya^e%4Hv>H!:!JOrXu\G ,ej4}l&@g/YMѨc&4	Q	eS!.={Yf7}Hq4[sTW
+RAIHntp(Tљ?vJ(W+Bu/BR)t,}bZ!|rl2IV+<rOd ,!Fo2,1&UvJbISi
+]Uݢ؟W&3#X{T/IZ?@͹3t!Cn҈bexDoHEڃ7yk{kYQuM^y;т.WEeɷ*zıƣÞv=t޺H[a-W6H@! 8DKR{15pn Xl8{Iin/z^vxpfbuE	t?>Mř%Z7QC =Rhf
+e'͘I ?0ӈrr=J&ʞ2,{ђB  +*-\'f$d#H
+Zdn :8B4
+L:r"e;h"0HYϿV)`\%}>d*Rq/)R	1CN2	A}啭Zx\'r$dK 5$KPќz|h4¿Nhݝt;wpSq靠Rar86y.LL.*r@.tu:ot5|L|1[]pPIP4r
+>Kģs (WazJ3wH-4
+8123pls}֩r Ab{~yu!̈7 s~YډmbO6$D'lR,uC2!(s2AdDN=GUAL;D.H=#yJ~QW<&Aw!H:0ShdO>:ϒ^1K_)=xtu-(D:[Gޣ\IR按;=
+d_-܃($xmdI8}i"
+MgD;n^^_ P(Gg?N20x<!1Ƚs;E 
+----
+.git/objects/8c/4ab61274473879c30460f00e2ca7b166157c66
+x+)JMU040b040031QrutuMa8s|J?iLY?TwPEɥ%y%E%y)%9ɩyz%EQk6# M,
+----
+.git/objects/85/9cfcd52c4e2842d2db3823bbe47e5162c0f4f3
+x+)JMU04e01 ̒$7βUTkGlZڟ1Wv_+CJ*ae><4t!TI^n
+C^;kL\E{'MI9E9%gVLé<oN̅JN,JMILfa,N9mjv)8,%<ӕ3H0mUWXP,2:jfяjwmg%1lcsXv/fo^"XP$5Mgw9.s47_7'?=3jv
+qrU:A$e2zvPhwʺd]H;GFn: ޴!
+----
+.git/objects/82/5b80a69b0ed32dab3633a0bc8a2afa032f0d91
+xKj1D)i0{M4G!V 'Ȳ
+^mE`vE:3S{CdC@km9f0~?e+v7[D4F(]H1evڸ8-kqsIpߜr{ayaj*TkRZ4a+|\EVm
+----
+.git/objects/49/17cbd9c6da9cffb61d2da83c89aa03ecc40950
+xVMoFYbb
+||h:ia4iE"V.Y2-	rDrfg{fW]/~:Kp*hkB5kdrtD6So?<E]=;RiSLY=亨C=^PS<g|Iji,ꉾ/ʟ6}I,jX娲KaM(rGo¾V:F鄀4AO׮PFPK늏n'r$&>`>H^9)-~3xF&gqU&1'm[==o2y*(ڡrB^'DN*p5.8m
+$H% 9$TFڌaʤLd{t+m9mL@r<$g	AlA]7k	 <A{CZ߁:wľ_ڴшҹx;.-41b%ce~U1h,!y?jc\^__7j#x7dXOҵ2͠OS.L;	}6;RaPLMSN#g"e)e*>pY۵NפBpzUve-	>\8q9aVe"mHX{`#S4BS1-ǆD_=blK@e;Tei?c/d d쟧o̳`+n?!>gEQWFۚ6oj5iS-!6Pg}#vQtC?
+EIN^o0bwQk#@^[#ԒɋKAͷwKt@sU__[f
+/O"WA+`֜@P:NE3c![f C3*5PvH#fFxySaZX."wm
+)K<gʓJ>Hm''T,Ptodxp}%i/u2ߚ/FU]r?);aLr]s3 ݲC Vt>77qH!{ճrpX9%'6rW
+Ėۏo.Ͳ`Vχ33
+9^Ǥj\RU
+	ǖx}+w:V;,ó(^NחeH&G;vrsb*hfPXn[98`u
+
+鶦ʺ e@n0,OEI+W(a#{'f:= [Hy|Ѝ]2/|*v
+----
+.git/objects/2e/2850aec0f12575531f2d4dfbb85532c6cbeb5f
+xV]oF~"~mD(j.GAĎ-Z䊼SCԿѿ_ҹ;R-#y(,o}KGyΕ':_h+Y{{d&߼4``0kK6޲!Ql-9Mf٭ij&+{vniG#<w<ЋQ!
+= :>:RGS=gEw8i-zX:Ts|yM5ֲWUNʥMYtN+ho
+7pmf!Mki7%rd)p7
+Y@Tg|/ˆiBc;ޮY'T'Ț0ȠhzNz%y@IvxAa[ƢI(꓀QrǠ \AB(Q1Ckt'gik[<ڡ5㌾|ލ㴋gQ
+4@Ns+
+1DQFy7{}t:r1>j[tIhO!n}HOWOӅrפ05kYSQUPQ4j1ZIUdLBrهVHqW+E28d゗=
+ܴ"Lgh.c]> XέnQ!Lv:N=_<Yha 2ʼǋ]9W`a	uSh<S#1|uN^EP^p7O0#wNK*bL9W"0&0eM*h$nZA- TDtڱybN+|Q-l`RZ9qD҉Qw;e.9aߧXv6tS| a&qtkz8H PUs#Q_Ŏ!gc]Fh~Y&->PdO3]v0aNz6f҄t 6{iNԾ[X~65 &T=r@˰Bj6}хu?Ev7W|-c}f<ЋNb]/Ŷn*qe,_?3$|yxId~e"~W`4Xj:5pi;{pԊ]kѢ%VwMc,ZIצx2C
+h_q=6{RH-󯥴mM:CjRj1Cb.ư
+----
+.git/objects/2b/11ce5e177a91e54a9456ab1e85596aed828a2a
+x+)JMUd040031QrutuMa8w`iq78RP3($?W73$5($3?O79$B"H$a3Ns? j+K
+----
+.git/objects/2b/6fb771fded1987a18faeae7c1d0c0e13cdfa26
+x+)JMU4f040031QrutuMaXQ!SKTۃNNj($?W73$5($3?O47_$ԝg=e;|y_ j")
+----
+.git/objects/78/544f7004934f1a3b0576367619860384c08981
+x+)JMU06g040031QrutuMajO[snߵOYG>
+----
+.git/objects/13/77828920b7c5bdec83e7024bb2a8d1c01c15f6
+xXmo6g
+F 0<T?xm("H4Y.($Ի3x#OGnSe?}%Q22{ᅜ+!^+5^sSOLbܿ%3 -Y,	')+bFEFIRpGs -̥+N eN+rY234ɗ_um}wwxw󕭘2Ne:Jẹlåߡo(ԏ@qu-|RfJ|\Iwl[4	#t-D_?+&Dw`B 8	1M}(0f#<@:A-:c3*B?kvy큐JHwz$Q<[fbN*CZtsGl5U(hѲ'`m	׷:b\K=ilGoJ Coԁ.oYv؂I=@s\ة]gtE\ͣ<Y2Ez=Öc-aC 9'aֻ0bJ=.?Oap+Ce!:=nC`?xi!
+A-d|1v̌(\Fic4.`3heU-`0?pmJFyME&lR'ڴV橼P=f(	CAv,HZc cD,a92Irⁱ[btDmSqY-\/a:>a($I"ۮ4qٸc~H{3vG*O|F0C<JWUٯ_p5j,*>9Z9t?}U=8ӪVTۨl
+T$^+=>Q6YU$h ,!:
+3.gDj/T8^`n#o # m# J/`yF@uE
+0ޖ;#8Jƫ&J% fI͈;RSvYݑ$2Is8m,yb2XeiUxd)lꭙN*TpHT{
+ڎL&T0-+)!ڽGYIkhb^K+GjS؝ț5țΡ>}zuⷤd_2?BZcLػK]k鰎eW YM\^+Zug;.ִц숖)[*2(SY
+؄lϨ+sFgg_-8v$8ÁPqY*nr
+>j@vϩF
+Ťy
+[mt*68QSa} Lvkr`E/q͘.,ċzQ ߜH%l>_G5/`LW\GnXQz BON#9H ߘ:GL/kwT6 
+n<j8=!F-Vkz#̤Q*u1
+----
+.git/objects/7f/4863f309d33f32309a23a9ad31e3c7b240275d
+x+)JMU4a040031QrutuMa8b¼dR
+zsJ%,9($?W73$5($3?O7H'$1~_ߧ^b:ca. =(
+----
+.git/info/exclude
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+
+----
+.git/logs/HEAD
+0000000000000000000000000000000000000000 3e80c90d8d3c7002604ba2c06c0d3c4dde9be7ee Tyler Diderich <tylerdiderich@gmail.com> 1737642716 -0600	initial pull
+3e80c90d8d3c7002604ba2c06c0d3c4dde9be7ee 3bb69d1a1d9be307ae81d8d284e7dc4eed7c6791 Tyler Diderich <tylerdiderich@gmail.com> 1737646329 -0600	commit: init
+3bb69d1a1d9be307ae81d8d284e7dc4eed7c6791 708403138c9f967c168c618e168e63b8ddb38d4e Tyler Diderich <tylerdiderich@gmail.com> 1737648447 -0600	commit: update Drata
+708403138c9f967c168c618e168e63b8ddb38d4e a7c1eefc059296a8044cd5983177e2328b48783d Tyler Diderich <tylerdiderich@gmail.com> 1740070917 -0600	commit: update sumo with json_encode
+a7c1eefc059296a8044cd5983177e2328b48783d f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 Tyler Diderich <tylerdiderich@gmail.com> 1741124825 -0600	pull: Fast-forward
+f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 Tyler Diderich <tylerdiderich@gmail.com> 1741124834 -0600	checkout: moving from main to carbon-black
+f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 d81c68301ac9cc063dc25e8d9d06e1343bf4d74e Tyler Diderich <tylerdiderich@gmail.com> 1741125319 -0600	commit: CB ready to test
+d81c68301ac9cc063dc25e8d9d06e1343bf4d74e 0ac9def4a7470416ed7cab5a57e29e870ffce33d Tyler Diderich <tylerdiderich@gmail.com> 1741196773 -0600	commit: validated integration + README updates
+0ac9def4a7470416ed7cab5a57e29e870ffce33d f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 Tyler Diderich <tylerdiderich@gmail.com> 1741200897 -0600	checkout: moving from carbon-black to main
+f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 9252a57f94533c5a991a93c3ac87e81b87c2c38f Tyler Diderich <tylerdiderich@gmail.com> 1741200900 -0600	pull: Fast-forward
+9252a57f94533c5a991a93c3ac87e81b87c2c38f 9fce7764c7dc979c41822cefc50e240aa8b5af76 Tyler Diderich <tylerdiderich@gmail.com> 1741201021 -0600	commit: README clean up
+9fce7764c7dc979c41822cefc50e240aa8b5af76 8336259993307d9c6c8e5b009acad8b26036f8ed Tyler Diderich <tylerdiderich@gmail.com> 1741203555 -0600	pull: Fast-forward
+8336259993307d9c6c8e5b009acad8b26036f8ed 825b80a69b0ed32dab3633a0bc8a2afa032f0d91 Tyler Diderich <tylerdiderich@gmail.com> 1741203659 -0600	commit: add new integrations to the main README
+
+----
+.git/logs/refs/heads/carbon-black
+0000000000000000000000000000000000000000 f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 Tyler Diderich <tylerdiderich@gmail.com> 1741124834 -0600	branch: Created from HEAD
+f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 d81c68301ac9cc063dc25e8d9d06e1343bf4d74e Tyler Diderich <tylerdiderich@gmail.com> 1741125319 -0600	commit: CB ready to test
+d81c68301ac9cc063dc25e8d9d06e1343bf4d74e 0ac9def4a7470416ed7cab5a57e29e870ffce33d Tyler Diderich <tylerdiderich@gmail.com> 1741196773 -0600	commit: validated integration + README updates
+
+----
+.git/logs/refs/heads/main
+0000000000000000000000000000000000000000 3e80c90d8d3c7002604ba2c06c0d3c4dde9be7ee Tyler Diderich <tylerdiderich@gmail.com> 1737642716 -0600	initial pull
+3e80c90d8d3c7002604ba2c06c0d3c4dde9be7ee 3bb69d1a1d9be307ae81d8d284e7dc4eed7c6791 Tyler Diderich <tylerdiderich@gmail.com> 1737646329 -0600	commit: init
+3bb69d1a1d9be307ae81d8d284e7dc4eed7c6791 708403138c9f967c168c618e168e63b8ddb38d4e Tyler Diderich <tylerdiderich@gmail.com> 1737648447 -0600	commit: update Drata
+708403138c9f967c168c618e168e63b8ddb38d4e a7c1eefc059296a8044cd5983177e2328b48783d Tyler Diderich <tylerdiderich@gmail.com> 1740070917 -0600	commit: update sumo with json_encode
+a7c1eefc059296a8044cd5983177e2328b48783d f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 Tyler Diderich <tylerdiderich@gmail.com> 1741124825 -0600	pull: Fast-forward
+f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 9252a57f94533c5a991a93c3ac87e81b87c2c38f Tyler Diderich <tylerdiderich@gmail.com> 1741200900 -0600	pull: Fast-forward
+9252a57f94533c5a991a93c3ac87e81b87c2c38f 9fce7764c7dc979c41822cefc50e240aa8b5af76 Tyler Diderich <tylerdiderich@gmail.com> 1741201021 -0600	commit: README clean up
+9fce7764c7dc979c41822cefc50e240aa8b5af76 8336259993307d9c6c8e5b009acad8b26036f8ed Tyler Diderich <tylerdiderich@gmail.com> 1741203555 -0600	pull: Fast-forward
+8336259993307d9c6c8e5b009acad8b26036f8ed 825b80a69b0ed32dab3633a0bc8a2afa032f0d91 Tyler Diderich <tylerdiderich@gmail.com> 1741203659 -0600	commit: add new integrations to the main README
+
+----
+.git/logs/refs/remotes/origin/automox
+0000000000000000000000000000000000000000 083e6dd91a56a11ede9f5aa02a14b38a211258ec Tyler Diderich <tylerdiderich@gmail.com> 1741200893 -0600	fetch: storing head
+083e6dd91a56a11ede9f5aa02a14b38a211258ec 10f644831f2c02661b801c97f558ab242c2dc2ad Tyler Diderich <tylerdiderich@gmail.com> 1741201815 -0600	fetch: fast-forward
+10f644831f2c02661b801c97f558ab242c2dc2ad 160a64f534976ea75586b10f4b15d01836e5a509 Tyler Diderich <tylerdiderich@gmail.com> 1741203409 -0600	fetch: fast-forward
+
+----
+.git/logs/refs/remotes/origin/carbon-black
+0000000000000000000000000000000000000000 d81c68301ac9cc063dc25e8d9d06e1343bf4d74e Tyler Diderich <tylerdiderich@gmail.com> 1741125325 -0600	update by push
+d81c68301ac9cc063dc25e8d9d06e1343bf4d74e 0ac9def4a7470416ed7cab5a57e29e870ffce33d Tyler Diderich <tylerdiderich@gmail.com> 1741196776 -0600	update by push
+
+----
+.git/logs/refs/remotes/origin/main
+0000000000000000000000000000000000000000 3e80c90d8d3c7002604ba2c06c0d3c4dde9be7ee Tyler Diderich <tylerdiderich@gmail.com> 1737642716 -0600	pull: storing head
+3e80c90d8d3c7002604ba2c06c0d3c4dde9be7ee 3bb69d1a1d9be307ae81d8d284e7dc4eed7c6791 Tyler Diderich <tylerdiderich@gmail.com> 1737646334 -0600	update by push
+3bb69d1a1d9be307ae81d8d284e7dc4eed7c6791 708403138c9f967c168c618e168e63b8ddb38d4e Tyler Diderich <tylerdiderich@gmail.com> 1737648449 -0600	update by push
+708403138c9f967c168c618e168e63b8ddb38d4e a7c1eefc059296a8044cd5983177e2328b48783d Tyler Diderich <tylerdiderich@gmail.com> 1740070921 -0600	update by push
+a7c1eefc059296a8044cd5983177e2328b48783d 62e56886d56e9af7d5de53901985e121b748b981 Tyler Diderich <tylerdiderich@gmail.com> 1741111421 -0600	fetch: fast-forward
+62e56886d56e9af7d5de53901985e121b748b981 f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 Tyler Diderich <tylerdiderich@gmail.com> 1741124817 -0600	fetch: fast-forward
+f6ca7e3134f2eb86fbbfd13e4fce6359d7a44be8 414064064cca536d0b9fde943b764d703f42bde5 Tyler Diderich <tylerdiderich@gmail.com> 1741195500 -0600	fetch: fast-forward
+414064064cca536d0b9fde943b764d703f42bde5 8811696e2c6f0f6445c11a5b865d5515db92d124 Tyler Diderich <tylerdiderich@gmail.com> 1741197111 -0600	fetch: fast-forward
+8811696e2c6f0f6445c11a5b865d5515db92d124 9252a57f94533c5a991a93c3ac87e81b87c2c38f Tyler Diderich <tylerdiderich@gmail.com> 1741200893 -0600	fetch: fast-forward
+9252a57f94533c5a991a93c3ac87e81b87c2c38f 9fce7764c7dc979c41822cefc50e240aa8b5af76 Tyler Diderich <tylerdiderich@gmail.com> 1741201023 -0600	update by push
+9fce7764c7dc979c41822cefc50e240aa8b5af76 8336259993307d9c6c8e5b009acad8b26036f8ed Tyler Diderich <tylerdiderich@gmail.com> 1741203549 -0600	fetch: fast-forward
+8336259993307d9c6c8e5b009acad8b26036f8ed 825b80a69b0ed32dab3633a0bc8a2afa032f0d91 Tyler Diderich <tylerdiderich@gmail.com> 1741203662 -0600	update by push
+
+----
+.git/logs/refs/remotes/origin/add-cortex-xdr
+0000000000000000000000000000000000000000 fafa9c7b606309ce513b278a95cd0b96f5840688 Tyler Diderich <tylerdiderich@gmail.com> 1741200893 -0600	fetch: storing head
+fafa9c7b606309ce513b278a95cd0b96f5840688 9c84b1e562a596ccf9a2aa8b2df3275f53500e0a Tyler Diderich <tylerdiderich@gmail.com> 1741201815 -0600	fetch: fast-forward
+
+----
+.git/hooks/commit-msg.sample
+#!/bin/sh
+#
+# An example hook script to check the commit log message.
+# Called by "git commit" with one argument, the name of the file
+# that has the commit message.  The hook should exit with non-zero
+# status after issuing an appropriate message if it wants to stop the
+# commit.  The hook is allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "commit-msg".
+
+# Uncomment the below to add a Signed-off-by line to the message.
+# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
+# hook is more suited to it.
+#
+# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+
+# This example catches duplicate Signed-off-by lines.
+
+test "" = "$(grep '^Signed-off-by: ' "$1" |
+	 sort | uniq -c | sed -e '/^[ 	]*1[ 	]/d')" || {
+	echo >&2 Duplicate Signed-off-by lines.
+	exit 1
+}
+
+----
+.git/hooks/pre-rebase.sample
+#!/bin/sh
+#
+# Copyright (c) 2006, 2008 Junio C Hamano
+#
+# The "pre-rebase" hook is run just before "git rebase" starts doing
+# its job, and can prevent the command from running by exiting with
+# non-zero status.
+#
+# The hook is called with the following parameters:
+#
+# $1 -- the upstream the series was forked from.
+# $2 -- the branch being rebased (or empty when rebasing the current branch).
+#
+# This sample shows how to prevent topic branches that are already
+# merged to 'next' branch from getting rebased, because allowing it
+# would result in rebasing already published history.
+
+publish=next
+basebranch="$1"
+if test "$#" = 2
+then
+	topic="refs/heads/$2"
+else
+	topic=`git symbolic-ref HEAD` ||
+	exit 0 ;# we do not interrupt rebasing detached HEAD
+fi
+
+case "$topic" in
+refs/heads/??/*)
+	;;
+*)
+	exit 0 ;# we do not interrupt others.
+	;;
+esac
+
+# Now we are dealing with a topic branch being rebased
+# on top of master.  Is it OK to rebase it?
+
+# Does the topic really exist?
+git show-ref -q "$topic" || {
+	echo >&2 "No such branch $topic"
+	exit 1
+}
+
+# Is topic fully merged to master?
+not_in_master=`git rev-list --pretty=oneline ^master "$topic"`
+if test -z "$not_in_master"
+then
+	echo >&2 "$topic is fully merged to master; better remove it."
+	exit 1 ;# we could allow it, but there is no point.
+fi
+
+# Is topic ever merged to next?  If so you should not be rebasing it.
+only_next_1=`git rev-list ^master "^$topic" ${publish} | sort`
+only_next_2=`git rev-list ^master           ${publish} | sort`
+if test "$only_next_1" = "$only_next_2"
+then
+	not_in_topic=`git rev-list "^$topic" master`
+	if test -z "$not_in_topic"
+	then
+		echo >&2 "$topic is already up to date with master"
+		exit 1 ;# we could allow it, but there is no point.
+	else
+		exit 0
+	fi
+else
+	not_in_next=`git rev-list --pretty=oneline ^${publish} "$topic"`
+	/usr/bin/perl -e '
+		my $topic = $ARGV[0];
+		my $msg = "* $topic has commits already merged to public branch:\n";
+		my (%not_in_next) = map {
+			/^([0-9a-f]+) /;
+			($1 => 1);
+		} split(/\n/, $ARGV[1]);
+		for my $elem (map {
+				/^([0-9a-f]+) (.*)$/;
+				[$1 => $2];
+			} split(/\n/, $ARGV[2])) {
+			if (!exists $not_in_next{$elem->[0]}) {
+				if ($msg) {
+					print STDERR $msg;
+					undef $msg;
+				}
+				print STDERR " $elem->[1]\n";
+			}
+		}
+	' "$topic" "$not_in_next" "$not_in_master"
+	exit 1
+fi
+
+<<\DOC_END
+
+This sample hook safeguards topic branches that have been
+published from being rewound.
+
+The workflow assumed here is:
+
+ * Once a topic branch forks from "master", "master" is never
+   merged into it again (either directly or indirectly).
+
+ * Once a topic branch is fully cooked and merged into "master",
+   it is deleted.  If you need to build on top of it to correct
+   earlier mistakes, a new topic branch is created by forking at
+   the tip of the "master".  This is not strictly necessary, but
+   it makes it easier to keep your history simple.
+
+ * Whenever you need to test or publish your changes to topic
+   branches, merge them into "next" branch.
+
+The script, being an example, hardcodes the publish branch name
+to be "next", but it is trivial to make it configurable via
+$GIT_DIR/config mechanism.
+
+With this workflow, you would want to know:
+
+(1) ... if a topic branch has ever been merged to "next".  Young
+    topic branches can have stupid mistakes you would rather
+    clean up before publishing, and things that have not been
+    merged into other branches can be easily rebased without
+    affecting other people.  But once it is published, you would
+    not want to rewind it.
+
+(2) ... if a topic branch has been fully merged to "master".
+    Then you can delete it.  More importantly, you should not
+    build on top of it -- other people may already want to
+    change things related to the topic as patches against your
+    "master", so if you need further changes, it is better to
+    fork the topic (perhaps with the same name) afresh from the
+    tip of "master".
+
+Let's look at this example:
+
+		   o---o---o---o---o---o---o---o---o---o "next"
+		  /       /           /           /
+		 /   a---a---b A     /           /
+		/   /               /           /
+	       /   /   c---c---c---c B         /
+	      /   /   /             \         /
+	     /   /   /   b---b C     \       /
+	    /   /   /   /             \     /
+    ---o---o---o---o---o---o---o---o---o---o---o "master"
+
+
+A, B and C are topic branches.
+
+ * A has one fix since it was merged up to "next".
+
+ * B has finished.  It has been fully merged up to "master" and "next",
+   and is ready to be deleted.
+
+ * C has not merged to "next" at all.
+
+We would want to allow C to be rebased, refuse A, and encourage
+B to be deleted.
+
+To compute (1):
+
+	git rev-list ^master ^topic next
+	git rev-list ^master        next
+
+	if these match, topic has not merged in next at all.
+
+To compute (2):
+
+	git rev-list master..topic
+
+	if this is empty, it is fully merged to "master".
+
+DOC_END
+
+----
+.git/hooks/pre-commit.sample
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+# If you want to allow non-ASCII filenames set this variable to true.
+allownonascii=$(git config --type=bool hooks.allownonascii)
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Cross platform projects tend to avoid non-ASCII filenames; prevent
+# them from being added to the repository. We exploit the fact that the
+# printable range starts at the space character and ends with tilde.
+if [ "$allownonascii" != "true" ] &&
+	# Note that the use of brackets around a tr range is ok here, (it's
+	# even required, for portability to Solaris 10's /usr/bin/tr), since
+	# the square bracket bytes happen to fall in the designated range.
+	test $(git diff --cached --name-only --diff-filter=A -z $against |
+	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+then
+	cat <<\EOF
+Error: Attempt to add a non-ASCII file name.
+
+This can cause problems if you want to work with people on other platforms.
+
+To be portable it is advisable to rename the file.
+
+If you know what you are doing you can disable this check using:
+
+  git config hooks.allownonascii true
+EOF
+	exit 1
+fi
+
+# If there are whitespace errors, print the offending file names and fail.
+exec git diff-index --check --cached $against --
+
+----
+.git/hooks/applypatch-msg.sample
+#!/bin/sh
+#
+# An example hook script to check the commit log message taken by
+# applypatch from an e-mail message.
+#
+# The hook should exit with non-zero status after issuing an
+# appropriate message if it wants to stop the commit.  The hook is
+# allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "applypatch-msg".
+
+. git-sh-setup
+commitmsg="$(git rev-parse --git-path hooks/commit-msg)"
+test -x "$commitmsg" && exec "$commitmsg" ${1+"$@"}
+:
+
+----
+.git/hooks/fsmonitor-watchman.sample
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IPC::Open2;
+
+# An example hook script to integrate Watchman
+# (https://facebook.github.io/watchman/) with git to speed up detecting
+# new and modified files.
+#
+# The hook is passed a version (currently 2) and last update token
+# formatted as a string and outputs to stdout a new update token and
+# all files that have been modified since the update token. Paths must
+# be relative to the root of the working tree and separated by a single NUL.
+#
+# To enable this hook, rename this file to "query-watchman" and set
+# 'git config core.fsmonitor .git/hooks/query-watchman'
+#
+my ($version, $last_update_token) = @ARGV;
+
+# Uncomment for debugging
+# print STDERR "$0 $version $last_update_token\n";
+
+# Check the hook interface version
+if ($version ne 2) {
+	die "Unsupported query-fsmonitor hook version '$version'.\n" .
+	    "Falling back to scanning...\n";
+}
+
+my $git_work_tree = get_working_dir();
+
+my $retry = 1;
+
+my $json_pkg;
+eval {
+	require JSON::XS;
+	$json_pkg = "JSON::XS";
+	1;
+} or do {
+	require JSON::PP;
+	$json_pkg = "JSON::PP";
+};
+
+launch_watchman();
+
+sub launch_watchman {
+	my $o = watchman_query();
+	if (is_work_tree_watched($o)) {
+		output_result($o->{clock}, @{$o->{files}});
+	}
+}
+
+sub output_result {
+	my ($clockid, @files) = @_;
+
+	# Uncomment for debugging watchman output
+	# open (my $fh, ">", ".git/watchman-output.out");
+	# binmode $fh, ":utf8";
+	# print $fh "$clockid\n@files\n";
+	# close $fh;
+
+	binmode STDOUT, ":utf8";
+	print $clockid;
+	print "\0";
+	local $, = "\0";
+	print @files;
+}
+
+sub watchman_clock {
+	my $response = qx/watchman clock "$git_work_tree"/;
+	die "Failed to get clock id on '$git_work_tree'.\n" .
+		"Falling back to scanning...\n" if $? != 0;
+
+	return $json_pkg->new->utf8->decode($response);
+}
+
+sub watchman_query {
+	my $pid = open2(\*CHLD_OUT, \*CHLD_IN, 'watchman -j --no-pretty')
+	or die "open2() failed: $!\n" .
+	"Falling back to scanning...\n";
+
+	# In the query expression below we're asking for names of files that
+	# changed since $last_update_token but not from the .git folder.
+	#
+	# To accomplish this, we're using the "since" generator to use the
+	# recency index to select candidate nodes and "fields" to limit the
+	# output to file names only. Then we're using the "expression" term to
+	# further constrain the results.
+	my $last_update_line = "";
+	if (substr($last_update_token, 0, 1) eq "c") {
+		$last_update_token = "\"$last_update_token\"";
+		$last_update_line = qq[\n"since": $last_update_token,];
+	}
+	my $query = <<"	END";
+		["query", "$git_work_tree", {$last_update_line
+			"fields": ["name"],
+			"expression": ["not", ["dirname", ".git"]]
+		}]
+	END
+
+	# Uncomment for debugging the watchman query
+	# open (my $fh, ">", ".git/watchman-query.json");
+	# print $fh $query;
+	# close $fh;
+
+	print CHLD_IN $query;
+	close CHLD_IN;
+	my $response = do {local $/; <CHLD_OUT>};
+
+	# Uncomment for debugging the watch response
+	# open ($fh, ">", ".git/watchman-response.json");
+	# print $fh $response;
+	# close $fh;
+
+	die "Watchman: command returned no output.\n" .
+	"Falling back to scanning...\n" if $response eq "";
+	die "Watchman: command returned invalid output: $response\n" .
+	"Falling back to scanning...\n" unless $response =~ /^\{/;
+
+	return $json_pkg->new->utf8->decode($response);
+}
+
+sub is_work_tree_watched {
+	my ($output) = @_;
+	my $error = $output->{error};
+	if ($retry > 0 and $error and $error =~ m/unable to resolve root .* directory (.*) is not watched/) {
+		$retry--;
+		my $response = qx/watchman watch "$git_work_tree"/;
+		die "Failed to make watchman watch '$git_work_tree'.\n" .
+		    "Falling back to scanning...\n" if $? != 0;
+		$output = $json_pkg->new->utf8->decode($response);
+		$error = $output->{error};
+		die "Watchman: $error.\n" .
+		"Falling back to scanning...\n" if $error;
+
+		# Uncomment for debugging watchman output
+		# open (my $fh, ">", ".git/watchman-output.out");
+		# close $fh;
+
+		# Watchman will always return all files on the first query so
+		# return the fast "everything is dirty" flag to git and do the
+		# Watchman query just to get it over with now so we won't pay
+		# the cost in git to look up each individual file.
+		my $o = watchman_clock();
+		$error = $output->{error};
+
+		die "Watchman: $error.\n" .
+		"Falling back to scanning...\n" if $error;
+
+		output_result($o->{clock}, ("/"));
+		$last_update_token = $o->{clock};
+
+		eval { launch_watchman() };
+		return 0;
+	}
+
+	die "Watchman: $error.\n" .
+	"Falling back to scanning...\n" if $error;
+
+	return 1;
+}
+
+sub get_working_dir {
+	my $working_dir;
+	if ($^O =~ 'msys' || $^O =~ 'cygwin') {
+		$working_dir = Win32::GetCwd();
+		$working_dir =~ tr/\\/\//;
+	} else {
+		require Cwd;
+		$working_dir = Cwd::cwd();
+	}
+
+	return $working_dir;
+}
+
+----
+.git/hooks/pre-receive.sample
+#!/bin/sh
+#
+# An example hook script to make use of push options.
+# The example simply echoes all push options that start with 'echoback='
+# and rejects all pushes when the "reject" push option is used.
+#
+# To enable this hook, rename this file to "pre-receive".
+
+if test -n "$GIT_PUSH_OPTION_COUNT"
+then
+	i=0
+	while test "$i" -lt "$GIT_PUSH_OPTION_COUNT"
+	do
+		eval "value=\$GIT_PUSH_OPTION_$i"
+		case "$value" in
+		echoback=*)
+			echo "echo from the pre-receive-hook: ${value#*=}" >&2
+			;;
+		reject)
+			exit 1
+		esac
+		i=$((i + 1))
+	done
+fi
+
+----
+.git/hooks/prepare-commit-msg.sample
+#!/bin/sh
+#
+# An example hook script to prepare the commit log message.
+# Called by "git commit" with the name of the file that has the
+# commit message, followed by the description of the commit
+# message's source.  The hook's purpose is to edit the commit
+# message file.  If the hook fails with a non-zero status,
+# the commit is aborted.
+#
+# To enable this hook, rename this file to "prepare-commit-msg".
+
+# This hook includes three examples. The first one removes the
+# "# Please enter the commit message..." help message.
+#
+# The second includes the output of "git diff --name-status -r"
+# into the message, just before the "git status" output.  It is
+# commented because it doesn't cope with --amend or with squashed
+# commits.
+#
+# The third example adds a Signed-off-by line to the message, that can
+# still be edited.  This is rarely a good idea.
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+/usr/bin/perl -i.bak -ne 'print unless(m/^. Please enter the commit message/..m/^#$/)' "$COMMIT_MSG_FILE"
+
+# case "$COMMIT_SOURCE,$SHA1" in
+#  ,|template,)
+#    /usr/bin/perl -i.bak -pe '
+#       print "\n" . `git diff --cached --name-status -r`
+# 	 if /^#/ && $first++ == 0' "$COMMIT_MSG_FILE" ;;
+#  *) ;;
+# esac
+
+# SOB=$(git var GIT_COMMITTER_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# git interpret-trailers --in-place --trailer "$SOB" "$COMMIT_MSG_FILE"
+# if test -z "$COMMIT_SOURCE"
+# then
+#   /usr/bin/perl -i.bak -pe 'print "\n" if !$first_line++' "$COMMIT_MSG_FILE"
+# fi
+
+----
+.git/hooks/post-update.sample
+#!/bin/sh
+#
+# An example hook script to prepare a packed repository for use over
+# dumb transports.
+#
+# To enable this hook, rename this file to "post-update".
+
+exec git update-server-info
+
+----
+.git/hooks/pre-merge-commit.sample
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git merge" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message to
+# stderr if it wants to stop the merge commit.
+#
+# To enable this hook, rename this file to "pre-merge-commit".
+
+. git-sh-setup
+test -x "$GIT_DIR/hooks/pre-commit" &&
+        exec "$GIT_DIR/hooks/pre-commit"
+:
+
+----
+.git/hooks/pre-applypatch.sample
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed
+# by applypatch from an e-mail message.
+#
+# The hook should exit with non-zero status after issuing an
+# appropriate message if it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-applypatch".
+
+. git-sh-setup
+precommit="$(git rev-parse --git-path hooks/pre-commit)"
+test -x "$precommit" && exec "$precommit" ${1+"$@"}
+:
+
+----
+.git/hooks/pre-push.sample
+#!/bin/sh
+
+# An example hook script to verify what is about to be pushed.  Called by "git
+# push" after it has checked the remote status, but before anything has been
+# pushed.  If this script exits with a non-zero status nothing will be pushed.
+#
+# This hook is called with the following parameters:
+#
+# $1 -- Name of the remote to which the push is being done
+# $2 -- URL to which the push is being done
+#
+# If pushing without using a named remote those arguments will be equal.
+#
+# Information about the commits which are being pushed is supplied as lines to
+# the standard input in the form:
+#
+#   <local ref> <local oid> <remote ref> <remote oid>
+#
+# This sample shows how to prevent push of commits where the log message starts
+# with "WIP" (work in progress).
+
+remote="$1"
+url="$2"
+
+zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+
+while read local_ref local_oid remote_ref remote_oid
+do
+	if test "$local_oid" = "$zero"
+	then
+		# Handle delete
+		:
+	else
+		if test "$remote_oid" = "$zero"
+		then
+			# New branch, examine all commits
+			range="$local_oid"
+		else
+			# Update to existing branch, examine new commits
+			range="$remote_oid..$local_oid"
+		fi
+
+		# Check for WIP commit
+		commit=$(git rev-list -n 1 --grep '^WIP' "$range")
+		if test -n "$commit"
+		then
+			echo >&2 "Found WIP commit in $local_ref, not pushing"
+			exit 1
+		fi
+	fi
+done
+
+exit 0
+
+----
+.git/hooks/update.sample
+#!/bin/sh
+#
+# An example hook script to block unannotated tags from entering.
+# Called by "git receive-pack" with arguments: refname sha1-old sha1-new
+#
+# To enable this hook, rename this file to "update".
+#
+# Config
+# ------
+# hooks.allowunannotated
+#   This boolean sets whether unannotated tags will be allowed into the
+#   repository.  By default they won't be.
+# hooks.allowdeletetag
+#   This boolean sets whether deleting tags will be allowed in the
+#   repository.  By default they won't be.
+# hooks.allowmodifytag
+#   This boolean sets whether a tag may be modified after creation. By default
+#   it won't be.
+# hooks.allowdeletebranch
+#   This boolean sets whether deleting branches will be allowed in the
+#   repository.  By default they won't be.
+# hooks.denycreatebranch
+#   This boolean sets whether remotely creating branches will be denied
+#   in the repository.  By default this is allowed.
+#
+
+# --- Command line
+refname="$1"
+oldrev="$2"
+newrev="$3"
+
+# --- Safety check
+if [ -z "$GIT_DIR" ]; then
+	echo "Don't run this script from the command line." >&2
+	echo " (if you want, you could supply GIT_DIR then run" >&2
+	echo "  $0 <ref> <oldrev> <newrev>)" >&2
+	exit 1
+fi
+
+if [ -z "$refname" -o -z "$oldrev" -o -z "$newrev" ]; then
+	echo "usage: $0 <ref> <oldrev> <newrev>" >&2
+	exit 1
+fi
+
+# --- Config
+allowunannotated=$(git config --type=bool hooks.allowunannotated)
+allowdeletebranch=$(git config --type=bool hooks.allowdeletebranch)
+denycreatebranch=$(git config --type=bool hooks.denycreatebranch)
+allowdeletetag=$(git config --type=bool hooks.allowdeletetag)
+allowmodifytag=$(git config --type=bool hooks.allowmodifytag)
+
+# check for no description
+projectdesc=$(sed -e '1q' "$GIT_DIR/description")
+case "$projectdesc" in
+"Unnamed repository"* | "")
+	echo "*** Project description file hasn't been set" >&2
+	exit 1
+	;;
+esac
+
+# --- Check types
+# if $newrev is 0000...0000, it's a commit to delete a ref.
+zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+if [ "$newrev" = "$zero" ]; then
+	newrev_type=delete
+else
+	newrev_type=$(git cat-file -t $newrev)
+fi
+
+case "$refname","$newrev_type" in
+	refs/tags/*,commit)
+		# un-annotated tag
+		short_refname=${refname##refs/tags/}
+		if [ "$allowunannotated" != "true" ]; then
+			echo "*** The un-annotated tag, $short_refname, is not allowed in this repository" >&2
+			echo "*** Use 'git tag [ -a | -s ]' for tags you want to propagate." >&2
+			exit 1
+		fi
+		;;
+	refs/tags/*,delete)
+		# delete tag
+		if [ "$allowdeletetag" != "true" ]; then
+			echo "*** Deleting a tag is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	refs/tags/*,tag)
+		# annotated tag
+		if [ "$allowmodifytag" != "true" ] && git rev-parse $refname > /dev/null 2>&1
+		then
+			echo "*** Tag '$refname' already exists." >&2
+			echo "*** Modifying a tag is not allowed in this repository." >&2
+			exit 1
+		fi
+		;;
+	refs/heads/*,commit)
+		# branch
+		if [ "$oldrev" = "$zero" -a "$denycreatebranch" = "true" ]; then
+			echo "*** Creating a branch is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	refs/heads/*,delete)
+		# delete branch
+		if [ "$allowdeletebranch" != "true" ]; then
+			echo "*** Deleting a branch is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	refs/remotes/*,commit)
+		# tracking branch
+		;;
+	refs/remotes/*,delete)
+		# delete tracking branch
+		if [ "$allowdeletebranch" != "true" ]; then
+			echo "*** Deleting a tracking branch is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	*)
+		# Anything else (is there anything else?)
+		echo "*** Update hook: unknown type of update to ref $refname of type $newrev_type" >&2
+		exit 1
+		;;
+esac
+
+# --- Finished
+exit 0
+
+----
+.git/hooks/push-to-checkout.sample
+#!/bin/sh
+
+# An example hook script to update a checked-out tree on a git push.
+#
+# This hook is invoked by git-receive-pack(1) when it reacts to git
+# push and updates reference(s) in its repository, and when the push
+# tries to update the branch that is currently checked out and the
+# receive.denyCurrentBranch configuration variable is set to
+# updateInstead.
+#
+# By default, such a push is refused if the working tree and the index
+# of the remote repository has any difference from the currently
+# checked out commit; when both the working tree and the index match
+# the current commit, they are updated to match the newly pushed tip
+# of the branch. This hook is to be used to override the default
+# behaviour; however the code below reimplements the default behaviour
+# as a starting point for convenient modification.
+#
+# The hook receives the commit with which the tip of the current
+# branch is going to be updated:
+commit=$1
+
+# It can exit with a non-zero status to refuse the push (when it does
+# so, it must not modify the index or the working tree).
+die () {
+	echo >&2 "$*"
+	exit 1
+}
+
+# Or it can make any necessary changes to the working tree and to the
+# index to bring them to the desired state when the tip of the current
+# branch is updated to the new commit, and exit with a zero status.
+#
+# For example, the hook can simply run git read-tree -u -m HEAD "$1"
+# in order to emulate git fetch that is run in the reverse direction
+# with git push, as the two-tree form of git read-tree -u -m is
+# essentially the same as git switch or git checkout that switches
+# branches while keeping the local changes in the working tree that do
+# not interfere with the difference between the branches.
+
+# The below is a more-or-less exact translation to shell of the C code
+# for the default behaviour for git's push-to-checkout hook defined in
+# the push_to_deploy() function in builtin/receive-pack.c.
+#
+# Note that the hook will be executed from the repository directory,
+# not from the working tree, so if you want to perform operations on
+# the working tree, you will have to adapt your code accordingly, e.g.
+# by adding "cd .." or using relative paths.
+
+if ! git update-index -q --ignore-submodules --refresh
+then
+	die "Up-to-date check failed"
+fi
+
+if ! git diff-files --quiet --ignore-submodules --
+then
+	die "Working directory has unstaged changes"
+fi
+
+# This is a rough translation of:
+#
+#   head_has_history() ? "HEAD" : EMPTY_TREE_SHA1_HEX
+if git cat-file -e HEAD 2>/dev/null
+then
+	head=HEAD
+else
+	head=$(git hash-object -t tree --stdin </dev/null)
+fi
+
+if ! git diff-index --quiet --cached --ignore-submodules $head --
+then
+	die "Working directory has staged changes"
+fi
+
+if ! git read-tree -u -m "$commit"
+then
+	die "Could not update working tree to new HEAD"
+fi
+
+----
+.git/refs/heads/carbon-black
+0ac9def4a7470416ed7cab5a57e29e870ffce33d
+
+----
+.git/refs/heads/main
+825b80a69b0ed32dab3633a0bc8a2afa032f0d91
+
+----
+.git/refs/remotes/origin/automox
+160a64f534976ea75586b10f4b15d01836e5a509
+
+----
+.git/refs/remotes/origin/carbon-black
+0ac9def4a7470416ed7cab5a57e29e870ffce33d
+
+----
+.git/refs/remotes/origin/main
+825b80a69b0ed32dab3633a0bc8a2afa032f0d91
+
+----
+.git/refs/remotes/origin/add-cortex-xdr
+9c84b1e562a596ccf9a2aa8b2df3275f53500e0a
+
+----
+digital-ocean/README.md
+# Custom Integration: Digital Ocean
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+
+## Digital Ocean requirements
+
+- API Client Token (Personal Access Token) with appropriate permissions.
+- API URL: `https://api.digitalocean.com/v2/`.
+
+## Steps
+
+### Digital Ocean configuration
+
+1. Generate a Personal Access Token from the [API Tokens page](https://cloud.digitalocean.com/account/api/tokens) in your Digital Ocean account.
+   - Ensure the token has the required permissions to access droplets and associated metadata.
+2. Note down the API URL: `https://api.digitalocean.com/v2/`.
+3. Test your API token by making a sample request using a tool like `curl` or Postman to verify access.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify API calls as needed to filter assets.
+    - Modify datapoints uploaded to runZero as needed.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_secret` field for your Digital Ocean API token.
+    - For `access_key`, input a placeholder value like `foo` (unused in this integration).
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "digital-ocean").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will update the existing assets with the data pulled from the Custom Integration source.
+- The task will create new assets for when there are no existing assets that meet merge criteria (hostname, MAC, etc).
+- You can search for assets enriched by this custom integration with the runZero search `custom_integration:digital-ocean`.
+
+----
+digital-ocean/custom-integration-digital-ocean.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+load('uuid', 'new_uuid')
+
+DIGITAL_OCEAN_OAUTH_URL = 'https://cloud.digitalocean.com/v1/'
+DIGITAL_OCEAN_API_URL = 'https://api.digitalocean.com/v2/'
+
+def build_assets(assets_json):
+    assets_import = []
+    for item in assets_json:
+        id = item.get('id', new_uuid)      
+        hostname = item.get('name', '')
+        memory = item.get('memory', '')
+        vcpus = item.get('vcpus', '')
+        disk = item.get('disk','')
+        locked = item.get('locked', '')
+        status = item.get('status', '')
+        created_at = item.get('created_at', '')
+        vpc_uuid = item.get('vpc_uuid', '')
+        size_slug = item.get('size_slug', '')
+
+        # parse IP addresses
+        ipv4s = []
+        ipv6s = []
+        ips = []
+        networks = item.get('networks', {})
+        if networks:
+            ipv4s = networks.get('v4', [])
+            ipv6s = networks.get('v6', [])
+            
+            if ipv4s:
+                for v4 in ipv4s:
+                    addr = v4.get('ip_address', '')
+                    ips.append(addr)
+        
+            if ipv6s:
+                for v6 in ipv6s:
+                    addr = v6.get('ip_address', '')
+                    ips.append(addr)        
+
+        network = build_network_interface(ips=ips, mac=None)
+
+        # parse image information
+        image = item.get('image', {})
+        if image:
+            image_id = image.get('id', '')
+            image_name = image.get('name','')
+            image_distribution = image.get('distribution', '')
+            image_type = image.get('type', '')
+            image_public = image.get('public', '')
+            image_status = image.get('status', '')
+
+        # parse region information
+        region = item.get('region', {})
+        if region:
+            region_name = region.get('name', '')
+            region_features = region.get('features', '')
+            region_available = region.get('available', '')
+
+        # parse tags
+        tags_rz = []
+        tags_do = item.get('tags', [])
+        if tags_do:
+            for t in tags_do:
+                if ':' in t:
+                    key, value = t.split(':', 1)
+                    tags_rz.append(key + '=' + value)
+                else:
+                    key = t
+                    tags_rz.append(key)
+                
+        assets_import.append(
+            ImportAsset(
+                id=str(id),
+                hostnames=[hostname],
+                networkInterfaces=[network],
+                os=image_distribution,
+                customAttributes={
+                    "id":id,
+                    "size_slug":size_slug,
+                    "memory":memory,
+                    "vcpus":vcpus,
+                    "disk":disk,
+                    "locked":locked,
+                    "status":status,
+                    "created_at":created_at,
+                    "vpcUUID":vpc_uuid,
+                    "image.id":image_id,
+                    "image.name":image_name,
+                    "image.distribution":image_distribution,
+                    "image.type":image_type,
+                    "image.public":image_public,
+                    "image.status":image_status,
+                    "region.name":region_name,
+                    "region.features":region_features,
+                    "region.available":region_available,
+                    "tags":tags_rz
+                }
+            )
+        )
+    return assets_import
+
+# build runZero network interfaces; shouldn't need to touch this
+def build_network_interface(ips, mac):
+    ip4s = []
+    ip6s = []
+    for ip in ips[:99]:
+        ip_addr = ip_address(ip)
+        if ip_addr.version == 4:
+            ip4s.append(ip_addr)
+        elif ip_addr.version == 6:
+            ip6s.append(ip_addr)
+        else:
+            continue
+    if not mac:
+        return NetworkInterface(ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+    
+    return NetworkInterface(macAddress=mac, ipv4Addresses=ip4s, ipv6Addresses=ip6s)
+
+def main(**kwargs):
+    # kwargs!!
+    token = kwargs['access_secret']
+
+    # get assets
+    assets = []
+    url = '{}/{}'.format(DIGITAL_OCEAN_API_URL, 'droplets')
+    assets = http_get(url, headers={"Content-Type": "application/json", "Authorization": "Bearer " + token})
+    if assets.status_code != 200:
+        print('failed to retrieve assets' + assets)
+        return None
+
+    assets_json = json_decode(assets.body)['droplets']
+
+    # build asset import
+    assets_import = build_assets(assets_json)
+    if not assets_import:
+        print('no assets')
+    
+    return assets_import
+
+----
+sumo-logic/README.md
+# Custom Integration: Sumo Logic
+
+## runZero requirements
+
+- Superuser access to the [Custom Integrations configuration](https://console.runzero.com/custom-integrations) in runZero.
+- API Export Token with permissions to access the `export/org/assets.json` endpoint.
+
+## Sumo Logic requirements
+
+- HTTP Source URL configured in Sumo Logic.
+  - This should be the endpoint URL where runZero will send asset data.
+  - Example format: `https://<your-instance>.sumologic.com/receiver/v1/http/<unique-token>`.
+
+## Steps
+
+### Sumo Logic configuration
+
+1. Create an HTTP Source in your Sumo Logic account:
+   - Navigate to **Manage Data** > **Collection** > **HTTP Sources** in Sumo Logic.
+   - Follow the instructions to create an HTTP Source and note down the generated endpoint URL.
+2. Replace `<UPDATE_ME>` in the script with your Sumo Logic HTTP Source URL.
+
+### runZero configuration
+
+1. (OPTIONAL) - Make any necessary changes to the script to align with your environment.
+    - Modify the `SEARCH` variable to adjust the query used to filter assets in runZero.
+2. [Create the Credential for the Custom Integration](https://console.runzero.com/credentials).
+    - Select the type `Custom Integration Script Secrets`.
+    - Use the `access_secret` field for your runZero API Export Token.
+    - For `access_key`, input a placeholder value like `foo` (unused in this integration).
+3. [Create the Custom Integration](https://console.runzero.com/custom-integrations/new).
+    - Add a Name and Icon for the integration (e.g., "sumo-logic-export").
+    - Toggle `Enable custom integration script` to input the finalized script.
+    - Click `Validate` to ensure it has valid syntax.
+    - Click `Save` to create the Custom Integration.
+4. [Create the Custom Integration task](https://console.runzero.com/ingest/custom/).
+    - Select the Credential and Custom Integration created in steps 2 and 3.
+    - Update the task schedule to recur at the desired timeframes.
+    - Select the Explorer you'd like the Custom Integration to run from.
+    - Click `Save` to kick off the first task.
+
+### What's next?
+
+- You will see the task kick off on the [tasks](https://console.runzero.com/tasks) page like any other integration.
+- The task will retrieve asset data from runZero and upload it to your configured Sumo Logic HTTP Source.
+- Asset data in Sumo Logic will be updated with each successful task execution.
+
+### Notes
+
+- Ensure the `SEARCH` variable in the script is customized to meet your asset filtering needs (e.g., `alive:t` to include only live assets).
+- You can monitor the ingestion of data in Sumo Logic through the configured HTTP Source logs.
+- Use Sumo Logic’s query tools to analyze and visualize the runZero asset data.
+
+----
+sumo-logic/custom-integration-sumo.star
+load('runzero.types', 'ImportAsset', 'NetworkInterface')
+load('json', json_encode='encode', json_decode='decode')
+load('net', 'ip_address')
+load('http', http_post='post', http_get='get', 'url_encode')
+
+SUMO_HTTP_ENDPOINT = "<UPDATE_ME>"
+BASE_URL = "https://console.runZero.com/api/v1.0"
+SEARCH = "alive:t"
+
+def get_assets(headers):
+    # get assets to upload to sumo
+    assets = []
+    url = BASE_URL + "/export/org/assets.json"
+    get_assets = http_get(url=url, headers=headers, body=bytes(url_encode({"search": SEARCH})))
+    assets_json = json_decode(get_assets.body)
+    if get_assets.status_code == 200 and len(assets_json) > 0:
+        return assets_json
+    else:
+        print("runZero did not return any assets - status code {}".format(get_assets.status_code))
+        return None
+
+def sync_to_sumo(assets):
+    batchsize = 500
+    if len(assets) > 0:
+        for i in range(0, len(assets), batchsize):
+            batch = assets[i:i+batchsize]
+            tmp = ""
+            for a in batch:
+                tmp = tmp + "{}\n".format(json_encode(a))
+            post_to_sumo = http_post(url=SUMO_HTTP_ENDPOINT, body=bytes(tmp))
+    else:
+        print("No assets found")
+
+
+def main(*args, **kwargs):
+    rz_export_token = kwargs['access_secret']
+    headers = {"Authorization": "Bearer {}".format(rz_export_token)}
+    assets = get_assets(headers=headers)
+    if assets:
+        sync_to_sumo(assets=assets)
+--END--
