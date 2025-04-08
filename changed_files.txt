@@ -1,0 +1,4 @@
+A	custom-integrations/config.json
+M	custom-integrations/delete_assets.star
+A	custom-integrations/test.star
+A	temp.txt
