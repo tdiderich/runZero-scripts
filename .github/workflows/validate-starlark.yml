@@ -1,0 +1,39 @@
+name: Validate Starlark
+
+on:
+  push:
+    paths:
+      - '**.star'
+  pull_request:
+    paths:
+      - '**.star'
+
+jobs:
+  starlark-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'  # or latest
+
+      - name: Install Starlark CLI
+        run: |
+          go install go.starlark.net/cmd/starlark@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+
+      - name: Find and validate all .star files
+        run: |
+          echo "🔍 Validating Starlark files..."
+          find . -name '*.star' | while read -r file; do
+            echo "Checking $file..."
+            if ! starlark "$file"; then
+              echo "❌ Syntax error in $file"
+              exit 1
+            fi
+          done
+          echo "✅ All .star files passed validation."
