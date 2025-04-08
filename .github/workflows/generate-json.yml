@@ -1,11 +1,11 @@
-name: Update integrations JSON when it's a new integration
+name: Update integrations JSON when relevant files change
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - '**/*.star'
       - '**/*.json'
+      - '**/*.star'
       - '!docs/**'
 
 jobs:
@@ -16,7 +16,6 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # 🔧 ensure full history
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,42 +25,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch base branch
-        run: |
-          git remote add upstream https://github.com/${{ github.repository }}.git  # 🔧 always fetch from main repo
-          git fetch upstream ${{ github.event.pull_request.base.ref }}
-
-      - name: Get list of changed files
-        id: changed-files
-        run: |
-          git diff --name-status upstream/${{ github.event.pull_request.base.ref }}...HEAD > changed_files.txt
-          cat changed_files.txt
-
-      - name: Check if .star added or .json added/modified
-        id: check-files
-        run: |
-          SHOULD_RUN=false
-          while IFS=$'\t' read -r status file; do
-            if [[ "$file" == docs/* ]]; then
-              continue
-            fi
-            if [[ "$file" == *.star && "$status" == A* ]]; then
-              SHOULD_RUN=true
-              break
-            elif [[ "$file" == *.json && ( "$status" == A* || "$status" == M* ) ]]; then
-              SHOULD_RUN=true
-              break
-            fi
-          done < changed_files.txt
-          echo "should_run=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
-
       - name: Run integration update script
-        if: steps.check-files.outputs.should_run == 'true'
-        run: |
-          python scripts/generate_integration_json.py
+        run: python scripts/generate_integration_json.py
 
       - name: Commit and push changes
-        if: steps.check-files.outputs.should_run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
