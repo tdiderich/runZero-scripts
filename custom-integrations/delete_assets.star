@@ -30,9 +30,9 @@ def delete_assets(assets, headers):
     # verify the delete worked 
     if delete.status_code == 204:
         print(
-            f"Deleted all assets matching this search: {}".format())
+            "Deleted all assets matching this search: {}".format())
     else:
-        print(f"Failed to delete assets. Please try again.")
+        print("Failed to delete assets. Please try again.")
 
 
 def main(*args, **kwargs):
