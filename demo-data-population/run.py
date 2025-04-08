@@ -10,6 +10,7 @@ import base64
 import uuid
 import argparse
 import string
+from typing import Dict
 from cryptography import x509
 from cryptography.x509.oid import NameOID, ExtensionOID
 from cryptography.hazmat.primitives import hashes, serialization
@@ -83,8 +84,6 @@ MAC_CACHE = [
     "e4:aa:5d:86:8f:3c",
     "e4:aa:5d:fc:55:8e",
 ]
-
-ROUTER_SWITCH_SERVER_MAC_CACHE = []
 
 # Output seeded with scan config line
 OUTPUT = []
@@ -263,6 +262,7 @@ ROUTING_ASSETS = {
 # Markers for firewalls
 FIREWALL_DEVICES = {
     "Zyxel USG60W": {
+        "os": "Zyxel",
         "host": "46.247.170.154",
         "filename": "scan_hikivision.json",
         "hostname": "USG60W_5CE28C704730|46.247.170.154.NOT.UPDATED.OPENIP-CS.NET",
@@ -270,6 +270,7 @@ FIREWALL_DEVICES = {
         "mac": "5C:E2:8C:70:47:30|5CE28C704730",
     },
     "Fortinet FortiOS": {
+        "os": "Fortinet",
         "host": "62.48.202.126",
         "filename": "scan_ups.json",
         "hostname": "FGT60ETK19086062",
@@ -1018,6 +1019,71 @@ def get_cert_details(cert: x509.Certificate):
     return details
 
 
+def generate_vulnerability_report(
+    ip_address: str, vendor_project: str,
+) -> Dict:
+    """
+    Loads KEV data from a JSON file, filters by vendor_project, and returns a vulnerability report.
+
+    Args:
+        ip_address (str): IP address of the asset.
+        vendor_project (str): The vendor/project name to filter vulnerabilities by.
+
+    Returns:
+        dict: A vulnerability report dictionary in the expected format.
+    """
+    # Load JSON data
+    with open("./kev.json", "r") as f:
+        kev_data = json.load(f)
+
+    # Filter vulnerabilities by vendor_project
+    matching_vulns = [
+        v
+        for v in kev_data.get("vulnerabilities", [])
+        if v.get("vendorProject", "").lower() == vendor_project.lower()
+    ]
+
+    if not matching_vulns:
+        return None
+
+    # Select one vulnerability at random
+    vuln = random.choice(matching_vulns)
+
+    # Build output structure
+    report = {
+        "asset": {"ipv4": ip_address},
+        "output": f"The host {ip_address} appears to be affected by vulnerability '{vuln['vulnerabilityName']}'.",
+        "plugin": {
+            "cve": [vuln["cveID"]],
+            "cvss3_base_score": 0.0,
+            "cvss3_vector": {
+                "raw": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"  # Placeholder
+            },
+            "cvss_base_score": 0.0,
+            "cvss_vector": {"raw": "CVSS2#AV:N/AC:L/Au:N/C:P/I:P/A:P"},  # Placeholder
+            "description": vuln.get("shortDescription", "No description provided."),
+            "family": vuln.get("product", "General"),
+            "id": random.randint(10000, 99999),
+            "name": vuln["vulnerabilityName"],
+            "modification_date": vuln.get("dateAdded", ""),
+            "publication_date": vuln.get("dateAdded", ""),
+            "risk_factor": "High",  # Placeholder unless you have risk levels in the JSON
+            "solution": vuln.get("requiredAction", "No solution provided."),
+            "synopsis": vuln["vulnerabilityName"],
+            "type": "remote",
+            "version": "1.0",
+            "vuln_publication_date": vuln.get("dateAdded", ""),
+            "xrefs": [{"type": "CWE", "id": cwe} for cwe in vuln.get("cwes", [])],
+            "vpr": {"drivers": {}},
+        },
+        "port": {"port": 0, "protocol": "tcp", "service": "general"},
+        "scan": {},
+        "severity_id": 4,  # You can calculate this based on CVSS or set manually
+    }
+
+    return report
+
+
 def fudge_jamf_data(asset_cache: list) -> bool:
     # config file requires a custom id
     output = [
@@ -1683,6 +1749,21 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                     if "asset" in v and "ipv4" in v["asset"]:
                                         v["asset"]["ipv4"] = asset.get("ip", None)
 
+                                vendor = asset.get("os")
+                                if vendor and "Windows" in vendor:
+                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project="Microsoft")
+                                elif vendor and "Cisco" in vendor:
+                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project="Cisco")
+                                elif vendor and "Apple" in vendor:
+                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project="Apple")
+                                elif vendor:
+                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project=vendor)
+                                else: 
+                                    random_vuln = None
+
+                                if random_vuln:
+                                    modifiable_vulns.append(random_vuln)
+
                                 final_result["info"]["_vulnerabilities"] = json.dumps(
                                     modifiable_vulns
                                 )
@@ -1722,7 +1803,13 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
     return True
 
 
-def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
+def fudge_scan_data(
+    asset_info: dict, ip: str, network: str, switch_router_mac_cache: list = None
+) -> dict:
+    # Ensure the cache is a list if not provided
+    if switch_router_mac_cache is None:
+        switch_router_mac_cache = []
+
     # pick random asset type
     random_asset_type = random.choice(list(asset_info.keys()))
 
@@ -1763,7 +1850,6 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             if mac_match
             else semi_random_mac(mac="19:3c:1f:78:f2:cf")
         )
-
         if mac != new_mac:
             retry = False
 
@@ -1792,11 +1878,8 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
     raw_task = open(f"./tasks/{filename}")
 
     for line in raw_task:
-        # check if the log is worth working on
         temp_result = json.loads(line)
         if temp_result.get("host") == asset_info[random_asset_type]["host"]:
-
-            # update host and ts attibutes
             temp_result["ts"] = current_rz_time()
             temp_result["host"] = ip
             primary_ip_match = re.compile(
@@ -1804,7 +1887,8 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             )
 
             if asset_type in ["SWITCH", "ROUTER", "SERVER"]:
-                ROUTER_SWITCH_SERVER_MAC_CACHE.append({"ip": ip, "mac": new_mac})
+                # Update the local cache instead of a global one.
+                switch_router_mac_cache.append({"ip": ip, "mac": new_mac})
 
             if "snmp.vlans" in temp_result["info"]:
                 temp_result["info"]["snmp.vlans"] = "\t".join(
@@ -1850,55 +1934,59 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             if "tls.serial" in temp_result["info"]:
                 temp_result["info"]["tls.serial"] = random_serial_number()
 
-            snmp_macs = [] if new_mac == None else [new_mac]
+            snmp_macs = [] if new_mac is None else [new_mac]
 
-            if len(ROUTER_SWITCH_SERVER_MAC_CACHE) > 0 and asset_type in [
-                "SWITCH",
-                "ROUTER",
-            ]:
+            # Use the local cache in this section
+            if len(switch_router_mac_cache) > 0 and asset_type in ["SWITCH", "ROUTER"]:
                 snmp_macs.extend([semi_random_mac(mac=new_mac) for _ in range(2)])
                 existing_macs = []
                 loop_len = (
-                    len(ROUTER_SWITCH_SERVER_MAC_CACHE)
-                    if len(ROUTER_SWITCH_SERVER_MAC_CACHE) < 10
+                    len(switch_router_mac_cache)
+                    if len(switch_router_mac_cache) < 10
                     else 10
                 )
-
                 for _ in range(loop_len):
-                    temp_mac = random.choice(ROUTER_SWITCH_SERVER_MAC_CACHE)["mac"]
+                    temp_mac = random.choice(switch_router_mac_cache)["mac"]
                     if temp_mac not in existing_macs:
                         existing_macs.append(temp_mac)
-
                 snmp_macs.extend(existing_macs)
+
+            if "snmp.macs.vlans" in temp_result["info"]:
+                temp_result["info"]["snmp.macs.vlans"] = "RZ1=" + ",".join(snmp_macs)
 
             if "snmp.interfaceMacs" in temp_result["info"]:
                 temp_result["info"]["snmp.interfaceMacs"] = new_mac
+                mac_map = [
+                    f"{i ** 2}={snmp_macs[i]}" for i in range(0, len(snmp_macs) - 1)
+                ]
+                temp_result["info"]["snmp.interfaceMacsMap"] = "\t".join(mac_map)
 
             if "snmp.macs.ports" in temp_result["info"]:
                 mac_ports = [
-                    f"1/g{i}={snmp_macs[i]}" for i in range(0, len(snmp_macs) - 1)
+                    f"Gi0/{i ** 2}={snmp_macs[i]}"
+                    for i in range(0, len(snmp_macs) - 1)
                 ]
                 temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
 
             if "snmp.interfaceNames" in temp_result["info"]:
-                names = [f"1/g{i}" for i in range(0, len(snmp_macs) - 1)]
+                names = [f"Gi0/{i ** 2}" for i in range(0, len(snmp_macs) - 1)]
                 temp_result["info"]["snmp.interfaceNames"] = "\t".join(names)
+                names_map = [f"{i ** 2}=Gi0" for i in range(0, len(snmp_macs) - 1)]
+                temp_result["info"]["snmp.interfaceNamesMap"] = "\t".join(names_map)
 
             if "snmp.arpcache" in temp_result["info"]:
                 arp_cache = []
-                for _, asset in enumerate(ROUTER_SWITCH_SERVER_MAC_CACHE):
+                for asset in switch_router_mac_cache:
                     arp_ip = asset.get("ip")
                     arp_mac = asset.get("mac")
                     arp_cache.append(f"{arp_ip}={arp_mac}")
                 temp_result["info"]["snmp.arpcache"] = "\t".join(arp_cache)
 
-            # update hostname + primary IP
+            # update hostname + primary IP and other attributes
             result = regex_bulk_sub(
                 match=host_match, new_val=new_hostname, result=json.dumps(temp_result)
             )
             result = regex_bulk_sub(match=primary_ip_match, new_val=ip, result=result)
-
-            # update other attributes as needed
             result = regex_bulk_sub(
                 match=domain_match, new_val="RUNZERO", result=result
             )
@@ -1909,11 +1997,7 @@ def fudge_scan_data(asset_info: dict, ip: str, network: str) -> dict:
             result = regex_bulk_sub(
                 match=secondary_v6_match, new_val=new_secondary_v6, result=result
             )
-            result = regex_bulk_sub(
-                match=cn_match,
-                new_val=new_cn,
-                result=result,
-            )
+            result = regex_bulk_sub(match=cn_match, new_val=new_cn, result=result)
             OUTPUT.append(json.loads(result))
 
     new_asset_info = {
@@ -1957,6 +2041,8 @@ def create_assets(
     subnet_start: int, subnet_finish: int, ip_start: int, ip_finish: int, network: str
 ):
     asset_cache = []
+    # Declare the local cache to be shared among asset creation calls.
+    switch_router_mac_cache = []
 
     for subnet in range(subnet_start, subnet_finish):
         for ip in range(ip_start, ip_finish):
@@ -1964,7 +2050,7 @@ def create_assets(
             if network == "CLOUD":
                 final_ip = f"23.20.{subnet}.{ip}"
             elif network == "DMZ":
-                final_ip = f"198.51.{subnet}.{ip}"  # Use a public IP range different from the 23.x.x.x range
+                final_ip = f"198.51.{subnet}.{ip}"
             else:
                 final_ip = f"10.0.{subnet}.{ip}"
 
@@ -1977,57 +2063,70 @@ def create_assets(
                         asset_info=ROUTING_ASSETS,
                         ip=final_ip,
                         network=network,
+                        switch_router_mac_cache=switch_router_mac_cache,
                     )
                 else:
                     asset = fudge_scan_data(
                         asset_info=OT_DEVICES | BACNET_ASSETS | FINDINGS_ASSETS,
                         ip=final_ip,
                         network=network,
+                        switch_router_mac_cache=switch_router_mac_cache,
                     )
 
             # Cloud is just servers
             if network == "CLOUD":
                 asset = fudge_scan_data(
-                    asset_info=SERVER_ASSETS, ip=final_ip, network=network
+                    asset_info=SERVER_ASSETS,
+                    ip=final_ip,
+                    network=network,
+                    switch_router_mac_cache=switch_router_mac_cache,
                 )
 
-            # HQ and Datacenters include routers, firewalls, a few IOT/OT devices, and mostly servers and end user devices
+            # HQ and Datacenters include routers, firewalls, IOT/OT devices, and mostly servers/end-user devices
             if network in ["HQ", "DC"]:
                 if ip == 1:
                     asset = fudge_scan_data(
                         asset_info=ROUTING_ASSETS,
                         ip=final_ip,
                         network=network,
+                        switch_router_mac_cache=switch_router_mac_cache,
                     )
                 elif ip == 2:
                     asset = fudge_scan_data(
                         asset_info=FIREWALL_DEVICES,
                         ip=final_ip,
                         network=network,
+                        switch_router_mac_cache=switch_router_mac_cache,
                     )
                 elif ip % 7 == 0:
                     asset = fudge_scan_data(
                         asset_info=IOT_DEVICES | OT_DEVICES,
                         ip=final_ip,
                         network=network,
+                        switch_router_mac_cache=switch_router_mac_cache,
                     )
                 else:
                     asset = fudge_scan_data(
                         asset_info=END_USER_ASSETS | SERVER_ASSETS | FINDINGS_ASSETS,
                         ip=final_ip,
                         network=network,
+                        switch_router_mac_cache=switch_router_mac_cache,
                     )
 
             # DMZ is similar to CLOUD but uses a different public IP range.
             if network == "DMZ":
                 asset = fudge_scan_data(
-                    asset_info=SERVER_ASSETS, ip=final_ip, network=network
+                    asset_info=SERVER_ASSETS,
+                    ip=final_ip,
+                    network=network,
+                    switch_router_mac_cache=switch_router_mac_cache,
                 )
 
             if asset:
                 asset_cache.append(asset)
 
     return asset_cache
+
 
 def main():
     # create new tasks for demo data if enabled
