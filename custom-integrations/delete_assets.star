@@ -25,7 +25,7 @@ def delete_assets(assets, headers):
     
     # delete assets
     url = BASE_URL + "/org/assets/bulk/delete"
-    delete = http_delete(url, headers=HEADERS, body=bytes(json_encode({"asset_ids": assets})))
+    delete = http_delete(url, headers=headers, body=bytes(json_encode({"asset_ids": assets})))
     
     # verify the delete worked 
     if delete.status_code == 204:
