@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "runZero MCP": {
+      "command": "/Users/tyler/.local/share/virtualenvs/runZero-scripts-VoSeJ_A1/bin/python3",
+      "args": ["/Users/tyler/git/runZero-scripts/mcp/run.py"],
+      "enabled": true
+    }
+  }
+}
