@@ -14,3 +14,5 @@ demo-data-population/*.json
 demo-data-population/*.json.gz
 terraform/gcp-self-hosted-install/gcp-cred.json
 vitally-enhancements/*
+vitally-freshdesk-automation/*
+cert-test.py

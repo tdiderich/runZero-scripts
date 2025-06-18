@@ -1,11 +1,11 @@
 import os
+import gzip
 import datetime
 import requests
 import json
 import time
 import random
 import re
-import gzip
 import base64
 import uuid
 import argparse
@@ -32,11 +32,6 @@ parser.add_argument(
     "--verify",
     action="store_true",
     help="run checks on the results to verify they are correct",
-)
-parser.add_argument(
-    "--compress",
-    action="store_true",
-    help="gzips the JSON after uploading to have a smaller file to share",
 )
 parser.add_argument(
     "--assets-per-subnet",
@@ -503,6 +498,42 @@ FINDINGS_ASSETS = {
         "hostname": "0NQGN5N",
         "mac": "unknown",
         "os": "Debian Linux",
+        "type": "SERVER",
+    },
+    "Linux-Debian-12": {
+        "filename": "default_creds.json",
+        "host": "192.168.40.246",
+        "mac": "bc:24:11:80:10:c0",
+        "os": "Debian",
+        "secondary_v6": "fe80::be24:11ff:fe80:10c0",
+        "type": "SERVER",
+    },
+    "Linux-Debian-12_2": {
+        "filename": "default_creds.json",
+        "host": "192.168.40.167",
+        "hostname": "PLC02",
+        "mac": "bc:24:11:de:76:97",
+        "os": "Debian",
+        "secondary_v4": "192.168.40.205",
+        "secondary_v6": "fe80::be24:11ff:fede:7697",
+        "type": "SERVER",
+    },
+    "Linux-Debian-12_3": {
+        "filename": "default_creds.json",
+        "host": "192.168.40.254",
+        "hostname": "TARGET-DEVOPS1",
+        "mac": "bc:24:11:ff:b4:d3",
+        "os": "Debian",
+        "secondary_v6": "fe80::be24:11ff:feff:b4d3",
+        "type": "SERVER",
+    },
+    "Linux-Debian-12_4": {
+        "filename": "default_creds.json",
+        "host": "192.168.40.4",
+        "hostname": "WWW.CRUSHFTP.COM",
+        "mac": "bc:24:11:ff:97:b1",
+        "os": "Debian",
+        "secondary_v6": "fe80::be24:11ff:feff:97b1",
         "type": "SERVER",
     },
     "Microsoft-Windows 10": {
@@ -1020,7 +1051,8 @@ def get_cert_details(cert: x509.Certificate):
 
 
 def generate_vulnerability_report(
-    ip_address: str, vendor_project: str,
+    ip_address: str,
+    vendor_project: str,
 ) -> Dict:
     """
     Loads KEV data from a JSON file, filters by vendor_project, and returns a vulnerability report.
@@ -1082,6 +1114,22 @@ def generate_vulnerability_report(
     }
 
     return report
+
+
+def write_and_compress(output: list, filename: str):
+    path = f"{filename}.json"
+    gz_path = f"{path}.gz"
+
+    # write
+    with open(path, "w") as f:
+        for rec in output:
+            f.write(json.dumps(rec, separators=(",", ":")) + "\n")
+
+    # compress
+    with open(path, "rb") as f_in, gzip.open(gz_path, "wb") as f_out:
+        f_out.writelines(f_in)
+
+    print(f"SUCCESS - created and compressed at {gz_path}")
 
 
 def fudge_jamf_data(asset_cache: list) -> bool:
@@ -1211,9 +1259,7 @@ def fudge_jamf_data(asset_cache: list) -> bool:
             )
 
     # write modified results to file for import
-    with open(f"integration_jamf.json", "w") as f:
-        for l in output:
-            f.write(json.dumps(l, separators=(",", ":")) + "\n")
+    write_and_compress(output=output, filename="integration_jamf")
     return True
 
 
@@ -1286,9 +1332,7 @@ def fudge_azuread_data(asset_cache: list) -> bool:
             )
 
     # write modified results to file for import
-    with open(f"integration_azuread.json", "w") as f:
-        for l in output:
-            f.write(json.dumps(l, separators=(",", ":")) + "\n")
+    write_and_compress(output=output, filename="integration_azuread")
     return True
 
 
@@ -1402,9 +1446,7 @@ def fudge_wiz_data(asset_cache: list) -> bool:
                 output.append(json_data)
 
     # write modified results to file for import
-    with open(f"integration_wiz.json", "w") as f:
-        for l in output:
-            f.write(json.dumps(l, separators=(",", ":")) + "\n")
+    write_and_compress(output, "integration_wiz")
     return True
 
 
@@ -1751,14 +1793,26 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
                                 vendor = asset.get("os")
                                 if vendor and "Windows" in vendor:
-                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project="Microsoft")
+                                    random_vuln = generate_vulnerability_report(
+                                        ip_address=asset.get("ip", None),
+                                        vendor_project="Microsoft",
+                                    )
                                 elif vendor and "Cisco" in vendor:
-                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project="Cisco")
+                                    random_vuln = generate_vulnerability_report(
+                                        ip_address=asset.get("ip", None),
+                                        vendor_project="Cisco",
+                                    )
                                 elif vendor and "Apple" in vendor:
-                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project="Apple")
+                                    random_vuln = generate_vulnerability_report(
+                                        ip_address=asset.get("ip", None),
+                                        vendor_project="Apple",
+                                    )
                                 elif vendor:
-                                    random_vuln = generate_vulnerability_report(ip_address=asset.get("ip", None), vendor_project=vendor)
-                                else: 
+                                    random_vuln = generate_vulnerability_report(
+                                        ip_address=asset.get("ip", None),
+                                        vendor_project=vendor,
+                                    )
+                                else:
                                     random_vuln = None
 
                                 if random_vuln:
@@ -1796,10 +1850,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
             return False
 
     # write modified results to file for import
-    with open(f"integration_{integration_name}.json", "w") as f:
-        for l in output:
-            f.write(json.dumps(l, separators=(",", ":")) + "\n")
-
+    write_and_compress(output, f"integration_{integration_name}")
     return True
 
 
@@ -1963,8 +2014,7 @@ def fudge_scan_data(
 
             if "snmp.macs.ports" in temp_result["info"]:
                 mac_ports = [
-                    f"Gi0/{i ** 2}={snmp_macs[i]}"
-                    for i in range(0, len(snmp_macs) - 1)
+                    f"Gi0/{i ** 2}={snmp_macs[i]}" for i in range(0, len(snmp_macs) - 1)
                 ]
                 temp_result["info"]["snmp.macs.ports"] = "\t".join(mac_ports)
 
@@ -2457,7 +2507,7 @@ def main():
             (0, 5, 1, args.assets_per_subnet + 1, "CLOUD"),
         ]
 
-        all_created_assets = []  
+        all_created_assets = []
 
         with ThreadPoolExecutor() as executor:
             future_map = {
@@ -2477,11 +2527,7 @@ def main():
 
         # Now all asset generation is done, combine them
         asset_cache = all_created_assets
-
-        with open("scan_output.json", "w") as scan_output:
-            for entry in OUTPUT:
-                scan_output.write(json.dumps(entry, separators=(",", ":")) + "\n")
-        print("SUCCESS - created task for rz scan")
+        write_and_compress(output=OUTPUT, filename="scan_output")
 
         # Parallelize integration tasks creation
         integrations = [
@@ -2496,7 +2542,7 @@ def main():
         with ThreadPoolExecutor() as executor:
             future_integrations = {
                 executor.submit(
-                    handle_integration,  
+                    handle_integration,
                     integration,
                     asset_cache,
                 ): integration
@@ -2557,46 +2603,54 @@ def main():
     # python3 demo_data.py --upload
     if args.upload:
         print("STARTING - uploading tasks to runZero")
-        for filename in [
-            "scan_output.json",
-            "integration_crowdstrike.json",
-            "integration_nessus.json",
-            "integration_aws.json",
-            "integration_azuread.json",
-            "integration_jamf.json",
-            "integration_qualys.json",
-            "integration_wiz.json",
-            "scan_output.json",
+        for base_filename in [
+            "scan_output",
+            "integration_crowdstrike",
+            "integration_nessus",
+            "integration_aws",
+            "integration_azuread",
+            "integration_jamf",
+            "integration_qualys",
+            "integration_wiz",
         ]:
+            gz_filename = f"{base_filename}.json.gz"
             last_task_id = "d8781eaf-b98c-4013-8d8c-5d2a424026ac"
-            gzip_upload = gzip.compress(open(filename, "rb").read())
-            upload_url = RUNZERO_BASE_URL + f"/org/sites/{RUNZERO_SITE_ID}/import"
+            
+            with open(gz_filename, "rb") as f:
+                gzip_upload = f.read()  # Already gzipped
+            
+            upload_url = f"{RUNZERO_BASE_URL}/org/sites/{RUNZERO_SITE_ID}/import"
+            
             friendly_name_map = {
-                "scan_output.json": "runZero Scan",
-                "integration_crowdstrike.json": "CrowdStrike Integration",
-                "integration_nessus.json": "Nessus Integration",
-                "integration_aws.json": "AWS Integration",
-                "integration_azuread.json": "Azure AD Integration",
-                "integration_jamf.json": "Jamf Integration",
-                "integration_qualys.json": "Qualys Integration",
-                "integration_wiz.json": "Wiz Integration",
+                "scan_output": "runZero Scan",
+                "integration_crowdstrike": "CrowdStrike Integration",
+                "integration_nessus": "Nessus Integration",
+                "integration_aws": "AWS Integration",
+                "integration_azuread": "Azure AD Integration",
+                "integration_jamf": "Jamf Integration",
+                "integration_qualys": "Qualys Integration",
+                "integration_wiz": "Wiz Integration",
             }
+
             params = {
                 "_oid": RUNZERO_ORG_ID,
-                "name": friendly_name_map.get(filename, "runZero Scan"),
+                "name": friendly_name_map.get(base_filename, "runZero Scan"),
             }
             headers = {"Authorization": f"Bearer {RUNZERO_ORG_TOKEN}"}
+
             resp = requests.put(
-                url=upload_url, headers=headers, params=params, data=gzip_upload
+                url=upload_url,
+                headers=headers,
+                params=params,
+                data=gzip_upload,
             )
+
             if resp.status_code == 200:
                 last_task_id = resp.json()["id"]
-                print("SUCCESS - uploaded", filename)
+                print("SUCCESS - uploaded", gz_filename)
+            else:
+                print(f"FAILED - upload for {gz_filename} with status {resp.status_code}")
 
-        if args.compress:
-            # create compressed version as well
-            os.system(f"gzip {filename} -k -f")
-            print(f"SUCCESS - compressed {filename} to {filename}.gz")
 
         if args.verify and last_task_id:
             wait = True
