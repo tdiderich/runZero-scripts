@@ -12,10 +12,10 @@ import argparse
 import string
 from typing import Dict
 from cryptography import x509
-from cryptography.x509.oid import NameOID, ExtensionOID
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.backends import default_backend
+from cryptography.x509.oid import NameOID, ExtensionOID
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Command line args
@@ -541,7 +541,7 @@ FINDINGS_ASSETS = {
         "host": "10.0.19.36",
         "hostname": "RZDC-SERVER-1936",
         "mac": "00:02:a5:c9:2f:a4",
-        "os": "Microsoft Windows 10 (22H2 " "Build 19045)",
+        "os": "Microsoft Windows 10 (22H2 Build 19045)",
         "type": "SERVER",
     },
     "Microsoft-Windows CE": {
@@ -572,7 +572,7 @@ FINDINGS_ASSETS = {
         "filename": "findings_consolidated.json",
         "host": "10.0.20.8",
         "mac": "19:3c:1f:86:42:ec",
-        "os": "Step Function I/O " "Example Outstation",
+        "os": "Step Function I/O Example Outstation",
         "secondary_v4": "197.51.100.222",
         "type": "Industrial Control",
     },
@@ -887,15 +887,23 @@ def generate_traceroute_str(asset_ip):
         return f"{source_ip}/{random_ip1}/{random_ip2}/{asset_ip}"
 
 
-def generate_self_signed_cert(hostname: str, valid_days: int = 365):
-    """
-    Generates a self-signed certificate for the given hostname.
-    Returns the private key and certificate objects.
-    """
+def create_ca_certificate(
+    common_name: str = "RZCA Inc",
+    organization_name: str = "RZ Certificate Authority",
+    country_name: str = "US",
+    valid_days: int = 3650,
+):
+    """Generates a CA certificate and returns its key, cert object, and foreign_id."""
     key = rsa.generate_private_key(
         public_exponent=65537, key_size=2048, backend=default_backend()
     )
-    subject = issuer = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, hostname)])
+    subject = issuer = x509.Name(
+        [
+            x509.NameAttribute(NameOID.COUNTRY_NAME, country_name),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, organization_name),
+            x509.NameAttribute(NameOID.COMMON_NAME, common_name),
+        ]
+    )
     now = datetime.datetime.now(datetime.UTC)
     cert_builder = (
         x509.CertificateBuilder()
@@ -905,149 +913,96 @@ def generate_self_signed_cert(hostname: str, valid_days: int = 365):
         .serial_number(x509.random_serial_number())
         .not_valid_before(now)
         .not_valid_after(now + datetime.timedelta(days=valid_days))
+        .add_extension(
+            x509.SubjectKeyIdentifier.from_public_key(key.public_key()),
+            critical=False,
+        )
+        .add_extension(x509.BasicConstraints(ca=True, path_length=None), critical=True)
+        .add_extension(
+            x509.AuthorityKeyIdentifier.from_issuer_public_key(key.public_key()),
+            critical=False,
+        )
     )
-    # Add a Subject Alternative Name extension with the hostname.
-    cert_builder = cert_builder.add_extension(
-        x509.SubjectAlternativeName([x509.DNSName(hostname)]), critical=False
-    )
-    # Add Subject Key Identifier
-    cert_builder = cert_builder.add_extension(
-        x509.SubjectKeyIdentifier.from_public_key(key.public_key()), critical=False
-    )
-    # Add Authority Key Identifier (for self-signed cert, same as subject key id)
-    cert_builder = cert_builder.add_extension(
-        x509.AuthorityKeyIdentifier.from_issuer_public_key(key.public_key()),
-        critical=False,
-    )
+    ca_cert = cert_builder.sign(key, hashes.SHA256(), default_backend())
+    ca_foreign_id = ca_cert.fingerprint(hashes.SHA1()).hex()
+    return key, ca_cert, ca_foreign_id
 
-    cert = cert_builder.sign(
-        private_key=key, algorithm=hashes.SHA256(), backend=default_backend()
+CA_KEY, CA_CERT, CA_FOREIGN_ID = create_ca_certificate()
+
+def generate_leaf_certificate(hostname: str, ca_key, ca_cert, valid_days: int = 365):
+    """Generates a leaf certificate and returns its key, cert object, and foreign_id."""
+    key = rsa.generate_private_key(
+        public_exponent=65537, key_size=2048, backend=default_backend()
     )
-    return key, cert
+    subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, hostname)])
+    issuer = ca_cert.subject
+    now = datetime.datetime.now(datetime.UTC)
+    cert_builder = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(now)
+        .not_valid_after(now + datetime.timedelta(days=valid_days))
+        .add_extension(
+            x509.SubjectAlternativeName([x509.DNSName(hostname)]), critical=False
+        )
+        .add_extension(
+            x509.SubjectKeyIdentifier.from_public_key(key.public_key()),
+            critical=False,
+        )
+        .add_extension(
+            x509.AuthorityKeyIdentifier.from_issuer_public_key(ca_cert.public_key()),
+            critical=False,
+        )
+        .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+    )
+    leaf_cert = cert_builder.sign(ca_key, hashes.SHA256(), default_backend())
+    leaf_foreign_id = leaf_cert.fingerprint(hashes.SHA1()).hex()
+    return key, leaf_cert, leaf_foreign_id
 
 
-def get_cert_details(cert: x509.Certificate):
+def get_tls_details(cert_chain: list):
     """
-    Extracts various TLS-related attributes from the certificate and returns them in a dictionary.
-    Then, randomizes some attributes and fakes a non-self-signed issuer for a percentage of certificates.
+    Generates a dictionary containing ONLY the tls.* fields for a certificate chain.
     """
-    details = {}
+    tls_details = {}
+    leaf_cert = cert_chain[0]  # The first cert in the chain is the leaf
 
-    # Compute certificate fingerprints
-    fp_sha1 = cert.fingerprint(hashes.SHA1()).hex()
-    fp_sha256 = cert.fingerprint(hashes.SHA256()).hex()
-
-    # Validity dates as ISO strings and Unix timestamps
-    not_before = cert.not_valid_before
-    not_after = cert.not_valid_after
-    details["tls.notBefore"] = not_before.strftime("%Y-%m-%dT%H:%M:%SZ")
-    details["tls.notAfter"] = not_after.strftime("%Y-%m-%dT%H:%M:%SZ")
-    details["tls.notBeforeTS"] = str(int(not_before.timestamp()))
-    details["tls.notAfterTS"] = str(int(not_after.timestamp()))
-
-    # Subject and Issuer information (using RFC4514 string format)
-    subject = cert.subject.rfc4514_string()
-    issuer = cert.issuer.rfc4514_string()
-    details["tls.subject"] = subject
-    details["tls.issuer"] = issuer
-
-    # Extract Common Name (CN) from the subject
-    cn = cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value
-    details["tls.cn"] = cn
-
-    # Serial number in hexadecimal format
-    details["tls.serial"] = format(cert.serial_number, "x")
-
-    # Signature algorithm used
-    details["tls.signatureAlgorithm"] = (
-        cert.signature_hash_algorithm.name
-        if cert.signature_hash_algorithm
-        else "unknown"
-    )
-
-    # Subject Key Identifier (if available)
-    try:
-        ski = cert.extensions.get_extension_for_oid(
-            ExtensionOID.SUBJECT_KEY_IDENTIFIER
-        ).value.digest.hex()
-        details["tls.subjectKeyID"] = ski
-    except x509.ExtensionNotFound:
-        details["tls.subjectKeyID"] = ""
-
-    # Authority Key Identifier (if available)
-    try:
-        aki = cert.extensions.get_extension_for_oid(
-            ExtensionOID.AUTHORITY_KEY_IDENTIFIER
-        ).value.key_identifier.hex()
-        details["tls.authorityKeyID"] = aki
-    except x509.ExtensionNotFound:
-        details["tls.authorityKeyID"] = ""
-
-    # Fingerprints – these are sometimes used for validation.
-    details["tls.fp.sha1"] = fp_sha1
-    details["tls.fp.sha256"] = "SHA256:" + fp_sha256
-    # For tls.fp.caSha1, use the authority key ID if available; otherwise, fallback to sha1 fingerprint.
-    details["tls.fp.caSha1"] = details["tls.authorityKeyID"] or fp_sha1
-
-    # The PEM-encoded certificate is stored in tls.certificates.
-    cert_pem = cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
-    details["tls.certificates"] = cert_pem
-
-    # Dummy URLs for CRL, OCSP, and Issuing URL – these can be customized as needed.
-    details["tls.crl"] = "http://rz-corporation-cert-authority.com/crl.pem"
-    details["tls.ocsp"] = "http://rz-corporation-cert-authority.com/ocsp"
-    details["tls.issuingURL"] = "http://rz-corporation-cert-authority/issuing.crt"
-
-    # For tls.names, we include the common name.
-    details["tls.names"] = cn
-
-    # ----- Randomize and Fake TLS Connection Attributes -----
-    # (1) Fake that 80% of certificates are issued by a real signing authority
-    if random.random() < 0.8:
-        # Replace issuer with a fake CA name and generate a fake authority key ID (40 hex characters).
-        fake_issuer = "CN=RZCA Inc, O=RZ Certificate Authority, C=US"
-        details["tls.issuer"] = fake_issuer
-        fake_aki = "".join(random.choice("0123456789abcdef") for _ in range(40))
-        details["tls.authorityKeyID"] = fake_aki
-        details["tls.fp.caSha1"] = fake_aki
-
-    # (2) Randomize TLS connection attributes
-
-    # Randomize whether a client certificate is required.
-    details["tls.requiresClientCertificate"] = random.choice(["true", "false"])
-
-    # Randomize cipher and cipher name.
-    cipher_options = [
-        ("0xc030", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"),
-        ("0xc02f", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"),
-        ("0xc02b", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"),
-        ("0xcca8", "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"),
-        ("0xcca9", "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"),
+    # Create a tab-separated string of raw Base64 certs (no headers/footers)
+    b64_certs = [
+        base64.b64encode(cert.public_bytes(serialization.Encoding.DER)).decode("utf-8")
+        for cert in cert_chain
     ]
-    cipher, cipherName = random.choice(cipher_options)
-    details["tls.cipher"] = cipher
-    details["tls.cipherName"] = cipherName
+    tls_details["tls.certificates"] = "\t".join(b64_certs)
 
-    # Randomize supported version names and values.
-    version_options = [
-        ("TLSv1.2", "0x0303", "0x0303", "TLSv1.2"),
-        ("TLSv1.3", "0x0304", "0x0304", "TLSv1.3"),
-    ]
-    (supportedVersionNames, supportedVersions, version, versionName) = random.choice(
-        version_options
-    )
-    details["tls.supportedVersionNames"] = supportedVersionNames
-    details["tls.supportedVersions"] = supportedVersions
-    details["tls.version"] = version
-    details["tls.versionName"] = versionName
+    # Details from the leaf certificate
+    not_before = leaf_cert.not_valid_before
+    not_after = leaf_cert.not_valid_after
+    tls_details["tls.notBefore"] = not_before.strftime("%Y-%m-%dT%H:%M:%SZ")
+    tls_details["tls.notAfter"] = not_after.strftime("%Y-%m-%dT%H:%M:%SZ")
+    tls_details["tls.subject"] = leaf_cert.subject.rfc4514_string()
+    tls_details["tls.issuer"] = leaf_cert.issuer.rfc4514_string()
+    tls_details["tls.cn"] = leaf_cert.subject.get_attributes_for_oid(
+        NameOID.COMMON_NAME
+    )[0].value
+    tls_details["tls.names"] = tls_details["tls.cn"]
+    tls_details["tls.serial"] = format(leaf_cert.serial_number, "x")
+    tls_details["tls.signatureAlgorithm"] = leaf_cert.signature_hash_algorithm.name
 
-    # Randomize a placeholder for tls.rzfp0.
-    random_rzfp0 = "v0|t10:" + "".join(
-        random.choice("0123456789abcdef") for _ in range(20)
-    )
-    details["tls.rzfp0"] = random_rzfp0
+    # Fingerprints
+    tls_details["tls.fp.sha1"] = leaf_cert.fingerprint(hashes.SHA1()).hex()
+    sha256_raw = leaf_cert.fingerprint(hashes.SHA256())
+    sha256_b64 = base64.b64encode(sha256_raw).decode("utf-8")
+    tls_details["tls.fp.sha256"] = f"SHA256:{sha256_b64}"
 
-    return details
+    if len(cert_chain) > 1:
+        tls_details["tls.fp.caSha1"] = "\t".join(
+            [cert.fingerprint(hashes.SHA1()).hex() for cert in cert_chain[1:]]
+        )
+
+    return tls_details
 
 
 def generate_vulnerability_report(
@@ -1346,15 +1301,14 @@ def fudge_wiz_data(asset_cache: list) -> bool:
         if asset_type == "SERVER" and asset_location == "CLOUD":
             with open(f"./tasks/integration_wiz.json") as f:
                 json_data = json.load(f)
-
-                # crate fake values that are used more than once
-                aws_id = "i-" + "".join(
-                    random.choice(
-                        ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-                        + list(string.ascii_lowercase)
-                    )
-                    for _ in range(17)
-                )
+                print(asset.get("aws_id"))
+                # use existing values
+                aws_id = asset.get("aws_id")
+                print(aws_id)
+                if not aws_id:
+                    continue
+                
+                # create fake values that are used more than once
                 env = random.choice(["dev", "prod", "staging"])
                 hostname = asset.get("new_hostname")
                 provider_unique_id = (
@@ -1394,6 +1348,15 @@ def fudge_wiz_data(asset_cache: list) -> bool:
                 json_data["info"]["type"] = "Server"
                 json_data["info"]["updatedAtTS"] = str(round(time.time()))
                 json_data["info"]["vCPUs"] = random.choice(["2", "4", "8", "16", "32"])
+
+                # Update OS info
+                os_info = asset.get("os_full").split("-")
+                if os_info[0] == "Microsoft":
+                    operating_system = "Microsoft Windows"
+                else:
+                    operating_system = "Linux"
+                
+                json_data["info"]["operatingSystem"] = operating_system
 
                 # upddate software and vulns with fake values
                 json_data["info"]["_software"] = decode(
@@ -1712,13 +1675,15 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
                                 temp_result["info"]["accountName"] = "RUNZERO"
                                 temp_result["info"]["id"] = str(uuid.uuid4())
                                 temp_result["info"]["imageID"] = asset.get("ami", None)
-                                temp_result["info"]["instanceID"] = "i-" + "".join(
+                                aws_id = "i-" + "".join(
                                     random.choice(
                                         ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
                                         + list(string.ascii_lowercase)
                                     )
                                     for _ in range(17)
                                 )
+                                temp_result["info"]["instanceID"] = aws_id
+                                asset["aws_id"] = aws_id
                                 temp_result["info"]["tags"] = "region=US2"
                                 temp_result["info"]["instanceType"] = random.choice(
                                     AWS_DEVICE_TYPES
@@ -1851,7 +1816,7 @@ def fudge_integration_data(asset_cache: list, integration_name: str) -> bool:
 
     # write modified results to file for import
     write_and_compress(output, f"integration_{integration_name}")
-    return True
+    return asset_cache
 
 
 def fudge_scan_data(
@@ -1973,17 +1938,17 @@ def fudge_scan_data(
             if "snmp.engineID.raw" in temp_result["info"]:
                 temp_result["info"]["snmp.engineID.raw"] = new_mac
 
-            if "tls.supportedVersionNames" in temp_result["info"]:
-                _, cert = generate_self_signed_cert(
-                    hostname=new_hostname, valid_days=random.randint(1, 365)
-                )
-                cert_details = get_cert_details(cert)
-                for k, v in cert_details.items():
-                    if k in temp_result["info"]:
-                        temp_result["info"][k] = v
+            # This assumes CA_KEY, CA_CERT, and CA_FOREIGN_ID are available globally
 
-            if "tls.serial" in temp_result["info"]:
-                temp_result["info"]["tls.serial"] = random_serial_number()
+            if "tls.certificates" in temp_result["info"]:
+                _, leaf_cert, _ = generate_leaf_certificate(
+                    hostname=new_hostname,
+                    ca_key=CA_KEY,
+                    ca_cert=CA_CERT,
+                )
+                certificate_chain = [leaf_cert, CA_CERT]
+                tls_data = get_tls_details(cert_chain=certificate_chain)
+                temp_result["info"].update(tls_data)
 
             snmp_macs = [] if new_mac is None else [new_mac]
 
@@ -2529,11 +2494,18 @@ def main():
         asset_cache = all_created_assets
         write_and_compress(output=OUTPUT, filename="scan_output")
 
-        # Parallelize integration tasks creation
+        # Run AWS first to create an AWS ID
+        try:
+            # Call the 'aws' integration and capture the modified asset_cache
+            asset_cache = handle_integration("aws", asset_cache)
+            print("SUCCESS - created task for aws and updated asset cache")
+        except Exception as exc:
+            print(f"FAILED - aws with error {exc}")
+
+        # Parallelize the rest of the integration tasks creation
         integrations = [
             "crowdstrike",
             "nessus",
-            "aws",
             "azuread",
             "jamf",
             "qualys",
@@ -2569,7 +2541,7 @@ def main():
         resp = requests.get(url=export_url, headers=headers, params=params)
 
         # create list of assets to delete
-        asset_list = [x["id"] for x in resp.json()]
+        asset_list = [x["id"] for x in resp.json() or []]
         if len(asset_list) > 0:
             print("STARTING - asset deletion")
             delete_url = RUNZERO_BASE_URL + "/org/assets/bulk/delete"
@@ -2615,12 +2587,12 @@ def main():
         ]:
             gz_filename = f"{base_filename}.json.gz"
             last_task_id = "d8781eaf-b98c-4013-8d8c-5d2a424026ac"
-            
+
             with open(gz_filename, "rb") as f:
                 gzip_upload = f.read()  # Already gzipped
-            
+
             upload_url = f"{RUNZERO_BASE_URL}/org/sites/{RUNZERO_SITE_ID}/import"
-            
+
             friendly_name_map = {
                 "scan_output": "runZero Scan",
                 "integration_crowdstrike": "CrowdStrike Integration",
@@ -2649,8 +2621,9 @@ def main():
                 last_task_id = resp.json()["id"]
                 print("SUCCESS - uploaded", gz_filename)
             else:
-                print(f"FAILED - upload for {gz_filename} with status {resp.status_code}")
-
+                print(
+                    f"FAILED - upload for {gz_filename} with status {resp.status_code}"
+                )
 
         if args.verify and last_task_id:
             wait = True
