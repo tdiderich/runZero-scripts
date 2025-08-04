@@ -7,7 +7,7 @@ load_dotenv()
 
 # RUNZERO_ACCOUNT_TOKEN should be an account-level API key with permission to list organizations
 RUNZERO_ACCOUNT_TOKEN = os.environ.get("RUNZERO_ACCOUNT_TOKEN")
-BASE_URL = os.environ.get("RUNZERO_BASE_URL", "https://console.runzero.com/api/v1.0")
+BASE_URL = "https://console.runzero.com/api/v1.0"
 
 # Headers for account-level API calls
 ACCOUNT_HEADERS = {"Authorization": f"Bearer {RUNZERO_ACCOUNT_TOKEN}"}
@@ -60,7 +60,7 @@ def main():
             org_headers = {"Authorization": f"Bearer {export_token}"}
             
             # URL for exporting assets from the organization
-            export_url = BASE_URL + "/export/org/assets.csv"
+            export_url = BASE_URL + "/export/org/assets.json"
             
             params = {
                 "fields": ",".join(EXPORT_FIELDS)
@@ -70,8 +70,10 @@ def main():
             asset_response = requests.get(export_url, headers=org_headers, params=params)
             asset_response.raise_for_status()
 
-            filename = f"{safe_org_name}_assets.csv"
-            output_path = os.path.join("export-all", filename)
+            filename = f"{safe_org_name}_assets.json"
+            output_dir = "exports"
+            os.makedirs(output_dir, exist_ok=True)
+            output_path = os.path.join(output_dir, filename)
 
             with open(output_path, "w", newline="", encoding="utf-8") as f:
                 f.write(asset_response.text)
