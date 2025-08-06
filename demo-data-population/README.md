@@ -1,61 +1,94 @@
 # Populate demo data in runZero
 
-## Sources currently supported
+This script generates and uploads realistic demo data to a runZero organization. It creates assets, populates them with data from various sources, and uploads them as scan and integration tasks.
 
-1. runZero scan
-2. CrowdStrike integration
-3. Nessus integration
+## Supported Data Sources
 
-## How it works
+The script can generate data mimicking the following sources:
 
-- This script uses real data to generate fake runZero tasks
-- There are data maps that randomize the asset types + add integration data in cases that make sense
-- The output files can be gzip-ed + uploaded to a tenant to populate the inventory
+-   runZero Scan
+-   CrowdStrike
+-   Nessus
+-   AWS
+-   Microsoft Azure AD
+-   Jamf
+-   Qualys
+-   Wiz
 
-## Creating files and uploading 
+## How It Works
 
-### Prerequisites
+1.  **Asset Generation**: The script uses a library of real-world asset templates (servers, laptops, network devices, IoT, OT, etc.). It randomizes and combines these templates to create a diverse set of assets.
+2.  **IP and MAC Address Randomization**: It assigns semi-randomized IP and MAC addresses to the generated assets to ensure uniqueness while maintaining realistic network structures.
+3.  **Integration Data Simulation**: For each supported integration, the script has data maps that add relevant attributes to the assets. For example, it can add CrowdStrike agent information to endpoints or AWS instance details to cloud servers.
+4.  **Task File Creation**: The script outputs the generated data into gzip-compressed JSON files, one for the runZero scan and one for each integration. These files are formatted to be uploaded directly to runZero.
 
-1. In order to create new scan and intgration tasks, you need to `gunzip` all of the files in the `tasks` directory 
-2. Update all of the global config values 
+## Setup and Prerequisites
 
-- `RUNZERO_BASE_URL` - URL to your runZero tenant + `/api/v1.0`
-- `RUNZERO_ORG_ID` - Org ID to upload the tasks to
-- `RUNZERO_SITE_ID` - Site ID to associate the assets with 
-- `RUNZERO_ORG_TOKEN` = Org Token to authenticate 
-- `JAMF_CUSTOM_INTEGRATION_ID` - you need to go create this custom integration and grab the ID after creating for JAMF data to be added
+1.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
+2.  **Set Environment Variables**: The script requires API credentials and IDs for your runZero organization. You can set these in your shell environment or a `.env` file.
 
-### Sample running of the script 
+    -   `RUNZERO_BASE_URL`: The base URL of your runZero console (e.g., `https://console.runzero.com/api/v1.0`).
+    -   `RUNZERO_ORG_ID`: The ID of the organization to upload data to.
+    -   `RUNZERO_SITE_ID`: The ID of the site to associate the assets with.
+    -   `RUNZERO_ORG_TOKEN`: An organization API key with at least `Uploader` permissions.
+    -   `JAMF_CUSTOM_INTEGRATION_ID`: The ID of a custom integration in runZero to use for Jamf data. You must create this manually first.
 
-**What the options do:** 
-1. `--create` - create new assets rather than use existing files.
-2. `--delete` - delete the existing assets in the organization based on the `SITE_ID` provided.
-3. `--upload` - upload the scan and integration tasks.
-4. `--assets-per-subnet=100` - how many assets per subnet should be created. There are 15 subnets used, so you will get N * 15 assets based on your input here. The defaults to 5 if you do not pass it. 
+3.  **Unzip Task Templates**: Before running the script with the `--create` flag, you need to decompress the template files in the `tasks` directory:
+    ```bash
+    gunzip demo-data-population/tasks/*.gz
+    ```
 
-**Output:**
+## Usage
+
+The script is controlled via command-line arguments.
+
+### Command-Line Options
+
+-   `--create`: Generate new demo data files.
+-   `--delete`: Delete all existing assets within the configured `RUNZERO_SITE_ID` before uploading new data.
+-   `--upload`: Upload the generated data files to the runZero organization.
+-   `--assets-per-subnet`: The number of assets to create per subnet. The script uses several predefined subnets, so the total number of assets will be a multiple of this value. Defaults to `5`.
+-   `--env`: Specify the environment (`demo` or `prod`). This determines which set of environment variables to use (e.g., `RUNZERO_DEMO_ORG_ID` vs. `RUNZERO_ORG_ID`).
+
+### Example Workflow
+
+This example command will delete existing assets in the site, create 50 new assets per subnet, and upload the resulting data to runZero.
+
+```bash
+python3 demo-data-population/run.py --delete --create --upload --assets-per-subnet=50
 ```
-$ python3 demo_data.py --create --delete --upload --assets-per-subnet=100
+
+### Expected Output
+
+```
 STARTING - asset creation
-SUCCESS - created 1000 HQ + HQ BACNET assets
-SUCCESS - created 1000 DC + DC BACNET assets
-SUCCESS - created 500 CLOUD assets
+SUCCESS - created 500 HQ assets
+SUCCESS - created 50 HQ-BACNET assets
+SUCCESS - created 500 DC assets
+SUCCESS - created 50 DC-BACNET assets
+SUCCESS - created 250 CLOUD assets
 SUCCESS - created task for rz scan
 SUCCESS - created task for crowdstrike
 SUCCESS - created task for nessus
 SUCCESS - created task for aws
 SUCCESS - created task for azuread
 SUCCESS - created task for jamf
+SUCCESS - created task for qualys
+SUCCESS - created task for wiz
 STARTING - asset deletion
 IN PROGRESS - runZero is deleting the assets
 SUCCESS - all assets deleted
 STARTING - uploading tasks to runZero
-SUCCESS - uploaded scan_output.json
-SUCCESS - uploaded integration_crowdstrike.json
-SUCCESS - uploaded integration_nessus.json
-SUCCESS - uploaded integration_aws.json
-SUCCESS - uploaded integration_azuread.json
-SUCCESS - uploaded integration_jamf.json
+SUCCESS - uploaded scan_output.json.gz
+SUCCESS - uploaded integration_crowdstrike.json.gz
+SUCCESS - uploaded integration_nessus.json.gz
+SUCCESS - uploaded integration_aws.json.gz
+SUCCESS - uploaded integration_azuread.json.gz
+SUCCESS - uploaded integration_jamf.json.gz
+SUCCESS - uploaded integration_qualys.json.gz
+SUCCESS - uploaded integration_wiz.json.gz
 ```
-
