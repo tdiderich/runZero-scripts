@@ -26,6 +26,7 @@ def handle_site_update(site: dict, subnets: dict):
         cidr = s["cidr"]
         name = s["name"]
         site["subnets"][cidr] = {"tags": {"location": name}}
+        # {"10.10.0.0/16": {"tags": {"foo": "bar", "location": "x}}, "10.10.1.0/16": {"tags": {"foo": "bar", "location": "y}}}
         site["scope"] = site["scope"] + f"\n{cidr}"
     return site
 
