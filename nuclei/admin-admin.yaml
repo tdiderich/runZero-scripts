@@ -1,0 +1,81 @@
+id: generic-admin-login
+
+info:
+  name: Generic - Admin/Admin Default Login
+  author: Gemini
+  severity: high
+  description: |
+    Attempts to log in with the default credentials admin/admin using common parameter names.
+    This is a generic template that you can adapt for a specific target.
+    By default, it tries to log in at the root path ('/'). You may need to
+    change the path in the 'raw' request section to the correct login page
+    (e.g., '/login.php').
+  classification:
+    cwe-id: CWE-798
+  metadata:
+    max-request: 4
+  tags: default-login,generic
+
+http:
+  - raw:
+      - |
+        POST / HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        username={{username}}&password={{password}}
+      - |
+        POST / HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        user={{username}}&pass={{password}}
+      - |
+        POST / HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        log={{username}}&pwd={{password}}
+      - |
+        POST / HTTP/1.1
+        Host: {{Hostname}}
+        Authorization: Basic {{base64(username + ":" + password)}}
+
+    attack: pitchfork
+    payloads:
+      username:
+        - admin
+      password:
+        - admin
+
+    # Stop at the first match to be efficient.
+    stop-at-first-match: true
+
+    # Redirects are often a sign of successful login.
+    host-redirects: true
+    max-redirects: 2
+
+    matchers-condition: or
+    matchers:
+      # Matcher 1: A redirect to a new location with a session cookie is a good indicator.
+      - type: regex
+        part: header
+        regex:
+          - '(?i)Set-Cookie: .*'
+          - '(?i)Location: .*'
+        condition: and
+
+      # Matcher 2: The response body contains words indicating a successful login.
+      - type: word
+        part: body
+        words:
+          - "dashboard"
+          - "Welcome admin"
+          - "Logout"
+          - "Administration"
+        case-insensitive: true
+        condition: and
+        matchers:
+          - type: status
+            status:
+              - 200
