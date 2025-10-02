@@ -3,9 +3,9 @@ import os
 import csv
 import json
 
-RUNZERO_ACCOUNT_TOKEN = os.environ["RUNZERO_DEMO_ACCOUNT_TOKEN"]
+RUNZERO_ACCOUNT_TOKEN = os.environ["RUNZERO_ACCOUNT_TOKEN"]
 HEADERS = {"Authorization": f"Bearer {RUNZERO_ACCOUNT_TOKEN}"}
-BASE_URL = "https://demo.runZero.com/api/v1.0"
+BASE_URL = "https://console.runZero.com/api/v1.0"
 
 # A list of all the reports to be generated. New reports can be added here.
 REPORTS = [

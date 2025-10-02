@@ -17,9 +17,9 @@ Before running the script, you need to have a runZero account token with the nec
 
 ## Setup
 
-1.  **Set Environment Variable:** You must set the `RUNZERO_DEMO_ACCOUNT_TOKEN` environment variable to your runZero account token.
+1.  **Set Environment Variable:** You must set the `RUNZERO_ACCOUNT_TOKEN` environment variable to your runZero account token.
     ```bash
-    export RUNZERO_DEMO_ACCOUNT_TOKEN="YOUR_TOKEN_HERE"
+    export RUNZERO_ACCOUNT_TOKEN="YOUR_TOKEN_HERE"
     ```
 
 ## Running the Script
