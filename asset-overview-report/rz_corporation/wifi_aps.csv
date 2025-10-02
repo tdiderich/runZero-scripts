@@ -1,0 +1,19 @@
+addresses,hw_vendor,id,last_seen,names,os,os_version,sources
+10.0.4.1,Ruckus,0d3dd67e-92f3-42b7-8890-e7b43f9776a1,1759385534,RZHQ-WAP-41,Linux,5.4.0-122-generic,"Nessus, runZero"
+10.0.20.1,Ruckus,160b317a-a9b5-4c50-98eb-d6bb483b195d,1759385528,,Linux,5.4.0-122-generic,"Nessus, runZero"
+10.0.2.46,Extreme Networks,405ab6cb-d97d-4463-97ad-c05f0ec11d38,1759385532,,Extreme Networks,,runZero
+198.51.28.40,Extreme Networks,4495dfb0-ac1e-4d5c-98b5-1bb82cd39a1b,1759385533,,Extreme Networks,,runZero
+10.0.16.1,Ruckus,48ad3dd0-b9bc-4c97-999b-17c22a6d0574,1759385535,,Linux,5.4.0-122-generic,"Nessus, runZero"
+10.0.7.1,Ruckus,59d15a3d-a12a-4481-a90c-c15614446ee5,1759385537,,Linux,5.4.0-122-generic,"Nessus, runZero"
+10.0.16.41,Extreme Networks,627a49a6-1dc4-4178-a46f-31530f620859,1759385536,,Extreme Networks,,runZero
+198.51.29.3,Extreme Networks,62974ac3-ad81-40cf-bcd0-9eb72c8bc621,1759385533,,Extreme Networks,,runZero
+198.51.29.28,Extreme Networks,68ed9219-1ec2-4961-b63b-40809e2763a9,1759385534,,Extreme Networks,,runZero
+10.0.15.27,Extreme Networks,947058f6-abba-45bf-95a4-bbb877107f41,1759385535,,Extreme Networks,,runZero
+10.0.3.1,Ruckus,98c0086b-a4fe-4559-8ef5-efa75dd0505e,1759385532,RZHQ-WAP-31,Linux,5.4.0-122-generic,"Nessus, runZero"
+10.0.14.1,Ruckus,9abcd017-7a9b-409b-af20-08e52c61197e,1759385532,,,,runZero
+198.51.25.20,Extreme Networks,a0f3d379-9325-4b1c-8e98-c2ca18504a8e,1759385529,,Extreme Networks,,runZero
+10.0.5.1,Ubiquiti,adc48677-0e1e-414a-9db0-a8c62ac461c5,1759385535,RZHQ-WAP-51,Ubiquiti UniFi UAP,6.6.65.15248,runZero
+10.0.13.6,Extreme Networks,ac5d3800-d8b7-49c6-9c0c-ddb54c5beaf9,1759385532,,Extreme Networks,,runZero
+10.0.7.9,Extreme Networks,bf8cebdc-ceac-4d3f-94cf-6399bc2d96d7,1759385538,,Extreme Networks,,runZero
+10.0.6.1,Ruckus,f05dc2fd-9b2b-4f9c-bde9-832c6a396319,1759385536,RZHQ-WAP-61,Linux,,runZero
+10.0.12.1,Ubiquiti,fcdf6763-cb5c-46af-a285-9ec6f54191a5,1759385529,RZDC-WAP-121,Ubiquiti UniFi UAP,6.6.65.15248,"Nessus, runZero"
