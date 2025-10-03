@@ -43,9 +43,7 @@ source_map = {
     "-1": "custom",
 }
 
-# --- NEW: Data Structure for Aggregation ---
-# This new structure will group sources under each unique identifier
-# Format: { asset_id: { (type, value): {source1, source2} } }
+# --- Data Structure for Aggregation ---
 parsed_data = {}
 all_sources_in_data = set()
 
@@ -65,7 +63,6 @@ for asset in assets:
     if not asset_id:
         continue
 
-    # Ensure the asset_id key exists in our data structure
     parsed_data.setdefault(asset_id, {})
 
     attributes = asset.get("attributes", {})
@@ -78,18 +75,24 @@ for asset in assets:
                 source_id = parts[1]
                 identifier_type = parts[2]
                 source_name = source_map.get(str(source_id), "Unknown")
-
-                # This is a unique identifier (e.g., ('macs', '00:1A:...'))
-                identifier_key = (identifier_type, value)
-
-                # Ensure the set of sources for this identifier exists
-                parsed_data[asset_id].setdefault(identifier_key, set())
-
-                # Add the current source to the set for this identifier
-                parsed_data[asset_id][identifier_key].add(source_name)
                 all_sources_in_data.add(source_name)
 
-# --- REWRITTEN: CSV Preparation from Aggregated Data ---
+                # --- KEY CHANGE IS HERE ---
+                # Split the value by tabs to handle multiple identifiers in one field
+                individual_values = value.split("\t")
+
+                # Loop through each individual value that was split out
+                for single_value in individual_values:
+                    cleaned_value = single_value.strip()
+                    if not cleaned_value:
+                        continue
+
+                    identifier_key = (identifier_type, cleaned_value)
+                    parsed_data[asset_id].setdefault(identifier_key, set())
+                    parsed_data[asset_id][identifier_key].add(source_name)
+                # --- END OF KEY CHANGE ---
+
+# --- CSV Preparation from Aggregated Data ---
 sorted_sources = sorted(list(all_sources_in_data))
 final_rows = []
 
@@ -97,25 +100,20 @@ for asset_id, identifiers in parsed_data.items():
     for identifier_key, sources in identifiers.items():
         identifier_type, value = identifier_key
 
-        row = {
-            "asset_id": asset_id,
-            "type": identifier_type,
-            "value": value,
-        }
+        row = {"asset_id": asset_id, "type": identifier_type, "value": value}
 
-        # Now, add the checkmarks based on the sources for this specific identifier
         for source_name in sorted_sources:
             row[source_name] = "✅" if source_name in sources else "❌"
 
         final_rows.append(row)
 
-# Sort the final list of rows for clear, grouped readability
+# Sort the final list of rows
 final_rows.sort(key=lambda x: (x["asset_id"], x["type"], x["value"]))
 
-# Define fieldnames for the new data structure (no more 'source' column)
+# Define fieldnames for the new data structure
 fieldnames = ["asset_id", "type", "value"] + sorted_sources
 
-# --- Terminal Output (Unchanged logic, works with new data) ---
+# --- Terminal Output ---
 console = Console()
 for asset_id, group in groupby(final_rows, key=lambda x: x["asset_id"]):
     table = Table(
@@ -130,7 +128,7 @@ for asset_id, group in groupby(final_rows, key=lambda x: x["asset_id"]):
         table.add_row(*[str(row_data.get(field, "")) for field in fieldnames])
     console.print(table)
 
-# --- CSV Writing (Unchanged logic, works with new data) ---
+# --- CSV Writing ---
 output_filename = "asset_sources_report_aggregated.csv"
 with open(output_filename, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
