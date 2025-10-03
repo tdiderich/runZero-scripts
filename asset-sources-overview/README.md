@@ -95,6 +95,29 @@ $ python3 run.py
 └──────────────────────────────────────┴─────────┴────────────┴──────────────────────────────────────────────────────────────────────┴─────────┴────────┴────────┴────────┘
 
 ✅ Success! Full report has been saved to 'asset_sources_report.csv'
+
+--- Assets with Orphaned Sources ---
+The following assets have at least one source whose identifiers are completely unique (highlighted in red).
+- a3b1c8d2-6e4f-4a5b-8c7d-9e0f1a2b3c4d (sources: mecm)
+- f7e6d5c4-3b2a-4c1d-8e9f-0a1b2c3d4e5f (sources: qualys)
+- 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d (sources: mecm, vmware)
+- 8d7c6b5a-4f3e-4d2c-b1a9-8e7f6d5c4b3a (sources: custom, mecm)
+- c9d8e7f6-5a4b-4c3d-b2a1-9e8f7d6c5b4a (sources: mecm)
+- 5b4a3c2d-1e9f-4a8b-7c6d-5e4f3a2b1c9d (sources: mecm)
+- e2f1a9b8-7c6d-4e5f-b4a3-c2d1e9f8b7a6 (sources: rumble)
+- 6f5e4d3c-2b1a-4c9d-8e7f-6d5c4b3a2e1f (sources: custom, mecm)
+- b8a7c6d5-4e3f-4a2b-9c1d-8e7f6d5c4b3a (sources: mecm)
+- d1c9b8a7-6e5f-4d4c-b3a2-1e9f8d7c6b5a (sources: mecm)
+- 2e1f9d8c-7b6a-4c5d-b4a3-2e1f9d8c7b6a (sources: mecm)
+- 9c8b7a6d-5e4f-4d3c-b2a1-9e8f7d6c5b4a (sources: mecm)
+- 4a3b2c1d-9e8f-4d7c-b6a5-4f3e2d1c9b8a (sources: azuread)
+- 7d6c5b4a-3e2f-4c1d-b9a8-7d6c5b4a3e2f (sources: mecm)
+- f0e9d8c7-6b5a-4c3d-b1a9-8e7f6d5c4b3a (sources: mecm)
+- 3b2a1c9d-8e7f-4a6b-5c4d-3e2f1a9b8c7d (sources: mecm)
+- c6b5a4d3-2e1f-4c9d-b8a7-c6b5a4d3e2f1 (sources: rumble)
+
+Search Query:
+id:"a3b1c8d2-6e4f-4a5b-8c7d-9e0f1a2b3c4d" OR id:"f7e6d5c4-3b2a-4c1d-8e9f-0a1b2c3d4e5f" OR id:"1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d" OR id:"8d7c6b5a-4f3e-4d2c-b1a9-8e7f6d5c4b3a" OR id:"c9d8e7f6-5a4b-4c3d-b2a1-9e8f7d6c5b4a" OR id:"5b4a3c2d-1e9f-4a8b-7c6d-5e4f3a2b1c9d" OR id:"e2f1a9b8-7c6d-4e5f-b4a3-c2d1e9f8b7a6" OR id:"6f5e4d3c-2b1a-4c9d-8e7f-6d5c4b3a2e1f" OR id:"b8a7c6d5-4e3f-4a2b-9c1d-8e7f6d5c4b3a" OR id:"d1c9b8a7-6e5f-4d4c-b3a2-1e9f8d7c6b5a" OR id:"2e1f9d8c-7b6a-4c5d-b4a3-2e1f9d8c7b6a" OR id:"9c8b7a6d-5e4f-4d3c-b2a1-9e8f7d6c5b4a" OR id:"4a3b2c1d-9e8f-4d7c-b6a5-4f3e2d1c9b8a" OR id:"7d6c5b4a-3e2f-4c1d-b9a8-7d6c5b4a3e2f" OR id:"f0e9d8c7-6b5a-4c3d-b1a9-8e7f6d5c4b3a" OR id:"3b2a1c9d-8e7f-4a6b-5c4d-3e2f1a9b8c7d" OR id:"c6b5a4d3-2e1f-4c9d-b8a7-c6b5a4d3e2f1"
 ```
 
 This format makes it easy to filter and analyze your asset data to see which systems are providing which pieces of information.
