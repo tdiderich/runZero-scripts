@@ -39,10 +39,10 @@ This detailed report allows you to see not only which sources are associated wit
 ## Example Output
 
 ```
-$ python3 run.py                                                                                         [10:47:03]
+$ python3 run.py
 ✅ Success! Your hybrid report has been written to 'asset_sources_report.csv'
 
-$ for id in $(tail -n +2 asset_sources_report.csv | cut -d, -f1 | sort -u | tr -d '\r'); do             [11:14:58]
+$ for id in $(tail -n +2 asset_sources_report.csv | cut -d, -f1 | sort -u | tr -d '\r'); do
     echo "\n--- Asset ID: $id ---"
     csvgrep -c asset_id -m "$id" asset_sources_report.csv > temp_asset.csv
     rich --csv temp_asset.csv
