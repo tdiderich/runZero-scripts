@@ -41,17 +41,40 @@ This detailed report allows you to see not only which sources are associated wit
 ```
 $ python3 run.py                                                                                         [10:47:03]
 ✅ Success! Your hybrid report has been written to 'asset_sources_report.csv'
-$ awk -F, 'NR==1 || $1=="061786a4-4ce3-4f67-9dfd-581bfbbb1633"' asset_sources_report.csv | rich --csv -
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━┓
-┃ asset_id                             ┃ source ┃ type  ┃ value             ┃ aws ┃ azuread ┃ crowdstrike ┃ custom ┃ nessus ┃ qualys ┃ rumble ┃ wiz ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━┩
-│ 061786a4-4ce3-4f67-9dfd-581bfbbb1633 │ nessus │ addrs │ 10.0.0.2          │ ❌  │ ❌      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
-│ 061786a4-4ce3-4f67-9dfd-581bfbbb1633 │ nessus │ macs  │ 5c:e2:8c:12:87:a0 │ ❌  │ ❌      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
-│ 061786a4-4ce3-4f67-9dfd-581bfbbb1633 │ rumble │ addrs │ 10.0.0.2          │ ❌  │ ❌      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
-│ 061786a4-4ce3-4f67-9dfd-581bfbbb1633 │ rumble │ macs  │ 5c:e2:8c:12:87:a0 │ ❌  │ ❌      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
-│ 061786a4-4ce3-4f67-9dfd-581bfbbb1633 │ rumble │ names │ RZHQ-FIREWALL-02  │ ❌  │ ❌      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
-└──────────────────────────────────────┴────────┴───────┴───────────────────┴─────┴─────────┴─────────────┴────────┴────────┴────────┴────────┴─────┘
-(runZero-scripts) tyler:asset-sources-overview/ (main✗)
+
+$ for id in $(tail -n +2 asset_sources_report.csv | cut -d, -f1 | sort -u | tr -d '\r'); do             [11:14:58]
+    echo "\n--- Asset ID: $id ---"
+    csvgrep -c asset_id -m "$id" asset_sources_report.csv > temp_asset.csv
+    rich --csv temp_asset.csv
+    rm temp_asset.csv
+done
+
+--- Asset ID: 001852cc-da1e-4f5e-936c-b215344589aa ---
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━┓
+┃ asset_id                             ┃ source      ┃ type  ┃ value             ┃ aws ┃ azuread ┃ crowdstrike ┃ custom ┃ nessus ┃ qualys ┃ rumble ┃ wiz ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━┩
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ azuread     │ names │ RZDC-SERVER-1245  │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ crowdstrike │ addrs │ 10.0.12.45        │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ crowdstrike │ macs  │ 19:3c:1f:a5:d1:4b │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ crowdstrike │ names │ RZDC-SERVER-1245  │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ nessus      │ addrs │ 10.0.12.45        │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ nessus      │ macs  │ 19:3c:1f:a5:d1:4b │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ rumble      │ addrs │ 10.0.12.45        │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ rumble      │ macs  │ 19:3c:1f:a5:d1:4b │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 001852cc-da1e-4f5e-936c-b215344589aa │ rumble      │ names │ RZDC-SERVER-1245  │ ❌  │ ✅      │ ✅          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+└──────────────────────────────────────┴─────────────┴───────┴───────────────────┴─────┴─────────┴─────────────┴────────┴────────┴────────┴────────┴─────┘
+
+--- Asset ID: 01845493-75a2-4c86-b239-cd7165704804 ---
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━┓
+┃ asset_id                             ┃ source  ┃ type  ┃ value                ┃ aws ┃ azuread ┃ crowdstrike ┃ custom ┃ nessus ┃ qualys ┃ rumble ┃ wiz ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━┩
+│ 01845493-75a2-4c86-b239-cd7165704804 │ azuread │ names │ RZBACNET-SERVER-2045 │ ❌  │ ✅      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 01845493-75a2-4c86-b239-cd7165704804 │ nessus  │ addrs │ 10.0.20.45           │ ❌  │ ✅      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 01845493-75a2-4c86-b239-cd7165704804 │ nessus  │ macs  │ 19:3c:1f:f6:ab:f9    │ ❌  │ ✅      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 01845493-75a2-4c86-b239-cd7165704804 │ rumble  │ addrs │ 10.0.20.45           │ ❌  │ ✅      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 01845493-75a2-4c86-b239-cd7165704804 │ rumble  │ macs  │ 19:3c:1f:f6:ab:f9    │ ❌  │ ✅      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+│ 01845493-75a2-4c86-b239-cd7165704804 │ rumble  │ names │ RZBACNET-SERVER-2045 │ ❌  │ ✅      │ ❌          │ ❌     │ ✅     │ ❌     │ ✅     │ ❌  │
+└──────────────────────────────────────┴─────────┴───────┴──────────────────────┴─────┴─────────┴─────────────┴────────┴────────┴────────┴────────┴─────┘
 ```
 
 This format makes it easy to filter and analyze your asset data to see which systems are providing which pieces of information.

@@ -107,9 +107,9 @@ for identifier in all_identifiers:
     # Create a new row, starting with the identifier's specific details
     row = identifier.copy()
 
-    # Add the summary columns (✅/❌) for all possible sources
+    # Add a checkmark ONLY for the source on the current row
     for source_name in all_sources_in_data:
-        row[source_name] = "✅" if source_name in sources_for_this_asset else "❌"
+        row[source_name] = "✅" if source_name == identifier["source"] else "❌"
 
     final_rows.append(row)
 
