@@ -5,6 +5,7 @@ from rich.table import Table
 from itertools import groupby
 
 # --- Source ID to Name Mapping ---
+# (This section is unchanged)
 source_map = {
     "1": "rumble",
     "2": "miradore",
@@ -42,9 +43,11 @@ source_map = {
     "-1": "custom",
 }
 
-# --- Data Structures ---
-all_identifiers = []
-asset_source_map = {}
+# --- NEW: Data Structure for Aggregation ---
+# This new structure will group sources under each unique identifier
+# Format: { asset_id: { (type, value): {source1, source2} } }
+parsed_data = {}
+all_sources_in_data = set()
 
 # --- JSON Parsing ---
 try:
@@ -56,18 +59,18 @@ except FileNotFoundError:
     )
     exit()
 
-# Parse the assets
+# --- REWRITTEN: Parse and Aggregate the Data ---
 for asset in assets:
     asset_id = asset.get("id")
     if not asset_id:
         continue
 
-    if asset_id not in asset_source_map:
-        asset_source_map[asset_id] = set()
+    # Ensure the asset_id key exists in our data structure
+    parsed_data.setdefault(asset_id, {})
 
     attributes = asset.get("attributes", {})
     for key, value in attributes.items():
-        if value == "":
+        if not value:
             continue
         if key.startswith("_source"):
             parts = key.split(".")
@@ -75,38 +78,45 @@ for asset in assets:
                 source_id = parts[1]
                 identifier_type = parts[2]
                 source_name = source_map.get(str(source_id), "Unknown")
-                asset_source_map[asset_id].add(source_name)
-                all_identifiers.append(
-                    {
-                        "asset_id": asset_id,
-                        "source": source_name,
-                        "type": identifier_type,
-                        "value": value,
-                    }
-                )
 
-# --- CSV Preparation ---
-all_sources_in_data = sorted(
-    list(set(s for sources in asset_source_map.values() for s in sources))
-)
+                # This is a unique identifier (e.g., ('macs', '00:1A:...'))
+                identifier_key = (identifier_type, value)
 
+                # Ensure the set of sources for this identifier exists
+                parsed_data[asset_id].setdefault(identifier_key, set())
+
+                # Add the current source to the set for this identifier
+                parsed_data[asset_id][identifier_key].add(source_name)
+                all_sources_in_data.add(source_name)
+
+# --- REWRITTEN: CSV Preparation from Aggregated Data ---
+sorted_sources = sorted(list(all_sources_in_data))
 final_rows = []
-for identifier in all_identifiers:
-    row = identifier.copy()
-    # Add a checkmark ONLY for the source on the current row
-    for source_name in all_sources_in_data:
-        row[source_name] = "✅" if source_name == identifier["source"] else "❌"
-    final_rows.append(row)
 
-# Sort the final list of rows to ensure they are grouped by asset_id
-final_rows.sort(key=lambda x: (x["asset_id"], x["source"], x["type"]))
+for asset_id, identifiers in parsed_data.items():
+    for identifier_key, sources in identifiers.items():
+        identifier_type, value = identifier_key
 
-# Define fieldnames here so both terminal output and CSV writer can use them
-fieldnames = ["asset_id", "source", "type", "value"] + all_sources_in_data
+        row = {
+            "asset_id": asset_id,
+            "type": identifier_type,
+            "value": value,
+        }
 
-# --- Terminal Output ---
+        # Now, add the checkmarks based on the sources for this specific identifier
+        for source_name in sorted_sources:
+            row[source_name] = "✅" if source_name in sources else "❌"
+
+        final_rows.append(row)
+
+# Sort the final list of rows for clear, grouped readability
+final_rows.sort(key=lambda x: (x["asset_id"], x["type"], x["value"]))
+
+# Define fieldnames for the new data structure (no more 'source' column)
+fieldnames = ["asset_id", "type", "value"] + sorted_sources
+
+# --- Terminal Output (Unchanged logic, works with new data) ---
 console = Console()
-# Group the sorted rows by 'asset_id' to create one table per asset
 for asset_id, group in groupby(final_rows, key=lambda x: x["asset_id"]):
     table = Table(
         title=f"Asset ID: {asset_id}",
@@ -114,22 +124,17 @@ for asset_id, group in groupby(final_rows, key=lambda x: x["asset_id"]):
         show_header=True,
         header_style="bold cyan",
     )
-
-    # Add table columns
     for field in fieldnames:
         table.add_column(field)
-
-    # Add rows to this asset's table
     for row_data in group:
         table.add_row(*[str(row_data.get(field, "")) for field in fieldnames])
-
     console.print(table)
 
-# --- CSV Writing ---
-output_filename = "asset_sources_report.csv"
+# --- CSV Writing (Unchanged logic, works with new data) ---
+output_filename = "asset_sources_report_aggregated.csv"
 with open(output_filename, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(final_rows)
 
-print(f"\n✅ Success! Full report has been saved to '{output_filename}'")
+print(f"\n✅ Success! Aggregated report has been saved to '{output_filename}'")
