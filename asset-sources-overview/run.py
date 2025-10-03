@@ -1,5 +1,8 @@
 import json
 import csv
+from rich.console import Console
+from rich.table import Table
+from itertools import groupby
 
 # --- Source ID to Name Mapping ---
 source_map = {
@@ -40,13 +43,10 @@ source_map = {
 }
 
 # --- Data Structures ---
-# To store the detailed list of every identifier found
 all_identifiers = []
-# To map each asset ID to the set of sources it has
 asset_source_map = {}
 
 # --- JSON Parsing ---
-# Assuming 'assets.json' is in the same directory
 try:
     with open("assets.json", "r", encoding="utf-8") as f:
         assets = json.load(f)
@@ -56,13 +56,12 @@ except FileNotFoundError:
     )
     exit()
 
-# Parse the assets, collecting both detailed identifiers and the summary of sources per asset
+# Parse the assets
 for asset in assets:
     asset_id = asset.get("id")
     if not asset_id:
         continue
 
-    # Initialize a set for the asset if it's the first time we've seen it
     if asset_id not in asset_source_map:
         asset_source_map[asset_id] = set()
 
@@ -76,11 +75,7 @@ for asset in assets:
                 source_id = parts[1]
                 identifier_type = parts[2]
                 source_name = source_map.get(str(source_id), "Unknown")
-
-                # Add the source name to this asset's set of sources
                 asset_source_map[asset_id].add(source_name)
-
-                # Append a dictionary with the full identifier details
                 all_identifiers.append(
                     {
                         "asset_id": asset_id,
@@ -91,42 +86,50 @@ for asset in assets:
                 )
 
 # --- CSV Preparation ---
-
-# Get a sorted list of all unique source names to use as the summary columns
 all_sources_in_data = sorted(
     list(set(s for sources in asset_source_map.values() for s in sources))
 )
 
-# Build the final list of rows for the CSV
 final_rows = []
 for identifier in all_identifiers:
-    asset_id = identifier["asset_id"]
-    # Get the set of all sources associated with this identifier's parent asset
-    sources_for_this_asset = asset_source_map.get(asset_id, set())
-
-    # Create a new row, starting with the identifier's specific details
     row = identifier.copy()
-
     # Add a checkmark ONLY for the source on the current row
     for source_name in all_sources_in_data:
         row[source_name] = "✅" if source_name == identifier["source"] else "❌"
-
     final_rows.append(row)
 
-# Sort the final list of rows for clear, grouped readability
+# Sort the final list of rows to ensure they are grouped by asset_id
 final_rows.sort(key=lambda x: (x["asset_id"], x["source"], x["type"]))
 
+# Define fieldnames here so both terminal output and CSV writer can use them
+fieldnames = ["asset_id", "source", "type", "value"] + all_sources_in_data
+
+# --- Terminal Output ---
+console = Console()
+# Group the sorted rows by 'asset_id' to create one table per asset
+for asset_id, group in groupby(final_rows, key=lambda x: x["asset_id"]):
+    table = Table(
+        title=f"Asset ID: {asset_id}",
+        title_style="bold magenta",
+        show_header=True,
+        header_style="bold cyan",
+    )
+
+    # Add table columns
+    for field in fieldnames:
+        table.add_column(field)
+
+    # Add rows to this asset's table
+    for row_data in group:
+        table.add_row(*[str(row_data.get(field, "")) for field in fieldnames])
+
+    console.print(table)
 
 # --- CSV Writing ---
-
-# The header will be the identifier fields plus a column for each source
-fieldnames = ["asset_id", "source", "type", "value"] + all_sources_in_data
 output_filename = "asset_sources_report.csv"
-
-# Write the data to the CSV file
 with open(output_filename, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(final_rows)
 
-print(f"✅ Success! Your source report has been written to '{output_filename}'")
+print(f"\n✅ Success! Full report has been saved to '{output_filename}'")
