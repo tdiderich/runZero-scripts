@@ -270,17 +270,31 @@ def run_cleanup_mode(
         for source_name in sorted(list(orphan_sources)):
             user_input = ""
             if not process_all:
-                user_input = Prompt.ask(
-                    f"\nRemove source [bold red]{source_name}[/] from asset [cyan]{asset_id}[/]? "
-                    f"([bold]Enter[/] to approve, [bold]all[/] to approve all, [bold]n[/] to skip)",
-                    default="y",
-                ).lower()
+                if source_name == "rumble":
+                    prompt_text = (
+                        f"\n[bold red]DELETE ASSET[/] [cyan]{asset_id}[/]? This is the primary Rumble source. "
+                        f"([bold]Enter[/] to approve, [bold]all[/] to approve all, [bold]n[/] to skip)"
+                    )
+                else:
+                    prompt_text = (
+                        f"\nRemove source [bold red]{source_name}[/] from asset [cyan]{asset_id}[/]? "
+                        f"([bold]Enter[/] to approve, [bold]all[/] to approve all, [bold]n[/] to skip)"
+                    )
+                user_input = Prompt.ask(prompt_text, default="y").lower()
 
             if user_input == "all":
                 process_all = True
             if process_all or user_input in ["y", ""]:
                 try:
-                    if source_name == "custom":
+                    if source_name == "rumble":
+                        url = f"{BASE_URL}/org/assets/{asset_id}"
+                        response = requests.delete(url, headers=HEADERS)
+                        response.raise_for_status()
+                        console.print(
+                            f"  [green]✅ Success:[/green] Deleted asset '{asset_id}'."
+                        )
+                        break
+                    elif source_name == "custom":
                         custom_ids = asset_data_map.get(asset_id, {}).get(
                             "custom_integration_ids", []
                         )
