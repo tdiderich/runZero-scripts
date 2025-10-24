@@ -41,7 +41,7 @@ def main():
                 continue
 
             # Convert dict to string of "key=value" pairs separated by spaces
-            tags_str = " ".join(f"{k}={v}" for k, v in tags_dict.items() if v)
+            tags_str = " ".join(f"{k}={v}" if v else k for k, v in tags_dict.items())
 
             payload = {"search": f"net:{subnet}", "tags": tags_str}
 
