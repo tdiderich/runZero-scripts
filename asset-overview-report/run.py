@@ -1,11 +1,16 @@
 import requests
 import os
 import csv
-import json
+import pandas as pd
+import matplotlib.pyplot as plt
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
 
-RUNZERO_ACCOUNT_TOKEN = os.environ["RUNZERO_ACCOUNT_TOKEN"]
+
+RUNZERO_ACCOUNT_TOKEN = os.environ["RUNZERO_DEMO_ACCOUNT_TOKEN"]
 HEADERS = {"Authorization": f"Bearer {RUNZERO_ACCOUNT_TOKEN}"}
-BASE_URL = "https://console.runZero.com/api/v1.0"
+BASE_URL = "https://demo.runZero.com/api/v1.0"
 
 # A list of all the reports to be generated. New reports can be added here.
 REPORTS = [
@@ -92,6 +97,123 @@ REPORTS = [
 ]
 
 
+def create_count_chart(df, output_path):
+    """Create a bar chart for count-based reports."""
+    plt.figure(figsize=(10, 5))
+    plt.bar(df["report_name"], df["count"])
+    plt.xticks(rotation=45, ha="right")
+    plt.title("Asset Summary Counts")
+    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
+
+
+def create_pdf_report(org_name, org_path):
+    """Generate a PDF summary report combining counts and CSV previews with truncated long values."""
+    pdf_path = os.path.join(org_path, "report.pdf")
+    styles = getSampleStyleSheet()
+    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
+    story = []
+
+    # ----------- Truncation helper -----------
+    def truncate_value(val, max_items=2):
+        """Truncate comma-separated lists and append '… and X more'."""
+        if not isinstance(val, str):
+            return str(val)
+
+        # Split on comma + space
+        parts = [p.strip() for p in val.split(",")]
+
+        if len(parts) <= max_items:
+            return val
+
+        shown = ", ".join(parts[:max_items])
+        remaining = len(parts) - max_items
+        return f"{shown}, … and {remaining} more"
+
+    # ----------- Wrap DataFrame for PDF table -----------
+    def wrap_dataframe(df, max_width=500):
+        cols = df.columns.tolist()
+        col_width = max_width / len(cols)
+        style = styles["BodyText"]
+
+        table_data = [cols]
+        for _, row in df.iterrows():
+            wrapped_row = [Paragraph(truncate_value(x), style) for x in row.tolist()]
+            table_data.append(wrapped_row)
+
+        return table_data, [col_width] * len(cols)
+
+    # Title
+    story.append(Paragraph(f"{org_name.upper()} Asset Report", styles["Title"]))
+    story.append(Spacer(1, 20))
+
+    # ----------- Counts Summary -----------
+    count_csv = os.path.join(org_path, "counts_summary.csv")
+    if os.path.exists(count_csv):
+        df_counts = pd.read_csv(count_csv)
+
+        # Chart
+        chart_path = os.path.join(org_path, "counts_chart.png")
+        create_count_chart(df_counts, chart_path)
+
+        story.append(Paragraph("Asset Type Summary", styles["Heading2"]))
+        story.append(Image(chart_path, width=500, height=300))
+        story.append(Spacer(1, 20))
+
+        # Count table
+        story.append(Paragraph("Count Details", styles["Heading3"]))
+        table_data, col_widths = wrap_dataframe(df_counts)
+        table = Table(table_data, colWidths=col_widths, repeatRows=1, splitByRow=1)
+
+        table.setStyle(
+            TableStyle(
+                [
+                    ("FONTSIZE", (0, 0), (-1, -1), 7),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 2),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 2),
+                ]
+            )
+        )
+
+        story.append(table)
+        story.append(Spacer(1, 20))
+
+    # ----------- Dump Files (truncated preview) -----------
+    for file in sorted(os.listdir(org_path)):
+        if not file.endswith(".csv") or file == "counts_summary.csv":
+            continue
+
+        df = pd.read_csv(os.path.join(org_path, file))
+
+        story.append(
+            Paragraph(file.replace(".csv", "").capitalize(), styles["Heading2"])
+        )
+
+        preview_df = df.head(20)
+        table_data, col_widths = wrap_dataframe(preview_df)
+
+        table = Table(table_data, colWidths=col_widths, repeatRows=1, splitByRow=1)
+
+        table.setStyle(
+            TableStyle(
+                [
+                    ("FONTSIZE", (0, 0), (-1, -1), 6),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 2),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 2),
+                ]
+            )
+        )
+
+        story.append(table)
+        story.append(Spacer(1, 20))
+
+    doc.build(story)
+    print(f"PDF report created: {pdf_path}")
+
+
 def write_to_csv(output: list, filename: str):
     """Writes the given data to a CSV file."""
     if not output:
@@ -175,6 +297,7 @@ def main():
         # Write the count summary report for the organization
         if count_summary:
             write_to_csv(count_summary, f"{org_name}/counts_summary.csv")
+            create_pdf_report(org_name, org_name)
 
 
 if __name__ == "__main__":
