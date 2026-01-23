@@ -1,0 +1,35 @@
+name: Demo Data Population
+
+on:
+  schedule:
+    # 11pm CST (UTC-6) == 05:00 UTC the next day; adjust if you want DST-aware timing.
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+jobs:
+  populate-demo-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: python -m pip install --upgrade pip requests
+
+      - name: Generate and upload demo data
+        working-directory: demo-data-population
+        env:
+          RUNZERO_UPLOAD_ORG_TOKEN: ${{ secrets.RUNZERO_UPLOAD_ORG_TOKEN }}
+          NEON_RAY_ORG_TOKEN: ${{ secrets.NEON_RAY_ORG_TOKEN }}
+        run: python create-from-neonray.py
+
+      - name: Upload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-data-archive
+          path: demo-data-population/integration_exports.zip

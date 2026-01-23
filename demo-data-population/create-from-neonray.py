@@ -7,14 +7,16 @@ import json
 import gzip
 import time
 import random
+import glob
 import re
 import requests
+import zipfile
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from copy import deepcopy
 
 # -----------------------------------------------------
-# CONFIG (kept exactly like your old script)
+# CONFIG 
 # -----------------------------------------------------
 
 RUNZERO_BASE_URL = "https://demo.runzero.com/api/v1.0"
@@ -22,13 +24,9 @@ RUNZERO_UPLOAD_ORG_ID = "fec36000-264b-4690-bdd6-16a18d82e906"
 RUNZERO_UPLOAD_SITE_ID = "8746f1ec-0b7f-4958-8385-4a61c3bb8dc8"
 RUNZERO_UPLOAD_ORG_TOKEN = os.environ["RUNZERO_UPLOAD_ORG_TOKEN"]
 NEON_RAY_ORG_TOKEN = os.environ["NEON_RAY_ORG_TOKEN"]
-JAMF_CUSTOM_INTEGRATION_ID = os.environ["RUNZERO_DEMO_JAMF_ID"]
 
 # API token used to *pull* templates + assets
 EXPORT_TOKEN = NEON_RAY_ORG_TOKEN
-
-# Where we cache freshly fetched templates
-TEMPLATE_DIR = "templates"
 
 # Integrations we generate synthetic data for
 INTEGRATIONS = ["crowdstrike", "qualys", "intune", "ldap", "mecm"]
@@ -592,13 +590,26 @@ def delete_existing_assets():
         time.sleep(1.5)
 
 
+def archive_outputs(archive_name="integration_exports.zip"):
+    paths = sorted(glob.glob("integration_*.json.gz"))
+    if not paths:
+        print("[archive] no gzip files found")
+        return None
+
+    with zipfile.ZipFile(archive_name, "w", compression=zipfile.ZIP_STORED) as zf:
+        for path in paths:
+            zf.write(path, arcname=os.path.basename(path))
+
+    print(f"[archive] wrote {archive_name} ({len(paths)} files)")
+    return archive_name
+
+
 # -----------------------------------------------------
 # Template extraction
 # -----------------------------------------------------
 
 
 def extract_templates(tasks_by_integration):
-    os.makedirs(TEMPLATE_DIR, exist_ok=True)
     templates = {}
 
     for integ, task_id in tasks_by_integration.items():
@@ -626,34 +637,14 @@ def extract_templates(tasks_by_integration):
             print(f"[WARN] no result rows for {integ}; types seen={types}")
             continue
 
-        # Save templates
-        path_cfg = f"{TEMPLATE_DIR}/integration_{integ}_config.json"
-        path_res = f"{TEMPLATE_DIR}/integration_{integ}_results.json"
-
-        with open(path_cfg, "w") as f:
-            f.write(json.dumps(config_row, separators=(",", ":")))
-
-        with open(path_res, "w") as f:
-            f.write(json.dumps(result_rows, separators=(",", ":")))
-
         templates[integ] = {
             "config": config_row,
             "results": result_rows,
         }
 
-        print(f"[template] wrote {path_cfg} and {path_res}")
+        print(f"[template] loaded {integ} config/results")
 
     return templates
-
-
-def load_template_config(integration):
-    with open(f"{TEMPLATE_DIR}/integration_{integration}_config.json") as f:
-        return json.loads(f.read())
-
-
-def load_template_results(integration):
-    with open(f"{TEMPLATE_DIR}/integration_{integration}_results.json") as f:
-        return json.loads(f.read())
 
 
 # -----------------------------------------------------
@@ -684,7 +675,7 @@ def main():
     print("[info] integrations found:", integ_task_map)
 
     # Step 1: extract templates from NeonRay
-    extract_templates(integ_task_map)
+    templates = extract_templates(integ_task_map)
 
     # Step 2: produce synthetic output from templates
     for integ in INTEGRATIONS:
@@ -692,8 +683,13 @@ def main():
             print(f"[skip] no real template for {integ}")
             continue
 
-        cfg = load_template_config(integ)
-        results = load_template_results(integ)
+        template = templates.get(integ)
+        if not template:
+            print(f"[skip] no templates loaded for {integ}")
+            continue
+
+        cfg = template["config"]
+        results = template["results"]
 
         out = []
 
@@ -739,6 +735,9 @@ def main():
 
         else:
             print("[rumble] no rumble task found")
+
+    # Archive gzipped outputs for easy download
+    archive_outputs()
 
     # -----------------------------------------------------
     # AUTO-UPLOAD GENERATED DATA TO RUNZERO
